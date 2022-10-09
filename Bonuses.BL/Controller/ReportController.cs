@@ -72,8 +72,19 @@ namespace Bonuses.BL.Controller
 			return fullPath;
 		}
 
-		//public string CalculateBonuses(Group group, BonusController bonusController)
+		//public string StartBonusesReport(Table<Bonus> table, Group group, bool cancel)
 		//{
+		//	string message = "";
+
+		//	if (cancel == true)
+		//	{
+		//		message = "cancel";
+
+		//		//TODO: Событие вызова сообщений ShowMessage(string message);
+
+		//		return message;
+		//	}
+
 		//	try
 		//	{
 		//		_app = new Word.Application() { Visible = true };
@@ -85,16 +96,17 @@ namespace Bonuses.BL.Controller
 		//	}
 
 		//	var date = new Date();
-		//	Month month = date.Months[DateTime.Today.Month - 1];
+		//	Month month = date.TodayMonth;
 
 		//	ReplaceDate(month);
 
-		//	int columnCount = bonusController.Headers.Length;
-		//	int rowCount = bonusController.Bonuses.Count + 1;
+		//	int columnCount = table.Headers.Length;
+		//	int rowCount = table.Rows.Count + 1;
 		//	CreateTable(rowCount, columnCount);
 		//	PasteBonuses(_doc.Tables[1], bonusController);
 
-		//	_doc.SaveAs($"О показателях {group.Name} {month.Name.ToUpper()} {DateTime.Now.Year}г.docx");
+		//	// TODO: Добавить папку для сохранения.
+		//	_doc.Save($"О показателях {group.Name} {month.Name.ToUpper()} {DateTime.Now.Year}г.docx");
 
 		//	try
 		//	{
@@ -106,19 +118,16 @@ namespace Bonuses.BL.Controller
 		//	return "Успешно.";
 		//}
 
-		//public void ReplaceDate(Month month)
+		//private void ReplaceDate(Month month)
 		//{
-		//	// TODO: замена даты вверху документа.
 		//	string findText = "<!DocDate>";
-		//	string replacementText = $"от  \"  {DateTime.Now.Day}  \" {month.OfName} {DateTime.Now.Year} года";
+		//	string replacementText = $"от  \"  {DateTime.Now.Day}  \" {month.NameOf} {DateTime.Now.Year} года";
 		//	SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne);
 
-		//	// TODO: замена месяца в описании.
 		//	findText = "<!DescriptionMonth>";
-		//	replacementText = $"за {month.Name.ToLower()} месяц {DateTime.Now.Year} г";
+		//	replacementText = $"за {month.Name.ToLowerCase} месяц {DateTime.Now.Year} г";
 		//	SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne);
 
-		//	// TODO: замена месяца в заголовке таблицы.
 		//	findText = "<!HeaderMonth>";
 		//	replacementText = $"за  {month.Name} {DateTime.Now.Year} года";
 		//	SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne);
@@ -141,36 +150,36 @@ namespace Bonuses.BL.Controller
 		//	return findObject;
 		//}
 
-		//public void CreateTable(int rowCount, int columnCount)
-		//{
-		//	// подсчитать координаты таблицы.
-		//	string findText = "<!Table>";
-		//	string replacementText = "";
-		//	Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 1
-		//	//Word.Find location = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 2
-		//	//Word.Range tableLocation = this.Range(location.End, location.End); // 2
+		////private void CreateTable(int rowCount, int columnCount);
+		////{
+		////	// подсчитать координаты таблицы.
+		////	string findText = "<!Table>";
+		////	string replacementText = "";
+		////	Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 1
+		////	//Word.Find location = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 2
+		////	//Word.Range tableLocation = this.Range(location.End, location.End); // 2
+			
+		////	//Word.Range tableLocation = this.Range(ref start, ref end); // возможно оставить.
+		////	this.Tables.Add(tableLocation, rowCount, columnCount);
+		////	Word.Table table = this.Tables[1];
+		////	table.Range.Font.Size = 10.5;
+		////	table.Columns.DistributeWidth(); 	
+		////}
 
-		//	Word.Range tableLocation = this.Range(ref start, ref end); // возможно оставить.
-		//	this.Tables.Add(tableLocation, 1, columnCount);
-		//	Word.Table table = this.Tables[1];
-		//	table.Range.Font.Size = 10.5;
-		//	table.Columns.DistributeWidth();
-		//}
-
-		//public void PasteBonuses(Word.Table table, BonusController bonusController)
+		//private void PasteBonuses(Word.Table table, BonusController bonusController)
 		//{
-		//	for (int i = 1; i <= table.Columns.Count; i++)
+		//	for (int i = 1; i <= table.ColumnCount; i++)
 		//	{
 		//		table.Cell(1, i).Range.Text = bonusController.Headers[i - 1];
 		//	}
 
-		//	for (int i = 2; i <= table.Rows.Count; i++)
+		//	for (int i = 2; i <= table.RowCount; i++)
 		//	{
 		//		table.Cell(i, 1).Range.Text = i;
 		//		table.Cell(i, 2).Range.Text = bonusController.Bonuses[i - 2].Employee.Name;
 		//		table.Cell(i, 3).Range.Text = bonusController.Bonuses[i - 2].Employee.Position.Name;
 		//		table.Cell(i, 4).Range.Text = bonusController.Bonuses[i - 2].Detection.Description;
-		//		table.Cell(i, 5).Range.Text = bonusController.Bonuses[i - 2].Count.ToString();
+		//		table.Cell(i, 5).Range.Text = bonusController.Bonuses[i - 2].Count;
 		//	}
 
 		//	table.Rows[1].Range.Font.Style = Bold;

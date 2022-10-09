@@ -42,27 +42,29 @@ namespace Bonuses.View
             this.btnEmployees = new System.Windows.Forms.Button();
             this.btnMain = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.tbYear = new System.Windows.Forms.TextBox();
             this.cbMonth = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.panelEmployees = new System.Windows.Forms.Panel();
-            this.btnCancelEmployees = new System.Windows.Forms.Button();
-            this.btnSaveEmployees = new System.Windows.Forms.Button();
-            this.tableEmployees = new System.Windows.Forms.DataGridView();
-            this.labelEmployees = new System.Windows.Forms.Label();
             this.panelDetections = new System.Windows.Forms.Panel();
             this.btnCancelDetections = new System.Windows.Forms.Button();
             this.btnSaveDetections = new System.Windows.Forms.Button();
             this.tableDetections = new System.Windows.Forms.DataGridView();
             this.labelDetections = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panelEmployees = new System.Windows.Forms.Panel();
+            this.btnCancelEmployees = new System.Windows.Forms.Button();
+            this.btnSaveEmployees = new System.Windows.Forms.Button();
+            this.tableEmployees = new System.Windows.Forms.DataGridView();
+            this.labelEmployees = new System.Windows.Forms.Label();
             this.panelMenu.SuspendLayout();
             this.panelMain.SuspendLayout();
-            this.panelEmployees.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).BeginInit();
             this.panelDetections.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panelEmployees.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).BeginInit();
             this.SuspendLayout();
             // 
             // listBoxFiles
@@ -211,15 +213,34 @@ namespace Bonuses.View
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
+            this.panelMain.Controls.Add(this.btnCancel);
+            this.panelMain.Controls.Add(this.progressBar);
             this.panelMain.Controls.Add(this.tbYear);
             this.panelMain.Controls.Add(this.cbMonth);
             this.panelMain.Controls.Add(this.label1);
             this.panelMain.Controls.Add(this.listBoxFiles);
             this.panelMain.Controls.Add(this.btnCalculate);
-            this.panelMain.Location = new System.Drawing.Point(216, 0);
+            this.panelMain.Location = new System.Drawing.Point(200, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(585, 450);
             this.panelMain.TabIndex = 3;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(364, 275);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(148, 64);
+            this.btnCancel.TabIndex = 6;
+            this.btnCancel.Text = "Отмена";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(56, 371);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 23);
+            this.progressBar.TabIndex = 5;
             // 
             // tbYear
             // 
@@ -265,63 +286,13 @@ namespace Bonuses.View
             this.label1.TabIndex = 2;
             this.label1.Text = "Главная";
             // 
-            // panelEmployees
-            // 
-            this.panelEmployees.Controls.Add(this.btnCancelEmployees);
-            this.panelEmployees.Controls.Add(this.btnSaveEmployees);
-            this.panelEmployees.Controls.Add(this.tableEmployees);
-            this.panelEmployees.Controls.Add(this.labelEmployees);
-            this.panelEmployees.Location = new System.Drawing.Point(0, 0);
-            this.panelEmployees.Name = "panelEmployees";
-            this.panelEmployees.Size = new System.Drawing.Size(585, 450);
-            this.panelEmployees.TabIndex = 4;
-            this.panelEmployees.Visible = false;
-            // 
-            // btnCancelEmployees
-            // 
-            this.btnCancelEmployees.Location = new System.Drawing.Point(332, 350);
-            this.btnCancelEmployees.Name = "btnCancelEmployees";
-            this.btnCancelEmployees.Size = new System.Drawing.Size(75, 23);
-            this.btnCancelEmployees.TabIndex = 6;
-            this.btnCancelEmployees.Text = "Отмена";
-            this.btnCancelEmployees.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveEmployees
-            // 
-            this.btnSaveEmployees.Location = new System.Drawing.Point(173, 350);
-            this.btnSaveEmployees.Name = "btnSaveEmployees";
-            this.btnSaveEmployees.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveEmployees.TabIndex = 5;
-            this.btnSaveEmployees.Text = "Сохранить";
-            this.btnSaveEmployees.UseVisualStyleBackColor = true;
-            this.btnSaveEmployees.Click += new System.EventHandler(this.BtnSaveEmployees_Click);
-            // 
-            // tableEmployees
-            // 
-            this.tableEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.tableEmployees.Location = new System.Drawing.Point(63, 78);
-            this.tableEmployees.Name = "tableEmployees";
-            this.tableEmployees.Size = new System.Drawing.Size(488, 240);
-            this.tableEmployees.TabIndex = 4;
-            // 
-            // labelEmployees
-            // 
-            this.labelEmployees.AutoSize = true;
-            this.labelEmployees.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelEmployees.Location = new System.Drawing.Point(480, 0);
-            this.labelEmployees.Name = "labelEmployees";
-            this.labelEmployees.Size = new System.Drawing.Size(131, 25);
-            this.labelEmployees.TabIndex = 1;
-            this.labelEmployees.Text = "Сотрудники";
-            // 
             // panelDetections
             // 
             this.panelDetections.Controls.Add(this.btnCancelDetections);
-            this.panelDetections.Controls.Add(this.panelEmployees);
             this.panelDetections.Controls.Add(this.btnSaveDetections);
             this.panelDetections.Controls.Add(this.tableDetections);
             this.panelDetections.Controls.Add(this.labelDetections);
-            this.panelDetections.Location = new System.Drawing.Point(216, 0);
+            this.panelDetections.Location = new System.Drawing.Point(200, 0);
             this.panelDetections.Name = "panelDetections";
             this.panelDetections.Size = new System.Drawing.Size(585, 450);
             this.panelDetections.TabIndex = 5;
@@ -335,6 +306,7 @@ namespace Bonuses.View
             this.btnCancelDetections.TabIndex = 3;
             this.btnCancelDetections.Text = "Отмена";
             this.btnCancelDetections.UseVisualStyleBackColor = true;
+            this.btnCancelDetections.Click += new System.EventHandler(this.btnCancelDetections_Click);
             // 
             // btnSaveDetections
             // 
@@ -344,6 +316,7 @@ namespace Bonuses.View
             this.btnSaveDetections.TabIndex = 2;
             this.btnSaveDetections.Text = "Сохранить";
             this.btnSaveDetections.UseVisualStyleBackColor = true;
+            this.btnSaveDetections.Click += new System.EventHandler(this.btnSaveDetections_Click);
             // 
             // tableDetections
             // 
@@ -373,16 +346,66 @@ namespace Bonuses.View
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
+            // panelEmployees
+            // 
+            this.panelEmployees.Controls.Add(this.btnCancelEmployees);
+            this.panelEmployees.Controls.Add(this.btnSaveEmployees);
+            this.panelEmployees.Controls.Add(this.tableEmployees);
+            this.panelEmployees.Controls.Add(this.labelEmployees);
+            this.panelEmployees.Location = new System.Drawing.Point(200, 0);
+            this.panelEmployees.Name = "panelEmployees";
+            this.panelEmployees.Size = new System.Drawing.Size(585, 450);
+            this.panelEmployees.TabIndex = 7;
+            this.panelEmployees.Visible = false;
+            // 
+            // btnCancelEmployees
+            // 
+            this.btnCancelEmployees.Location = new System.Drawing.Point(332, 350);
+            this.btnCancelEmployees.Name = "btnCancelEmployees";
+            this.btnCancelEmployees.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelEmployees.TabIndex = 6;
+            this.btnCancelEmployees.Text = "Отмена";
+            this.btnCancelEmployees.UseVisualStyleBackColor = true;
+            this.btnCancelEmployees.Click += new System.EventHandler(this.btnCancelEmployees_Click);
+            // 
+            // btnSaveEmployees
+            // 
+            this.btnSaveEmployees.Location = new System.Drawing.Point(173, 350);
+            this.btnSaveEmployees.Name = "btnSaveEmployees";
+            this.btnSaveEmployees.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveEmployees.TabIndex = 5;
+            this.btnSaveEmployees.Text = "Сохранить";
+            this.btnSaveEmployees.UseVisualStyleBackColor = true;
+            // 
+            // tableEmployees
+            // 
+            this.tableEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.tableEmployees.Location = new System.Drawing.Point(63, 78);
+            this.tableEmployees.Name = "tableEmployees";
+            this.tableEmployees.Size = new System.Drawing.Size(488, 240);
+            this.tableEmployees.TabIndex = 4;
+            // 
+            // labelEmployees
+            // 
+            this.labelEmployees.AutoSize = true;
+            this.labelEmployees.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelEmployees.Location = new System.Drawing.Point(480, 0);
+            this.labelEmployees.Name = "labelEmployees";
+            this.labelEmployees.Size = new System.Drawing.Size(131, 25);
+            this.labelEmployees.TabIndex = 1;
+            this.labelEmployees.Text = "Сотрудники";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panelMain);
-            this.Controls.Add(this.panelMenu);
+            this.Controls.Add(this.panelEmployees);
             this.Controls.Add(this.panelDetections);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.panelMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Form1";
@@ -390,13 +413,13 @@ namespace Bonuses.View
             this.panelMenu.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
-            this.panelEmployees.ResumeLayout(false);
-            this.panelEmployees.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
             this.panelDetections.ResumeLayout(false);
             this.panelDetections.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panelEmployees.ResumeLayout(false);
+            this.panelEmployees.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -410,15 +433,10 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnDetections;
         private System.Windows.Forms.Button btnEmployees;
         private System.Windows.Forms.Panel panelMain;
-        private System.Windows.Forms.Panel panelEmployees;
         private System.Windows.Forms.Panel panelDetections;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label labelEmployees;
         private System.Windows.Forms.Label labelDetections;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnCancelEmployees;
-        private System.Windows.Forms.Button btnSaveEmployees;
-        private System.Windows.Forms.DataGridView tableEmployees;
         private System.Windows.Forms.Button btnCancelDetections;
         private System.Windows.Forms.Button btnSaveDetections;
         private System.Windows.Forms.DataGridView tableDetections;
@@ -429,6 +447,13 @@ namespace Bonuses.View
         private System.Windows.Forms.TextBox tbYear;
         private System.Windows.Forms.ComboBox cbMonth;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel panelEmployees;
+        private System.Windows.Forms.Button btnCancelEmployees;
+        private System.Windows.Forms.Button btnSaveEmployees;
+        private System.Windows.Forms.DataGridView tableEmployees;
+        private System.Windows.Forms.Label labelEmployees;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
 

@@ -64,6 +64,7 @@
     <Compile Include="Model\Month.cs" />
     <Compile Include="Model\Position.cs" />
     <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

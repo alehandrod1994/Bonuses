@@ -11,7 +11,7 @@ namespace Bonuses.BL.Controller
             Detections = GetDetections();
         }
 
-        public List<Detection> Detections { get; }
+        public List<Detection> Detections { get; private set; }
 
         private List<Detection> GetDetections()
         {
@@ -20,6 +20,12 @@ namespace Bonuses.BL.Controller
 
         private void Save()
         {
+            Save(Detections);
+        }
+
+        public void Save(List<Detection> detections)
+        {
+            Detections = detections;
             Save(Detections);
         }
     }

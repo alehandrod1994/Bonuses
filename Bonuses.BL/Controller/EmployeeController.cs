@@ -14,7 +14,7 @@ namespace Bonuses.BL.Controller
         }
 
         public List<Employee> Employees { get; private set; }
-
+       
         public event EventHandler OnNewEmployeeAdded;
 
         public void Add(Employee employee)

@@ -15,6 +15,8 @@ namespace Bonuses.View
 {
 	public partial class MainForm : Form
 	{
+		private bool _cancel = false;
+
 		private Date _date;
 
 		private EmployeeController _employeeController;
@@ -42,8 +44,8 @@ namespace Bonuses.View
 			_positionController = new PositionController(_employeeController.Employees);
 
 			_groupController.OnNameChanged += Group_OnNameChanged;
-			_bonusController.OnNewEmployeeFinded += Bonus_OnNewEmployeeFinded;
-			_employeeController.OnNewEmployeeAdded += Bonus_OnNewEmployeeAdded;
+			_bonusController.OnNewEmployeeFinded += Kpi_OnNewEmployeeFinded;
+			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
 
 			if (_groupController.Group.Name == null)
 			{
@@ -83,12 +85,39 @@ namespace Bonuses.View
 				listBoxFiles.Items[4] = _reportController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "ПОКАЗ");
 			}
 			catch { }
-		}		
+		}
 
-		//private bool CheckErrors()
-		//{
+		private int ParseInt(string text)
+		{
+			if (int.TryParse(text, out int result))
+			{
+				return result;
+			}
 
-		//}
+			return default;
+		}
+
+		private bool CheckErrors()
+		{
+			string errorDescription = "";
+
+			if (ParseInt(tbYear.Text) > 2000)
+			{
+				ShowErrorForm("Неверно задана дата", 27, "");
+				return false;
+			}
+
+			if (_kpiController.Kpi.Path == "") errorDescription += "KPI\n";
+			if (_reportController.Report.Path == "") errorDescription += "О показателях\n";
+
+			if (errorDescription != "")
+			{
+				ShowErrorForm("Не загружены файлы:", 27, errorDescription);
+				return false;
+			}
+
+			return true;
+		}
 
 		private void ListBoxFiles_DragEnter(object sender, DragEventArgs e)
 		{
@@ -132,17 +161,6 @@ namespace Bonuses.View
 
 		private void BtnMain_Click(object sender, EventArgs e)
 		{
-			//btnMain.BackColor = Color.White;
-			//btnMain.ForeColor = Color.Navy;
-			//btnEmployees.BackColor = Color.Navy;
-			//btnEmployees.ForeColor = Color.White;
-			//btnDetections.BackColor = Color.Navy;
-			//btnDetections.ForeColor = Color.White;
-
-			//panelMain.Visible = true;
-			//panelEmployees.Visible = false;
-			//panelDetections.Visible = false;
-
 			OpenTab(btnMain, panelMain);
 		}
 
@@ -153,35 +171,13 @@ namespace Bonuses.View
 
 		private void BtnEmployees_Click(object sender, EventArgs e)
 		{
-			//btnMain.BackColor = Color.Navy;
-			//btnMain.ForeColor = Color.White;
-			//btnEmployees.BackColor = Color.White;
-			//btnEmployees.ForeColor = Color.Navy;
-			//btnDetections.BackColor = Color.Navy;
-			//btnDetections.ForeColor = Color.White;
-
-			//panelMain.Visible = false;
-			//panelEmployees.Visible = true;
-			//panelDetections.Visible = false;
-
-			//InsertEmployeesData();
+			InsertEmployeesData();
 			OpenTab(btnEmployees, panelEmployees);
 		}
 
 		private void BtnDetections_Click(object sender, EventArgs e)
 		{
-			//btnMain.BackColor = Color.Navy;
-			//btnMain.ForeColor = Color.White;
-			//btnEmployees.BackColor = Color.Navy;
-			//btnEmployees.ForeColor = Color.White;
-			//btnDetections.BackColor = Color.White;
-			//btnDetections.ForeColor = Color.Navy;
-
-			//panelMain.Visible = false;
-			//panelEmployees.Visible = false;
-			//panelDetections.Visible = true;
-
-			//InsertDetectionsData();
+			InsertDetectionsData();
 			OpenTab(btnDetections, panelDetections);
 		}
 
@@ -195,27 +191,74 @@ namespace Bonuses.View
 			//вставить async
 			//if (CheckErrors()) return;
 
+			//CalculateStart();
+
+			//Cancel = false;
+
+			//_date.TodayMonth = cbMonth.Text;
+			//_date.Year = tbYear.Text;
+
 			//// TODO: Начало анимации прогресса.	
 
-			//string result;
-			//result = await _bonusController.Calculate(_kpiController.Kpi.Path, _employeeController.Employees, _detectionController.Detections);
-			//if (result != "Успешно.")
-			//{
-			//	throw new Exception(result);
-			//	return;
-			//}
+			//// TODO: Прогресс KPI.
+			//Table<Bonus> table = await Task.Run(() => _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections));
+			//// TODO: Отработка ситуации, если появился новый сотрудник.	
+			//if (!CheckCalculateErrors()) return;
 
-			//// TODO: Отработка ситуации, если появился новый сотрудник.
+			//// TODO: Прогресс Report.
+			//string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
+			//if (!CheckCalculateErrors()) return;
 
-			//result = await _reportController.CalculateBonuses(_groupController.Group, bonusController);
-			//if (result != "Успешно.")
-			//{
-			//	throw new Exception(result);
-			//	return;
-			//}
+
+
 
 			//// TODO: Конец анимации прогресса.	
+			//CalculateStop();
+
 			//// TODO: Уведомление об успешном завершении подсчёта.	
+			//ShowSuccessfullyForm(newPath);
+		}
+
+		private void CalculateStart()
+		{
+			//progressBar.Start();
+			progressBar.Visible = true;
+
+			btnCancel.Visible = true;
+			btnCalculate.Visible = false;
+		}
+
+		private void CalculateStop()
+		{
+			//progressBar.Stop();
+			progressBar.Visible = false;
+
+			btnCalculate.Visible = true;
+			btnCancel.Visible = false;
+		}
+
+		private bool CheckCalculateErrors(string result)
+		{
+			if (result != "Успешно.")
+			{
+				CalculateStop();
+				ShowErrorForm(result, 67, "");
+				return false;
+			}
+
+			return true;
+		}
+
+		private void ShowErrorForm(string errorTitle, int errorTitleHeight, string errorDescription)
+		{
+			ErrorForm errorForm = new ErrorForm(errorTitle, errorTitleHeight, errorDescription);
+			errorForm.Show();
+		}
+
+		private void ShowSuccessfullyForm(string newPath)
+		{
+			SuccessfullyForm successfullyForm = new SuccessfullyForm(newPath);
+			successfullyForm.Show();
 		}
 
 		private void Group_OnNameChanged(object sender, EventArgs e)
@@ -226,7 +269,7 @@ namespace Bonuses.View
 			}
 		}
 
-		private void Bonus_OnNewEmployeeFinded(object sender, EventArgs e)
+		private void Kpi_OnNewEmployeeFinded(object sender, EventArgs e)
 		{
 			if (sender is string employeeName)
 			{
@@ -235,13 +278,14 @@ namespace Bonuses.View
 			}
 		}
 
-		private void Bonus_OnNewEmployeeAdded(object sender, EventArgs e)
+		private void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
 		{
 			BtnCalculate_Click(sender, e);
 		}
 
 		private void LabelGroup_DoubleClick(object sender, EventArgs e)
 		{
+			//вставить на форме btnChangeGroup_OnClick;
 			BtnChangeGroup_Click(sender, e);
 		}
 
@@ -274,6 +318,29 @@ namespace Bonuses.View
 			_positionController.Save(employees);
 		}
 
+		private void btnCancelEmployees_Click(object sender, EventArgs e)
+		{
+			InsertEmployeesData();
+		}
+
+		private void btnSaveDetections_Click(object sender, EventArgs e)
+		{
+			var detections = new List<Detection>();
+			for (int i = 0; i < tableDetections.RowCount; i++)
+			{
+				var name = tableDetections.Rows[i].Cells[0].Value.ToString();
+				var description = tableDetections.Rows[i].Cells[1].Value.ToString();
+				detections.Add(new Detection(name, description));
+			}
+
+			_detectionController.Save(detections);
+		}
+
+		private void btnCancelDetections_Click(object sender, EventArgs e)
+		{
+			InsertDetectionsData();
+		}
+
 		private void InsertEmployeesData()
 		{
 			tableEmployees.Rows.Clear();
@@ -293,5 +360,17 @@ namespace Bonuses.View
 				tableDetections.Rows[i].Cells[1].Value = _detectionController.Detections[i].Description;
 			}
 		}
+
+		private void propertyGrid1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void BtnCancel_Click(object sender, EventArgs e)
+		{
+			_cancel = true;
+		}
+
+		
 	}
 }

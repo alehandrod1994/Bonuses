@@ -10,7 +10,7 @@ namespace Bonuses.BL.Controller
         protected void Save<T>(List<T> item) where T : class
         {
             var formatter = new DataContractJsonSerializer(typeof(List<T>));
-            var fileName = $"{typeof(T).Name}s.json";
+            var fileName = $"data\\{typeof(T).Name}s.json";
 
             using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
             {
@@ -21,7 +21,7 @@ namespace Bonuses.BL.Controller
         protected List<T> Load<T>() where T : class
         {
             var formatter = new DataContractJsonSerializer(typeof(List<T>));
-            var fileName = $"{typeof(T).Name}s.json";
+            var fileName = $"data\\{typeof(T).Name}s.json";
 
             using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
             {
