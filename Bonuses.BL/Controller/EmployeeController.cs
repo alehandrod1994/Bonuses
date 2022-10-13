@@ -13,7 +13,7 @@ namespace Bonuses.BL.Controller
             Employees = GetEmployees();
         }
 
-        public List<Employee> Employees { get; private set; }
+        public List<Employee> Employees { get; set; }
        
         public event EventHandler OnNewEmployeeAdded;
 
@@ -22,6 +22,12 @@ namespace Bonuses.BL.Controller
             Employees.Add(employee);
             Save();
             OnNewEmployeeAdded?.Invoke(employee, null);
+        }
+
+        public void ReWrite(List<Employee> employees)
+        {
+            Employees = employees;
+            Save();
         }
 
         private List<Employee> GetEmployees()
@@ -55,10 +61,6 @@ namespace Bonuses.BL.Controller
             Save(Employees);
         }
 
-        public void Save(List<Employee> employees)
-        {
-            Employees = employees;
-            Save(Employees);
-        }
+       
     }
 }

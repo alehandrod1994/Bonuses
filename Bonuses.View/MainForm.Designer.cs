@@ -43,7 +43,7 @@ namespace Bonuses.View
             this.btnMain = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.tbYear = new System.Windows.Forms.TextBox();
             this.cbMonth = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -171,7 +171,7 @@ namespace Bonuses.View
             // 
             this.btnDetections.FlatAppearance.BorderSize = 0;
             this.btnDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDetections.Font = new System.Drawing.Font("Bahnschrift SemiCondensed", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDetections.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnDetections.ForeColor = System.Drawing.SystemColors.Window;
             this.btnDetections.Location = new System.Drawing.Point(0, 122);
             this.btnDetections.Name = "btnDetections";
@@ -185,7 +185,7 @@ namespace Bonuses.View
             // 
             this.btnEmployees.FlatAppearance.BorderSize = 0;
             this.btnEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEmployees.Font = new System.Drawing.Font("Bahnschrift SemiCondensed", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnEmployees.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnEmployees.ForeColor = System.Drawing.SystemColors.Window;
             this.btnEmployees.Location = new System.Drawing.Point(0, 80);
             this.btnEmployees.Name = "btnEmployees";
@@ -199,7 +199,7 @@ namespace Bonuses.View
             // 
             this.btnMain.FlatAppearance.BorderSize = 0;
             this.btnMain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMain.Font = new System.Drawing.Font("Bahnschrift SemiCondensed", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnMain.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnMain.ForeColor = System.Drawing.SystemColors.Window;
             this.btnMain.Location = new System.Drawing.Point(0, 38);
             this.btnMain.Name = "btnMain";
@@ -207,14 +207,13 @@ namespace Bonuses.View
             this.btnMain.TabIndex = 0;
             this.btnMain.Text = "Главная";
             this.btnMain.UseVisualStyleBackColor = true;
-            this.btnMain.BackColorChanged += new System.EventHandler(this.BtnMain_BackColorChanged);
             this.btnMain.Click += new System.EventHandler(this.BtnMain_Click);
             // 
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
             this.panelMain.Controls.Add(this.btnCancel);
-            this.panelMain.Controls.Add(this.progressBar);
+            this.panelMain.Controls.Add(this.progressBar1);
             this.panelMain.Controls.Add(this.tbYear);
             this.panelMain.Controls.Add(this.cbMonth);
             this.panelMain.Controls.Add(this.label1);
@@ -235,12 +234,12 @@ namespace Bonuses.View
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
-            // progressBar
+            // progressBar1
             // 
-            this.progressBar.Location = new System.Drawing.Point(56, 371);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(100, 23);
-            this.progressBar.TabIndex = 5;
+            this.progressBar1.Location = new System.Drawing.Point(56, 371);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.TabIndex = 5;
             // 
             // tbYear
             // 
@@ -320,6 +319,7 @@ namespace Bonuses.View
             // 
             // tableDetections
             // 
+            this.tableDetections.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.tableDetections.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tableDetections.Location = new System.Drawing.Point(40, 55);
             this.tableDetections.Name = "tableDetections";
@@ -376,9 +376,11 @@ namespace Bonuses.View
             this.btnSaveEmployees.TabIndex = 5;
             this.btnSaveEmployees.Text = "Сохранить";
             this.btnSaveEmployees.UseVisualStyleBackColor = true;
+            this.btnSaveEmployees.Click += new System.EventHandler(this.BtnSaveEmployees_Click);
             // 
             // tableEmployees
             // 
+            this.tableEmployees.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.tableEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.tableEmployees.Location = new System.Drawing.Point(63, 78);
             this.tableEmployees.Name = "tableEmployees";
@@ -452,7 +454,7 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnSaveEmployees;
         private System.Windows.Forms.DataGridView tableEmployees;
         private System.Windows.Forms.Label labelEmployees;
-        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button btnCancel;
     }
 }

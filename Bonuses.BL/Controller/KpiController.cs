@@ -1,4 +1,5 @@
 ﻿using Bonuses.BL.Model;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,18 +12,27 @@ namespace Bonuses.BL.Controller
 {
 	public class KpiController : ControllerBase
 	{
+		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
+		private Logger _logger = LogManager.GetCurrentClassLogger();
+
 		private Table<Bonus> _table;
 
 		private int _currentRow = 2;
 
 		public KpiController()
 		{
+			_messages.Add(Status.Cancel, "Отмена.");
+			_messages.Add(Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется.");
+			_messages.Add(Status.Pause, "Остановлено.");
+			_messages.Add(Status.Success, "Успешно.");	
+
 			Kpi = GetPath();
 		}
 
 		public Kpi Kpi { get; }
 
 		public event EventHandler OnNewEmployeeFinded;
+		public event EventHandler ShutdownCalculate;
 
 		public Kpi GetPath()
 		{
@@ -93,14 +103,14 @@ namespace Bonuses.BL.Controller
 
 		public Table<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
 		{
-			string message = "";
+			//string message = "";
 
 			if (cancel == true)
 			{
-				message = "cancel";
+				//message = "cancel";
 
-				//TODO: Событие вызова сообщений ShowMessage(string message);
-
+				_logger.Info(_messages[Status.Cancel]);
+				ShutdownCalculate?.Invoke(_messages[Status.Cancel], null);
 				return null;
 			}
 
@@ -112,8 +122,9 @@ namespace Bonuses.BL.Controller
 			}
 			catch
 			{
-				message = "Не удалось открыть файл 'KPI'. Возможно, он сейчас используется.";
-				//TODO: Событие вызова сообщений ShowMessage(string message);
+				//message = "Не удалось открыть файл 'KPI'. Возможно, он сейчас используется.";
+				_logger.Info(_messages[Status.Failed]);
+				ShutdownCalculate?.Invoke(_messages[Status.Failed], null);
 				return null;
 			}
 			Excel.Worksheet sheet = null;
@@ -143,10 +154,11 @@ namespace Bonuses.BL.Controller
 					int columnIndex = detectionColumnIndex.Key;
 					if (ParseInt(ToString(sheet, _currentRow, columnIndex)) > 0)
 					{
-						string employeeName = ToString(sheet, _currentRow, 1);
-						var employee = employees.FirstOrDefault(e => e.Name == employeeName);
+						string employeeName = ToString(sheet, _currentRow, 2);
+						var employee = employees.FirstOrDefault(e => e.Name.Equals(employeeName, StringComparison.CurrentCultureIgnoreCase));
 						if (employee == null)
 						{
+							_logger.Info(_messages[Status.Pause]);
 							OnNewEmployeeFinded?.Invoke(employeeName, null);
 
 							try
@@ -156,11 +168,11 @@ namespace Bonuses.BL.Controller
 							}
 							catch { }
 
-							message = "Pause";
+							//message = "Pause";
 
 							//TODO: Событие вызова сообщений ShowMessage(string message);
 
-							return _table;
+							return null;
 						}
 
 						var detection = detectionColumnIndexes[columnIndex];
@@ -182,10 +194,10 @@ namespace Bonuses.BL.Controller
 
 			_currentRow = 2;
 
-			message = "Success";
+			//message = "Success";
 
 			//TODO: Событие вызова сообщений ShowMessage(string message);
-
+			_logger.Info(_messages[Status.Success]);
 			return _table;
 		}
 

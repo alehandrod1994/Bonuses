@@ -1,6 +1,7 @@
 ﻿using Bonuses.BL.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bonuses.BL.Controller
 {
@@ -21,22 +22,31 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
+		public void ReWrite(List<Employee> employees)
+		{
+			Positions = GetPositions(employees);
+			Save();
+		}
+
 		private List<Position> GetPositions(List<Employee> employees)
 		{
 			var positions = new List<Position>();
-			foreach (var employee in employees)
+			foreach(var employee in employees)
 			{
-				positions.Add(employee.Position);
-				employees.RemoveAll(e => e.Position == employee.Position);
+				if (!positions.Contains(employee.Position))
+				{
+					positions.Add(employee.Position);
+				}								
 			}
 
 			return positions;
 		}
 
-		public void Save(List<Employee> employees)
+		private void Save()
 		{
-			Positions = GetPositions(employees);
 			Save(Positions);
 		}
+
+
 	}
 }

@@ -29,8 +29,8 @@ namespace Bonuses.BL.Model
 
 		public Month[] Months { get; }
 
-		public Month TodayMonth { get; }
-		public int Year { get; }
+		public Month TodayMonth { get; set; }
+		public int Year { get; set; }
 
 		public Month GetTodayMonth()
 		{

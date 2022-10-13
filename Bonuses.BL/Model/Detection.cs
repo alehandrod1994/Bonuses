@@ -23,10 +23,10 @@ namespace Bonuses.BL.Model
 		}
 
 		[DataMember]
-		public string Name { get; }
+		public string Name { get; private set; }
 
 		[DataMember]
-		public string Description { get; }
+		public string Description { get; private set; }
 
 		public override string ToString()
 		{

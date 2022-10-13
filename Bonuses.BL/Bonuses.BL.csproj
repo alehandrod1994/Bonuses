@@ -34,8 +34,13 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.0.4\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,18 +57,22 @@
     <Compile Include="Controller\EmployeeController.cs" />
     <Compile Include="Controller\GroupController.cs" />
     <Compile Include="Controller\KpiController.cs" />
+    <Compile Include="Controller\LogController.cs" />
     <Compile Include="Controller\PositionController.cs" />
     <Compile Include="Controller\ReportController.cs" />
     <Compile Include="Model\Bonus.cs" />
+    <Compile Include="Model\Command.cs" />
     <Compile Include="Model\Date.cs" />
     <Compile Include="Model\Detection.cs" />
     <Compile Include="Model\Document.cs" />
     <Compile Include="Model\Employee.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Kpi.cs" />
+    <Compile Include="Model\Log.cs" />
     <Compile Include="Model\Month.cs" />
     <Compile Include="Model\Position.cs" />
     <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\Status.cs" />
     <Compile Include="Model\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

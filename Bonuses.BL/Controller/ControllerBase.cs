@@ -12,7 +12,7 @@ namespace Bonuses.BL.Controller
             var formatter = new DataContractJsonSerializer(typeof(List<T>));
             var fileName = $"data\\{typeof(T).Name}s.json";
 
-            using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
+            using (var fs = new FileStream(fileName, FileMode.Create))
             {
                 formatter.WriteObject(fs, item);
             }

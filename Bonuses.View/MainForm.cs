@@ -1,5 +1,6 @@
 ﻿using Bonuses.BL.Controller;
 using Bonuses.BL.Model;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +20,8 @@ namespace Bonuses.View
 
 		private Date _date;
 
+		private Logger _logger;
+
 		private EmployeeController _employeeController;
 		private DetectionController _detectionController;
 		private KpiController _kpiController;
@@ -33,6 +36,13 @@ namespace Bonuses.View
 		{
 			InitializeComponent();
 
+			_logger = LogManager.GetCurrentClassLogger();
+
+			tableEmployees.Columns.Add("Name", "Имя");
+			tableEmployees.Columns.Add("Position", "Должность");
+			tableDetections.Columns.Add("Name", "Название");
+			tableDetections.Columns.Add("Description", "Описание");
+
 			_date = new Date();
 
 			_employeeController = new EmployeeController();
@@ -44,7 +54,9 @@ namespace Bonuses.View
 			_positionController = new PositionController(_employeeController.Employees);
 
 			_groupController.OnNameChanged += Group_OnNameChanged;
-			_bonusController.OnNewEmployeeFinded += Kpi_OnNewEmployeeFinded;
+			_kpiController.OnNewEmployeeFinded += Kpi_OnNewEmployeeFinded;
+			_kpiController.ShutdownCalculate += ShutdownCalculate;
+			_reportController.ShutdownCalculate += ShutdownCalculate;
 			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
 
 			if (_groupController.Group.Name == null)
@@ -101,9 +113,9 @@ namespace Bonuses.View
 		{
 			string errorDescription = "";
 
-			if (ParseInt(tbYear.Text) > 2000)
+			if (ParseInt(tbYear.Text) < 2000)
 			{
-				ShowErrorForm("Неверно задана дата", 27, "");
+				ShowNoticeForm("Неверно задана дата", 27, "");
 				return false;
 			}
 
@@ -112,7 +124,7 @@ namespace Bonuses.View
 
 			if (errorDescription != "")
 			{
-				ShowErrorForm("Не загружены файлы:", 27, errorDescription);
+				ShowNoticeForm("Не загружены файлы:", 27, errorDescription);
 				return false;
 			}
 
@@ -164,11 +176,6 @@ namespace Bonuses.View
 			OpenTab(btnMain, panelMain);
 		}
 
-		private void BtnMain_BackColorChanged(object sender, EventArgs e)
-		{
-
-		}
-
 		private void BtnEmployees_Click(object sender, EventArgs e)
 		{
 			InsertEmployeesData();
@@ -181,60 +188,64 @@ namespace Bonuses.View
 			OpenTab(btnDetections, panelDetections);
 		}
 
-		private void SelectTab()
-		{
-
-		}
-
 		private void BtnCalculate_Click(object sender, EventArgs e)
 		{
-			//вставить async
-			//if (CheckErrors()) return;
+		//	//вставить async
 
-			//CalculateStart();
+			if (!CheckErrors()) return;
 
-			//Cancel = false;
+			CalculateStart();
 
-			//_date.TodayMonth = cbMonth.Text;
-			//_date.Year = tbYear.Text;
+			_cancel = false;
 
-			//// TODO: Начало анимации прогресса.	
+			_date.TodayMonth = _date.Months[cbMonth.SelectedIndex];
+			_date.Year = Convert.ToInt32(tbYear.Text);
 
-			//// TODO: Прогресс KPI.
+			//	// TODO: Начало анимации прогресса.	
+
+			//	// TODO: Прогресс KPI.
 			//Table<Bonus> table = await Task.Run(() => _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections));
-			//// TODO: Отработка ситуации, если появился новый сотрудник.	
-			//if (!CheckCalculateErrors()) return;
+			Table<Bonus> table = _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel);
+				// TODO: Отработка ситуации, если появился новый сотрудник.	
+				if (table == null) return;
 
-			//// TODO: Прогресс Report.
-			//string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
-			//if (!CheckCalculateErrors()) return;
+			//	// TODO: Прогресс Report.
+			//	//progressBar1.Location.X = 400;
+			//	string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
+			//	if (newPath == null) return;
 
 
 
 
-			//// TODO: Конец анимации прогресса.	
-			//CalculateStop();
+			//	// TODO: Конец анимации прогресса.	
+			//	CalculateStop();
 
-			//// TODO: Уведомление об успешном завершении подсчёта.	
-			//ShowSuccessfullyForm(newPath);
+			//	// TODO: Уведомление об успешном завершении подсчёта.	
+			//	ShowSuccessfullyForm(newPath);
 		}
 
 		private void CalculateStart()
 		{
 			//progressBar.Start();
-			progressBar.Visible = true;
+			progressBar1.Visible = true;
 
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
+
+			// TODO: Начало анимации.
+			//progressBar1.Location.X = 200;
+			progressBar1.Visible = true;
 		}
 
 		private void CalculateStop()
 		{
 			//progressBar.Stop();
-			progressBar.Visible = false;
+			progressBar1.Visible = false;
 
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
+
+			// TODO: Конец анимации.
 		}
 
 		private bool CheckCalculateErrors(string result)
@@ -242,17 +253,29 @@ namespace Bonuses.View
 			if (result != "Успешно.")
 			{
 				CalculateStop();
-				ShowErrorForm(result, 67, "");
+				ShowNoticeForm(result, 67, "");
 				return false;
 			}
 
 			return true;
 		}
 
-		private void ShowErrorForm(string errorTitle, int errorTitleHeight, string errorDescription)
+		private void ShutdownCalculate(object sender, EventArgs e)
 		{
-			ErrorForm errorForm = new ErrorForm(errorTitle, errorTitleHeight, errorDescription);
-			errorForm.Show();
+			//if (sender is dictItem)
+			//{
+			//    CalculateStop();
+			//    if (sender.Key == Status.Failed)
+			//    {
+			//        ShowNoticeForm(sender.Value, 67, "");
+			//    }
+			//}
+		}
+
+		private void ShowNoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
+		{
+			NoticeForm noticeForm = new NoticeForm(noticeTitle, noticeTitleHeight, noticeDescription);
+			noticeForm.Show();
 		}
 
 		private void ShowSuccessfullyForm(string newPath)
@@ -306,7 +329,7 @@ namespace Bonuses.View
 		private void BtnSaveEmployees_Click(object sender, EventArgs e)
 		{
 			var employees = new List<Employee>();
-			for (int i = 0; i < tableEmployees.RowCount; i++)
+			for (int i = 0; i < tableEmployees.RowCount - 1; i++)
 			{
 				var position = new Position(tableEmployees.Rows[i].Cells[1].Value.ToString());
 				var employee = new Employee(tableEmployees.Rows[i].Cells[0].Value.ToString(), position);
@@ -314,8 +337,16 @@ namespace Bonuses.View
 
 			}
 
-			_employeeController.Save(employees);
-			_positionController.Save(employees);
+			_employeeController.ReWrite(employees);
+			_positionController.ReWrite(employees);
+
+			//bool result = _employeeController.ReWrite(employees);
+			//if (result == true)
+			//{
+			//	_positionController.ReWrite(employees);
+			//	ShowNoticeForm("Сохранено!", 67, "");
+			//}
+
 		}
 
 		private void btnCancelEmployees_Click(object sender, EventArgs e)
@@ -326,14 +357,20 @@ namespace Bonuses.View
 		private void btnSaveDetections_Click(object sender, EventArgs e)
 		{
 			var detections = new List<Detection>();
-			for (int i = 0; i < tableDetections.RowCount; i++)
+			for (int i = 0; i < tableDetections.RowCount - 1; i++)
 			{
 				var name = tableDetections.Rows[i].Cells[0].Value.ToString();
 				var description = tableDetections.Rows[i].Cells[1].Value.ToString();
 				detections.Add(new Detection(name, description));
 			}
 
-			_detectionController.Save(detections);
+			_detectionController.ReWrite(detections);
+
+			//bool result = _detectionController.ReWrite(detections);
+			//if (result == true)
+			//{
+			//	ShowNoticeForm("Сохранено!", 67, "");
+			//}
 		}
 
 		private void btnCancelDetections_Click(object sender, EventArgs e)
@@ -344,6 +381,7 @@ namespace Bonuses.View
 		private void InsertEmployeesData()
 		{
 			tableEmployees.Rows.Clear();
+			tableEmployees.RowCount = _employeeController.Employees.Count + 1;
 			for (int i = 0; i < _employeeController.Employees.Count; i++)
 			{
 				tableEmployees.Rows[i].Cells[0].Value = _employeeController.Employees[i].Name;
@@ -354,16 +392,12 @@ namespace Bonuses.View
 		private void InsertDetectionsData()
 		{
 			tableDetections.Rows.Clear();
+			tableDetections.RowCount = _detectionController.Detections.Count + 1;
 			for (int i = 0; i < _detectionController.Detections.Count; i++)
 			{
 				tableDetections.Rows[i].Cells[0].Value = _detectionController.Detections[i].Name;
 				tableDetections.Rows[i].Cells[1].Value = _detectionController.Detections[i].Description;
 			}
-		}
-
-		private void propertyGrid1_Click(object sender, EventArgs e)
-		{
-
 		}
 
 		private void BtnCancel_Click(object sender, EventArgs e)

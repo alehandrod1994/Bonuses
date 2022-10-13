@@ -28,5 +28,10 @@ namespace Bonuses.View
             _groupController.Change(new Group(tbGroup.Text));
             this.Close();
         }
+
+        private void AddGroupForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

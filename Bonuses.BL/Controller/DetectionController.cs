@@ -13,6 +13,12 @@ namespace Bonuses.BL.Controller
 
         public List<Detection> Detections { get; private set; }
 
+        public void ReWrite(List<Detection> detections)
+        {
+            Detections = detections;
+            Save();
+        }
+
         private List<Detection> GetDetections()
         {
             return Load<Detection>() ?? new List<Detection>();
@@ -23,10 +29,6 @@ namespace Bonuses.BL.Controller
             Save(Detections);
         }
 
-        public void Save(List<Detection> detections)
-        {
-            Detections = detections;
-            Save(Detections);
-        }
+        
     }
 }

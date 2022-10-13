@@ -70,6 +70,7 @@ namespace Bonuses.View
             this.Controls.Add(this.btnSaveGroup);
             this.Name = "AddGroupForm";
             this.Text = "AddGroupForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddGroupForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

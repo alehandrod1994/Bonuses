@@ -21,16 +21,14 @@ namespace Bonuses.View
         {
             InitializeComponent();
 
-
             labelEmployee.Text = employeeName;
+            _employeeController = employeeController;
+            _positionController = positionController;
 
-            if (positionController.Positions.Count > 0) // Возможно убрать.
+            foreach (var position in _positionController.Positions)
             {
-                foreach(var position in positionController.Positions)
-                {
-                    cbPositions.Items.Add(position);
-                }
-            }
+                cbPositions.Items.Add(position.Name);
+            }          
         }
 
         private void btnSaveEmployee_Click(object sender, EventArgs e)
@@ -41,7 +39,7 @@ namespace Bonuses.View
             var employee = new Employee(labelEmployee.Text, position);
             _positionController.Add(position);
             _employeeController.Add(employee);
-            this.Close();
+            Close();
         }
     }
 }

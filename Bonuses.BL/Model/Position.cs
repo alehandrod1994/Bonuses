@@ -23,5 +23,15 @@ namespace Bonuses.BL.Model
         {
             return Name;
         }
+
+        public override bool Equals(object obj)
+        {
+            return Name == ((Position)obj).Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }
