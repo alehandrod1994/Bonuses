@@ -7,6 +7,7 @@ namespace Bonuses.BL.Model
         Cancel,
         Failed,
         Pause,
+        Start,
         Success
     }
 }

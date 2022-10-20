@@ -1,13 +1,6 @@
 ﻿using Bonuses.BL.Controller;
 using Bonuses.BL.Model;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Bonuses.View
@@ -25,13 +18,23 @@ namespace Bonuses.View
 
         private void BtnSaveGroup_Click(object sender, EventArgs e)
         {
-            _groupController.Change(new Group(tbGroup.Text));
-            this.Close();
+            if (!string.IsNullOrWhiteSpace(tbGroup.Text))
+            {
+                _groupController.Change(new Group(tbGroup.Text));
+                Close();
+            }
         }
 
         private void AddGroupForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void labelHelp_Click(object sender, EventArgs e)
+        {
+            string key = "Добавление отдела";
+            // TODO: открытие инструкции.
+            // TODO: поиск в инструкции key или по ссылке.
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Bonuses.View
             this.labelNoticeDescription = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnOK = new System.Windows.Forms.Button();
+            this.labelHelp = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,11 +75,24 @@ namespace Bonuses.View
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // labelHelp
+            // 
+            this.labelHelp.AutoSize = true;
+            this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.labelHelp.Location = new System.Drawing.Point(368, 126);
+            this.labelHelp.Name = "labelHelp";
+            this.labelHelp.Size = new System.Drawing.Size(100, 15);
+            this.labelHelp.TabIndex = 25;
+            this.labelHelp.Text = "Нужна помощь?";
+            this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
+            // 
             // NoticeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 171);
+            this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.labelNoticeTitle);
             this.Controls.Add(this.pictureBox1);
@@ -87,6 +101,7 @@ namespace Bonuses.View
             this.Text = "NoticeForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -96,5 +111,6 @@ namespace Bonuses.View
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label labelNoticeDescription;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label labelHelp;
     }
 }

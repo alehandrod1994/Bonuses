@@ -1,13 +1,6 @@
 ﻿using Bonuses.BL.Controller;
 using Bonuses.BL.Model;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Bonuses.View
@@ -16,14 +9,17 @@ namespace Bonuses.View
     {
         private EmployeeController _employeeController;
         private PositionController _positionController;
+        private KpiController _kpiController;
 
-        public AddNewEmployeeForm(string employeeName, EmployeeController employeeController, PositionController positionController)
+        public AddNewEmployeeForm(string employeeName, EmployeeController employeeController, PositionController positionController, KpiController kpiController)
         {
             InitializeComponent();
-
-            labelEmployee.Text = employeeName;
+         
             _employeeController = employeeController;
             _positionController = positionController;
+            _kpiController = kpiController;
+
+            labelEmployee.Text = employeeName;
 
             foreach (var position in _positionController.Positions)
             {
@@ -31,7 +27,7 @@ namespace Bonuses.View
             }          
         }
 
-        private void btnSaveEmployee_Click(object sender, EventArgs e)
+        private void BtnSaveEmployee_Click(object sender, EventArgs e)
         {
             // TODO: Проверка, чтобы в начале и в конце должности не было лишних пробелов.
 
@@ -40,6 +36,18 @@ namespace Bonuses.View
             _positionController.Add(position);
             _employeeController.Add(employee);
             Close();
+        }
+
+        private void AddNewEmployeeForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _kpiController.CancelCalculate();
+        }
+
+        private void labelHelp_Click(object sender, EventArgs e)
+        {
+            string key = "Добавление нового сотрудника";
+            // TODO: открытие инструкции.
+            // TODO: поиск в инструкции key или по ссылке.
         }
     }
 }

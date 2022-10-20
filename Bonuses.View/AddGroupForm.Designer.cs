@@ -32,6 +32,7 @@ namespace Bonuses.View
             this.btnSaveGroup = new System.Windows.Forms.Button();
             this.tbGroup = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.labelHelp = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnSaveGroup
@@ -60,11 +61,24 @@ namespace Bonuses.View
             this.label1.TabIndex = 2;
             this.label1.Text = "Введите название отдела:";
             // 
+            // labelHelp
+            // 
+            this.labelHelp.AutoSize = true;
+            this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.labelHelp.Location = new System.Drawing.Point(196, 91);
+            this.labelHelp.Name = "labelHelp";
+            this.labelHelp.Size = new System.Drawing.Size(100, 15);
+            this.labelHelp.TabIndex = 26;
+            this.labelHelp.Text = "Нужна помощь?";
+            this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
+            // 
             // AddGroupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(308, 134);
+            this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbGroup);
             this.Controls.Add(this.btnSaveGroup);
@@ -81,5 +95,6 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnSaveGroup;
         private System.Windows.Forms.TextBox tbGroup;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelHelp;
     }
 }

@@ -9,8 +9,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Group = Bonuses.BL.Model.Group;
 
 namespace Bonuses.View
 {
@@ -99,9 +101,9 @@ namespace Bonuses.View
 			catch { }
 		}
 
-		private int ParseInt(string text)
+		private int ParseInt(string value)
 		{
-			if (int.TryParse(text, out int result))
+			if (int.TryParse(value, out int result))
 			{
 				return result;
 			}
@@ -212,7 +214,8 @@ namespace Bonuses.View
 			//	// TODO: Прогресс Report.
 			//	//progressBar1.Location.X = 400;
 			//	string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
-			//	if (newPath == null) return;
+				string newPath = _reportController.StartBonusesReport(table, _groupController.Group, _date, _cancel);
+				if (newPath == null) return;
 
 
 
@@ -296,7 +299,7 @@ namespace Bonuses.View
 		{
 			if (sender is string employeeName)
 			{
-				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController);
+				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController, _kpiController);
 				addNewEmployeeForm.Show();
 			}
 		}
@@ -315,19 +318,51 @@ namespace Bonuses.View
 		private void BtnChangeGroup_Click(object sender, EventArgs e)
 		{
 			tbGroup.Text = "";
-			tbGroup.Visible = true;
-			btnApplyGroup.Visible = true;
+			panelGroup.Visible = true;
 		}
 
 		private void BtnApplyGroup_Click(object sender, EventArgs e)
 		{
-			_groupController.Change(new Group(tbGroup.Text));
-			tbGroup.Visible = false;
-			btnApplyGroup.Visible = false;
+			if (!string.IsNullOrWhiteSpace(tbGroup.Text))
+			{
+				_groupController.Change(new Group(tbGroup.Text));
+				panelGroup.Visible = false;
+			}
+		}
+
+		private void BtnCancelGroup_Click(object sender, EventArgs e)
+		{
+			panelGroup.Visible = false;
+		}
+
+		private void FormatTable(DataGridView table)
+		{
+			for (int i = 0; i < table.RowCount - 1; i++)
+			{
+				string column1 = table.Rows[i].Cells[0].Value.ToString();
+				string column2 = table.Rows[i].Cells[1].Value.ToString();
+
+				if (string.IsNullOrWhiteSpace(column1) && string.IsNullOrWhiteSpace(column2))
+				{
+					table.Rows.RemoveAt(i);
+					i--;
+					continue;
+				}
+				else if (string.IsNullOrWhiteSpace(column1) || string.IsNullOrWhiteSpace(column2))
+				{
+					ShowNoticeForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}");
+					return;
+				}
+
+				table.Rows[i].Cells[0].Value = Regex.Replace(column1, @"\s+", " ");
+				table.Rows[i].Cells[1].Value = Regex.Replace(column2, @"\s+", " ");
+			}
 		}
 
 		private void BtnSaveEmployees_Click(object sender, EventArgs e)
 		{
+			FormatTable(tableEmployees);
+
 			var employees = new List<Employee>();
 			for (int i = 0; i < tableEmployees.RowCount - 1; i++)
 			{
@@ -349,13 +384,15 @@ namespace Bonuses.View
 
 		}
 
-		private void btnCancelEmployees_Click(object sender, EventArgs e)
+		private void BtnCancelEmployees_Click(object sender, EventArgs e)
 		{
 			InsertEmployeesData();
 		}
 
-		private void btnSaveDetections_Click(object sender, EventArgs e)
+		private void BtnSaveDetections_Click(object sender, EventArgs e)
 		{
+			FormatTable(tableDetections);
+
 			var detections = new List<Detection>();
 			for (int i = 0; i < tableDetections.RowCount - 1; i++)
 			{
@@ -373,7 +410,7 @@ namespace Bonuses.View
 			//}
 		}
 
-		private void btnCancelDetections_Click(object sender, EventArgs e)
+		private void BtnCancelDetections_Click(object sender, EventArgs e)
 		{
 			InsertDetectionsData();
 		}

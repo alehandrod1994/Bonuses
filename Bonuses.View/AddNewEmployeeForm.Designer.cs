@@ -33,6 +33,7 @@ namespace Bonuses.View
             this.btnSaveEmployee = new System.Windows.Forms.Button();
             this.cbPositions = new System.Windows.Forms.ComboBox();
             this.labelEmployee = new System.Windows.Forms.Label();
+            this.labelHelp = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -52,7 +53,7 @@ namespace Bonuses.View
             this.btnSaveEmployee.TabIndex = 3;
             this.btnSaveEmployee.Text = "Сохранить";
             this.btnSaveEmployee.UseVisualStyleBackColor = true;
-            this.btnSaveEmployee.Click += new System.EventHandler(this.btnSaveEmployee_Click);
+            this.btnSaveEmployee.Click += new System.EventHandler(this.BtnSaveEmployee_Click);
             // 
             // cbPositions
             // 
@@ -72,17 +73,31 @@ namespace Bonuses.View
             this.labelEmployee.TabIndex = 7;
             this.labelEmployee.Text = "Имя сотрудника";
             // 
+            // labelHelp
+            // 
+            this.labelHelp.AutoSize = true;
+            this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.labelHelp.Location = new System.Drawing.Point(384, 146);
+            this.labelHelp.Name = "labelHelp";
+            this.labelHelp.Size = new System.Drawing.Size(100, 15);
+            this.labelHelp.TabIndex = 27;
+            this.labelHelp.Text = "Нужна помощь?";
+            this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
+            // 
             // AddNewEmployeeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(507, 217);
+            this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.labelEmployee);
             this.Controls.Add(this.cbPositions);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSaveEmployee);
             this.Name = "AddNewEmployeeForm";
             this.Text = "AddNewEmployeeForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddNewEmployeeForm_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -94,5 +109,6 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnSaveEmployee;
         private System.Windows.Forms.ComboBox cbPositions;
         private System.Windows.Forms.Label labelEmployee;
+        private System.Windows.Forms.Label labelHelp;
     }
 }

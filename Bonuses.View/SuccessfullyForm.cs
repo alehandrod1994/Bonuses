@@ -16,5 +16,12 @@ namespace Bonuses.View
         {
             InitializeComponent();
         }
+
+        private void labelHelp_Click(object sender, EventArgs e)
+        {
+            string key = labelTitle.Text;
+            // TODO: открытие инструкции.
+            // TODO: поиск в инструкции key или по ссылке.
+        }
     }
 }

@@ -58,6 +58,8 @@ namespace Bonuses.View
             this.btnSaveEmployees = new System.Windows.Forms.Button();
             this.tableEmployees = new System.Windows.Forms.DataGridView();
             this.labelEmployees = new System.Windows.Forms.Label();
+            this.panelGroup = new System.Windows.Forms.Panel();
+            this.btnCancelGroup = new System.Windows.Forms.Button();
             this.panelMenu.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelDetections.SuspendLayout();
@@ -65,6 +67,7 @@ namespace Bonuses.View
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelEmployees.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).BeginInit();
+            this.panelGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBoxFiles
@@ -98,9 +101,7 @@ namespace Bonuses.View
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.Navy;
-            this.panelMenu.Controls.Add(this.tbGroup);
-            this.panelMenu.Controls.Add(this.btnApplyGroup);
-            this.panelMenu.Controls.Add(this.btnChangeGroup);
+            this.panelMenu.Controls.Add(this.panelGroup);
             this.panelMenu.Controls.Add(this.labelGroup);
             this.panelMenu.Controls.Add(this.button1);
             this.panelMenu.Controls.Add(this.btnDetections);
@@ -114,16 +115,16 @@ namespace Bonuses.View
             // 
             // tbGroup
             // 
-            this.tbGroup.Location = new System.Drawing.Point(43, 235);
+            this.tbGroup.Location = new System.Drawing.Point(3, 5);
             this.tbGroup.Name = "tbGroup";
             this.tbGroup.Size = new System.Drawing.Size(100, 20);
             this.tbGroup.TabIndex = 6;
             // 
             // btnApplyGroup
             // 
-            this.btnApplyGroup.Location = new System.Drawing.Point(62, 296);
+            this.btnApplyGroup.Location = new System.Drawing.Point(9, 60);
             this.btnApplyGroup.Name = "btnApplyGroup";
-            this.btnApplyGroup.Size = new System.Drawing.Size(43, 23);
+            this.btnApplyGroup.Size = new System.Drawing.Size(85, 23);
             this.btnApplyGroup.TabIndex = 5;
             this.btnApplyGroup.Text = "ОК";
             this.btnApplyGroup.UseVisualStyleBackColor = true;
@@ -131,7 +132,7 @@ namespace Bonuses.View
             // 
             // btnChangeGroup
             // 
-            this.btnChangeGroup.Location = new System.Drawing.Point(52, 261);
+            this.btnChangeGroup.Location = new System.Drawing.Point(38, 31);
             this.btnChangeGroup.Name = "btnChangeGroup";
             this.btnChangeGroup.Size = new System.Drawing.Size(125, 23);
             this.btnChangeGroup.TabIndex = 3;
@@ -305,7 +306,7 @@ namespace Bonuses.View
             this.btnCancelDetections.TabIndex = 3;
             this.btnCancelDetections.Text = "Отмена";
             this.btnCancelDetections.UseVisualStyleBackColor = true;
-            this.btnCancelDetections.Click += new System.EventHandler(this.btnCancelDetections_Click);
+            this.btnCancelDetections.Click += new System.EventHandler(this.BtnCancelDetections_Click);
             // 
             // btnSaveDetections
             // 
@@ -315,7 +316,7 @@ namespace Bonuses.View
             this.btnSaveDetections.TabIndex = 2;
             this.btnSaveDetections.Text = "Сохранить";
             this.btnSaveDetections.UseVisualStyleBackColor = true;
-            this.btnSaveDetections.Click += new System.EventHandler(this.btnSaveDetections_Click);
+            this.btnSaveDetections.Click += new System.EventHandler(this.BtnSaveDetections_Click);
             // 
             // tableDetections
             // 
@@ -366,7 +367,7 @@ namespace Bonuses.View
             this.btnCancelEmployees.TabIndex = 6;
             this.btnCancelEmployees.Text = "Отмена";
             this.btnCancelEmployees.UseVisualStyleBackColor = true;
-            this.btnCancelEmployees.Click += new System.EventHandler(this.btnCancelEmployees_Click);
+            this.btnCancelEmployees.Click += new System.EventHandler(this.BtnCancelEmployees_Click);
             // 
             // btnSaveEmployees
             // 
@@ -397,6 +398,27 @@ namespace Bonuses.View
             this.labelEmployees.TabIndex = 1;
             this.labelEmployees.Text = "Сотрудники";
             // 
+            // panelGroup
+            // 
+            this.panelGroup.Controls.Add(this.btnCancelGroup);
+            this.panelGroup.Controls.Add(this.tbGroup);
+            this.panelGroup.Controls.Add(this.btnApplyGroup);
+            this.panelGroup.Controls.Add(this.btnChangeGroup);
+            this.panelGroup.Location = new System.Drawing.Point(5, 195);
+            this.panelGroup.Name = "panelGroup";
+            this.panelGroup.Size = new System.Drawing.Size(175, 100);
+            this.panelGroup.TabIndex = 7;
+            // 
+            // btnCancelGroup
+            // 
+            this.btnCancelGroup.Location = new System.Drawing.Point(100, 60);
+            this.btnCancelGroup.Name = "btnCancelGroup";
+            this.btnCancelGroup.Size = new System.Drawing.Size(63, 23);
+            this.btnCancelGroup.TabIndex = 7;
+            this.btnCancelGroup.Text = "Отмена";
+            this.btnCancelGroup.UseVisualStyleBackColor = true;
+            this.btnCancelGroup.Click += new System.EventHandler(this.BtnCancelGroup_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -412,7 +434,6 @@ namespace Bonuses.View
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panelMenu.ResumeLayout(false);
-            this.panelMenu.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.panelDetections.ResumeLayout(false);
@@ -422,6 +443,8 @@ namespace Bonuses.View
             this.panelEmployees.ResumeLayout(false);
             this.panelEmployees.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
+            this.panelGroup.ResumeLayout(false);
+            this.panelGroup.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -456,6 +479,8 @@ namespace Bonuses.View
         private System.Windows.Forms.Label labelEmployees;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Panel panelGroup;
+        private System.Windows.Forms.Button btnCancelGroup;
     }
 }
 

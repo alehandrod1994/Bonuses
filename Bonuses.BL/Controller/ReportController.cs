@@ -13,6 +13,7 @@ namespace Bonuses.BL.Controller
 		private Word.Application _app;
 		private Word.Document _doc;
 
+		private Status _status = Status.Start;
 		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -21,6 +22,7 @@ namespace Bonuses.BL.Controller
 			_messages.Add(Status.Cancel, "Отмена.");
 			_messages.Add(Status.Failed, "Не удалось открыть файл \"О показателях (шаблон)\". Возможно, он сейчас используется.");
 			_messages.Add(Status.Pause, "Остановлено.");
+			_messages.Add(Status.Start, "Начало подсчёта.");
 			_messages.Add(Status.Success, "Успешно.");
 
 			Report = GetPath();
@@ -83,126 +85,142 @@ namespace Bonuses.BL.Controller
 			return fullPath;
 		}
 
-		//public string StartBonusesReport(Table<Bonus> table, Group group, bool cancel)
-		//{
-		//	//string message = "";
+		private bool OpenConnection()
+		{
+			try
+			{
+				_app = new Word.Application() { Visible = true };
+				_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
+				_doc.Activate();
+				return true;
+			}
+			catch
+			{
+				_status = Status.Failed;
+				_logger.Info(_messages[_status]);
+				ShutdownCalculate?.Invoke(_messages[_status], null);
+				return false;
+			}
+		}
 
-		//	if (cancel == true)
-		//	{
-		//		//message = "cancel";
+		private bool CloseConnection()
+		{
+			try
+			{
+				_doc.Close();
+				_app.Quit();
+				return true;
+			}
+			catch
+			{
+				_logger.Info("Не удалось корректно закрыть файл \"О показателях (шаблон)\".");
+				return false;
+			}
+		}
 
-		//		//TODO: Событие вызова сообщений ShowMessage(string message);
+		public string StartBonusesReport(Table<Bonus> tableBonuses, Group group, Date date, bool cancel)
+		{
+			if (cancel == true)
+			{
+				_status = Status.Cancel;
+				_logger.Info(_messages[_status]);
+				ShutdownCalculate?.Invoke(_messages[_status], null);
+				return null;
+			}
 
-		//		_logger.Info(_messages[Status.Cancel]);
-		//		ShutdownCalculate?.Invoke(_messages[Status.Cancel], null);
-		//		return null;
-		//	}
+			if (!OpenConnection()) return null;
 
-		//	try
-		//	{
-		//		_app = new Word.Application() { Visible = true };
-		//		_doc = _app.Documents.Open(Report.Path, false, true);
-		//	}
-		//	catch
-		//	{
-		//		_logger.Info(_messages[Status.Failed]);
-		//		ShutdownCalculate?.Invoke(_messages[Status.Failed], null);
-		//		return null;
-		//	}
+			ReplaceDate(date.TodayMonth);		
+			CreateTable(tableBonuses);
+			PasteBonuses(_doc.Tables[1], tableBonuses);
 
-		//	// Вместо этого передать date в аргументах метода.
-		//	var date = new Date();
-		//	Month month = date.TodayMonth;
+			string directory = Directory.GetParent(Report.Path).FullName;
+			string newFileName = $"О показателях {group.Name} {date.TodayMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
+			string newFilePath = $"{directory}\\{newFileName}";
+			_doc.SaveAs(newFilePath);
 
-		//	ReplaceDate(month);
+			CloseConnection();
 
-		//	int columnCount = table.Headers.Length;
-		//	int rowCount = table.Rows.Count + 1;
-		//	CreateTable(rowCount, columnCount);
-		//	PasteBonuses(_doc.Tables[1], bonusController);
+			_status = Status.Success;
+			_logger.Info(_messages[_status]);
+			return newFilePath;
+		}
 
-		//	string directory = Directory.GetDirectoryRoot(Report.Path);
-		//	string newFileName = $"О показателях {group.Name} {month.Name.ToUpper()} {DateTime.Now.Year}г.docx";
-		//	string newFilePath = $"{directory} \\ {newFileName}";
-		//	_doc.SaveAs2(newFilePath);
+		private void ReplaceDate(Month month)
+		{
+			object findText = "<!DocDate>";
+			object replacementText = $"от  \"{DateTime.Now.Day}\" {month.OfName} {DateTime.Now.Year} года";
+			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
-		//	try
-		//	{
-		//		_doc.Close();
-		//		_app.Quit();
-		//	}
-		//	catch { }
+			findText = "<!DescriptionMonth>";
+			replacementText = $"за {month.Name.ToLower()} месяц {DateTime.Now.Year} г";
+			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
-		//	_logger.Info(_messages[Status.Success]);
-		//	return newFilePath;
-		//}
+			findText = "<!HeaderMonth>";
+			replacementText = $"за  {month.Name} {DateTime.Now.Year} года";
+			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+		}
 
-		//private void ReplaceDate(Month month)
-		//{
-		//	string findText = "<!DocDate>";
-		//	string replacementText = $"от  \"  {DateTime.Now.Day}  \" {month.OfName} {DateTime.Now.Year} года";
-		//	SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+		private Word.Range SearchReplace(object findText, object replacementText, Word.WdReplace replace)
+		{
+			Word.Range range = _app.ActiveDocument.Content; 
+			range.Find.ClearFormatting(); 
+			range.Find.Execute(FindText: findText, ReplaceWith: replacementText, Replace: replace);
 
-		//	findText = "<!DescriptionMonth>";
-		//	replacementText = $"за {month.Name.ToLower()} месяц {DateTime.Now.Year} г";
-		//	SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			return range;
+		}
 
-		//	findText = "<!HeaderMonth>";
-		//	replacementText = $"за  {month.Name} {DateTime.Now.Year} года";
-		//	SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
-		//}
+		private void CreateTable<T>(Table<T> tableData)
+		{
+			object findText = "<!Table>";
+			object replacementText = "";
+			Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			
+			int columnCount = tableData.Headers.Length;
+			int rowCount = tableData.Rows.Count + 1;
 
-		//private Word.Find SearchReplace(string findText, string replacementText, Word.WdReplace replace)
-		//{
-		//	Word.Find findObject = _app.Selection.Find;
-		//	findObject.ClearFormatting();
-		//	findObject.Text = findText;
-		//	findObject.Replacement.ClearFormatting();
-		//	findObject.Replacement.Text = replacementText;
+			_doc.Tables.Add(tableLocation, rowCount, columnCount);
+			Word.Table table = _doc.Tables[1];
+			table.Borders.Enable = 1;
+			table.Columns.DistributeWidth();			
 
-		//	//object replaceOne = Word.WdReplace.wdReplaceOne;
+			if (tableData.Headers[0].Contains("№") || tableData.Headers[0].Contains("Номер"))
+			{
+				float firstColumnWidth = 28;
+				float tableWidth = 488;
+				table.Columns[1].PreferredWidth = firstColumnWidth;
+				float columnWidth = (tableWidth - firstColumnWidth) / (columnCount - 1);
 
-		//	findObject.Execute(ref missing, ref missing, ref missing, ref missing, ref missing,
-		//ref missing, ref missing, ref missing, ref missing, ref missing,
-		//ref replace, ref missing, ref missing, ref missing, ref missing);
+				for(int i = 2; i <= table.Columns.Count; i++)
+				{
+					table.Columns[i].PreferredWidth = columnWidth;
+				}
+			}				
+			
+			table.Range.Font.Size = 10.5f;
+			table.Range.Bold = 0;
+		}
 
-		//	return findObject;
-		//}
+		private void PasteBonuses(Word.Table table, Table<Bonus> tableBonuses)
+		{
+			for (int i = 1; i <= table.Columns.Count; i++)
+			{
+				table.Cell(1, i).Range.Text = tableBonuses.Headers[i - 1];
+			}
 
-		////private void CreateTable(int rowCount, int columnCount);
-		////{
-		////	// подсчитать координаты таблицы.
-		////	string findText = "<!Table>";
-		////	string replacementText = "";
-		////	Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 1
-		////	//Word.Find location = SearchReplace(findText, replacementText, Word.WdReplace.WdReplaceOne); // 2
-		////	//Word.Range tableLocation = this.Range(location.End, location.End); // 2
+			for (int i = 2; i <= table.Rows.Count; i++)
+			{
+				table.Cell(i, 1).Range.Text = (i - 1).ToString();
+				table.Cell(i, 2).Range.Text = tableBonuses.Rows[i - 2].Employee.Name;
+				table.Cell(i, 3).Range.Text = tableBonuses.Rows[i - 2].Employee.Position.Name;
+				table.Cell(i, 4).Range.Text = tableBonuses.Rows[i - 2].Detection.Description;
+				table.Cell(i, 5).Range.Text = tableBonuses.Rows[i - 2].Count.ToString();
+			}
 
-		////	//Word.Range tableLocation = this.Range(ref start, ref end); // возможно оставить.
-		////	this.Tables.Add(tableLocation, rowCount, columnCount);
-		////	Word.Table table = this.Tables[1];
-		////	table.Range.Font.Size = 10.5;
-		////	table.Columns.DistributeWidth(); 	
-		////}
-
-		//private void PasteBonuses(Word.Table table, BonusController bonusController)
-		//{
-		//	for (int i = 1; i <= table.Columns.Count; i++)
-		//	{
-		//		table.Cell(1, i).Range.Text = bonusController.Headers[i - 1];
-		//	}
-
-		//	for (int i = 2; i <= table.Rows.Count; i++)
-		//	{
-		//		table.Cell(i, 1).Range.Text = i.ToString();
-		//		table.Cell(i, 2).Range.Text = bonusController.Bonuses[i - 2].Employee.Name;
-		//		table.Cell(i, 3).Range.Text = bonusController.Bonuses[i - 2].Employee.Position.Name;
-		//		table.Cell(i, 4).Range.Text = bonusController.Bonuses[i - 2].Detection.Description;
-		//		table.Cell(i, 5).Range.Text = bonusController.Bonuses[i - 2].Count.ToString();
-		//	}
-
-		//	table.Rows[1].Range.Font = Bold;
-		//}
+			table.Rows[1].Range.Bold = 20;
+			//table.Columns[2].Range.Font.Size = 12;
+			table.Rows.DistributeHeight();
+		}
 
 		private void Save()
 		{

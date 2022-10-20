@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -12,18 +13,26 @@ namespace Bonuses.BL.Controller
 {
 	public class KpiController : ControllerBase
 	{
+		private Excel.Application _app;
+		private Excel.Workbook _book;
+		private Excel.Worksheet _sheet;
+
+		private Status _status = Status.Start;
 		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private Table<Bonus> _table;
 
 		private int _currentRow = 2;
+		private int _employeeIndex;
+		private Dictionary<int, Detection> _detectionColumnIndexes;
 
 		public KpiController()
 		{
 			_messages.Add(Status.Cancel, "Отмена.");
 			_messages.Add(Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется.");
 			_messages.Add(Status.Pause, "Остановлено.");
+			_messages.Add(Status.Start, "Начало подсчёта.");
 			_messages.Add(Status.Success, "Успешно.");	
 
 			Kpi = GetPath();
@@ -101,82 +110,80 @@ namespace Bonuses.BL.Controller
 			return fullPath;
 		}
 
-		public Table<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
+		private bool OpenConnection()
 		{
-			//string message = "";
-
-			if (cancel == true)
-			{
-				//message = "cancel";
-
-				_logger.Info(_messages[Status.Cancel]);
-				ShutdownCalculate?.Invoke(_messages[Status.Cancel], null);
-				return null;
-			}
-
-			Excel.Application app = new Excel.Application();
-			Excel.Workbook book = null;
+			_app = new Excel.Application();
+			_book = null;
 			try
 			{
-				book = app.Workbooks.Open(Kpi.Path);
+				_book = _app.Workbooks.Open(Kpi.Path);
 			}
 			catch
 			{
-				//message = "Не удалось открыть файл 'KPI'. Возможно, он сейчас используется.";
-				_logger.Info(_messages[Status.Failed]);
-				ShutdownCalculate?.Invoke(_messages[Status.Failed], null);
+				_status = Status.Failed;
+				_logger.Info(_messages[_status]);
+				ShutdownCalculate?.Invoke(_messages[_status], null);
+				return false;
+			}
+			_sheet = null;
+			_app.DisplayAlerts = false;
+			_sheet = (Excel.Worksheet)_book.Sheets[1];
+			return true;
+		}
+
+		private bool CloseConnection()
+		{
+			try
+			{
+				_book.Close();
+				_app.Quit();
+				return true;
+			}
+			catch
+			{
+				_logger.Info("Не удалось корректно закрыть файл \"KPI\".");
+				return false;
+			}
+		}
+
+		public Table<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
+		{
+			if (cancel == true)
+			{
+				CancelCalculate();
 				return null;
 			}
-			Excel.Worksheet sheet = null;
-			app.DisplayAlerts = false;
-			sheet = (Excel.Worksheet)book.Sheets[1];
 
-			if (_currentRow <= 2)
+			if (!OpenConnection()) return null;
+
+			if (_status != Status.Pause)
 			{
-				var headers = new string[]
-				{
-					"№ п/п",
-					"Ф.И.О.",
-					"Должность/структурное подразделение",
-					"Наименование показателя (критерия)",
-					"Количество/средняя оценка"
-				};
-
-				_table = new Table<Bonus>(headers);
+				SetBonusesSourceData(detections);
 			}
 
-			var detectionColumnIndexes = GetDetectionColumnIndexes(sheet, detections);
-
-			while (!Contains(sheet, _currentRow, 2, "ИТОГО") && ToString(sheet, _currentRow, 2) != "")
+			while (!Contains(_currentRow, _employeeIndex, "ИТОГО") && ToString(_currentRow, _employeeIndex) != "")
 			{
-				foreach (var detectionColumnIndex in detectionColumnIndexes)
+				foreach (var detectionColumnIndex in _detectionColumnIndexes)
 				{
 					int columnIndex = detectionColumnIndex.Key;
-					if (ParseInt(ToString(sheet, _currentRow, columnIndex)) > 0)
+					if (ParseInt(ToString(_currentRow, columnIndex)) > 0)
 					{
-						string employeeName = ToString(sheet, _currentRow, 2);
+						//string employeeName = Regex.Replace(ToString(sheet, _currentRow, _employeeIndex), @"\s+", " ");
+						string employeeName = ToString(_currentRow, _employeeIndex);
 						var employee = employees.FirstOrDefault(e => e.Name.Equals(employeeName, StringComparison.CurrentCultureIgnoreCase));
 						if (employee == null)
 						{
-							_logger.Info(_messages[Status.Pause]);
+							CloseConnection();
+
+							_status = Status.Pause;
+							_logger.Info(_messages[_status]);
 							OnNewEmployeeFinded?.Invoke(employeeName, null);
-
-							try
-							{
-								book.Close();
-								app.Quit();
-							}
-							catch { }
-
-							//message = "Pause";
-
-							//TODO: Событие вызова сообщений ShowMessage(string message);
-
+							
 							return null;
 						}
 
-						var detection = detectionColumnIndexes[columnIndex];
-						int count = ParseInt(ToString(sheet, _currentRow, columnIndex));
+						var detection = _detectionColumnIndexes[columnIndex];
+						int count = ParseInt(ToString(_currentRow, columnIndex));
 						var bonus = new Bonus(employee, detection, count);
 						_table.Rows.Add(bonus);
 					}
@@ -185,25 +192,55 @@ namespace Bonuses.BL.Controller
 				_currentRow++;
 			}
 
-			try
-			{
-				book.Close();
-				app.Quit();
-			}
-			catch { }
+			CloseConnection();
 
-			_currentRow = 2;
-
-			//message = "Success";
-
-			//TODO: Событие вызова сообщений ShowMessage(string message);
-			_logger.Info(_messages[Status.Success]);
+			_status = Status.Success;
+			_logger.Info(_messages[_status]);
 			return _table;
 		}
 
-		private int ParseInt(string cell)
+		public void CancelCalculate()
 		{
-			if (int.TryParse(cell, out int result))
+			_status = Status.Cancel;
+			_logger.Info(_messages[_status]);
+			ShutdownCalculate?.Invoke(_messages[_status], null);
+		}
+
+		private void SetBonusesSourceData(List<Detection> detections)
+		{
+			var headers = new string[]
+			{
+				"№ п/п",
+				"Ф.И.О.",
+				"Должность/ структурное подразделение",
+				"Наименование показателя (критерия)",
+				"Количество/ средняя оценка"
+			};
+			_table = new Table<Bonus>(headers);
+
+			_employeeIndex = GetEmployeeColumnIndex();
+			_detectionColumnIndexes = GetDetectionColumnIndexes(detections);
+			_currentRow = 2;
+
+			_status = Status.Start;
+		}
+
+		private int GetEmployeeColumnIndex()
+		{
+			for (int j = 1; j < 20; j++)
+			{
+				if (Contains(1, j, "ФИО") || Contains(1, j, "Ф.И.О"))
+				{
+					return j;
+				}
+			}
+
+			return 2;
+		}
+
+		private int ParseInt(string value)
+		{
+			if (int.TryParse(value, out int result))
 			{
 				return result;
 			}
@@ -211,14 +248,14 @@ namespace Bonuses.BL.Controller
 			return default;
 		}
 
-		private Dictionary<int, Detection> GetDetectionColumnIndexes(Excel.Worksheet sheet, List<Detection> detections)
+		private Dictionary<int, Detection> GetDetectionColumnIndexes(List<Detection> detections)
 		{
 			var detectionColumnIndexes = new Dictionary<int, Detection>();
 			for (int j = 1; j < 20; j++)
 			{
-				if (ToString(sheet, 1, j) != "")
+				if (ToString(1, j) != "")
 				{
-					var detection = detections.FirstOrDefault(d => d.Name.ToUpper() == ToString(sheet, 1, j));
+					var detection = detections.FirstOrDefault(d => Equals(1, j, d.Name));
 					if (detection != null)
 					{
 						detectionColumnIndexes.Add(j, detection);
@@ -229,15 +266,20 @@ namespace Bonuses.BL.Controller
 			return detectionColumnIndexes;
 		}
 
-		private bool Contains(Excel.Worksheet sheet, int i, int j, string key)
+		private bool Equals(int i, int j, string key)
 		{
-			return ToString(sheet, i, j).Contains(key);
+			return ToString(i, j).Equals(key, StringComparison.CurrentCultureIgnoreCase);
 		}
 
-		private string ToString(Excel.Worksheet sheet, int i, int j)
+		private bool Contains(int i, int j, string key)
 		{
-			Excel.Range rng = (Excel.Range)sheet.Cells[i, j];
-			return rng.Value?.ToString().ToUpper() ?? "";
+			return ToString(i, j).ToUpper().Contains(key);
+		}
+
+		private string ToString(int i, int j)
+		{
+			Excel.Range rng = (Excel.Range)_sheet.Cells[i, j];
+			return rng.Value?.ToString() ?? "";
 		}
 
 		private void Save()
