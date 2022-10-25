@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace Bonuses.BL.Controller
@@ -12,6 +13,7 @@ namespace Bonuses.BL.Controller
 	{
 		private Word.Application _app;
 		private Word.Document _doc;
+		private Word.Range _location;
 
 		private Status _status = Status.Start;
 		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
@@ -25,14 +27,14 @@ namespace Bonuses.BL.Controller
 			_messages.Add(Status.Start, "Начало подсчёта.");
 			_messages.Add(Status.Success, "Успешно.");
 
-			Report = GetPath();
+			Report = GetReport();
 		}
 
 		public Report Report { get; }
 
 		public event EventHandler ShutdownCalculate;
 
-		public Report GetPath()
+		public Report GetReport()
 		{
 			List<Report> reports = Load<Report>();
 			return reports.Count > 0 ? reports.First() : new Report();
@@ -66,30 +68,51 @@ namespace Bonuses.BL.Controller
 				}
 			}
 
-			return Report.Path;
+			return Report.FileName;
 		}
 
-		public string DragDrop(string key, string file, string fullPath)
+		public string Import()
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.FileName = "";
+			ofd.Filter = "Документ Word (*.doc; *docx) | *.doc; *.docx";
+			ofd.Title = "Выберите файл \"О показателях (шаблон)\"";
+
+			if (ofd.ShowDialog() != DialogResult.Cancel)
+			{
+				try
+				{
+					Report.Path = ofd.FileName;
+					Report.FileName = ofd.SafeFileName;
+				}
+				catch
+				{
+					MessageBox.Show("Недопустимый формат файла");
+				}
+			}
+
+			return Report.FileName;
+		}
+
+		public string DragDrop(string file)
 		{
 			var fi = new FileInfo(file);
 
-			if (file.ToUpper().Contains(key))
+			if (fi.Extension.Contains(".doc"))
 			{
 				Report.Path = file;
 				Report.FileName = fi.Name;
-				fullPath = file;
+				Save();
 			}
 
-			Save();
-
-			return fullPath;
+			return Report.FileName;
 		}
 
 		private bool OpenConnection()
 		{
 			try
 			{
-				_app = new Word.Application() { Visible = true };
+				_app = new Word.Application() { Visible = false };
 				_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
 				_doc.Activate();
 				return true;
@@ -118,7 +141,7 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public string StartBonusesReport(Table<Bonus> tableBonuses, Group group, Date date, bool cancel)
+		public string StartBonusesReport(List<Bonus> bonuses, Group group, Date date, bool cancel)
 		{
 			if (cancel == true)
 			{
@@ -128,11 +151,23 @@ namespace Bonuses.BL.Controller
 				return null;
 			}
 
-			if (!OpenConnection()) return null;
+			if (!OpenConnection()) return null;           
 
-			ReplaceDate(date.TodayMonth);		
-			CreateTable(tableBonuses);
-			PasteBonuses(_doc.Tables[1], tableBonuses);
+			SetDate(date.TodayMonth);
+
+			if (_doc.Tables.Count < 2)
+			{
+				var headers = new string[]
+				{
+					"№ п/п",
+					"Ф.И.О.",
+					"Должность/ структурное подразделение",
+					"Наименование показателя (критерия)",
+					"Количество/ средняя оценка"
+				};
+				CreateTable(headers);
+			}
+			PasteBonuses(bonuses);
 
 			string directory = Directory.GetParent(Report.Path).FullName;
 			string newFileName = $"О показателях {group.Name} {date.TodayMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
@@ -146,80 +181,112 @@ namespace Bonuses.BL.Controller
 			return newFilePath;
 		}
 
-		private void ReplaceDate(Month month)
+		private void SetDate(Month month)
 		{
 			object findText = "<!DocDate>";
 			object replacementText = $"от  \"{DateTime.Now.Day}\" {month.OfName} {DateTime.Now.Year} года";
-			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
 			findText = "<!DescriptionMonth>";
 			replacementText = $"за {month.Name.ToLower()} месяц {DateTime.Now.Year} г";
-			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
 			findText = "<!HeaderMonth>";
 			replacementText = $"за  {month.Name} {DateTime.Now.Year} года";
-			SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 		}
 
 		private Word.Range SearchReplace(object findText, object replacementText, Word.WdReplace replace)
 		{
-			Word.Range range = _app.ActiveDocument.Content; 
+			//Word.Range range = _app.ActiveDocument.Content;
+			Word.Range range = _doc.Content;
 			range.Find.ClearFormatting(); 
 			range.Find.Execute(FindText: findText, ReplaceWith: replacementText, Replace: replace);
 
 			return range;
 		}
 
-		private void CreateTable<T>(Table<T> tableData)
+		private void CreateTable(string[] headers)
 		{
-			object findText = "<!Table>";
-			object replacementText = "";
-			Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
-			
-			int columnCount = tableData.Headers.Length;
-			int rowCount = tableData.Rows.Count + 1;
+			//object findText = "<!Table>";
+			//object replacementText = "";
+			//Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
-			_doc.Tables.Add(tableLocation, rowCount, columnCount);
+			//int columnCount = tableData.Headers.Length;
+			//int rowCount = tableData.Rows.Count + 1;
+
+			//_doc.Tables.Add(tableLocation, rowCount, columnCount);
+			//Word.Table table = _doc.Tables[1];
+			//table.Borders.Enable = 1;
+			//table.Columns.DistributeWidth();
+			//table.Rows.Height = 60;
+
+
+
+			//table.Range.Font.Size = 10.5f;
+			//table.Range.Bold = 0;
+
+			_location.InsertParagraphAfter();
+			_location.SetRange(_location.End, _location.End);
+
+			_doc.Tables.Add(_location, 2, headers.Length);
 			Word.Table table = _doc.Tables[1];
-			table.Borders.Enable = 1;
-			table.Columns.DistributeWidth();			
+			table.Borders.Enable = 1;			
+			table.Range.Font.Size = 10.5f;
 
-			if (tableData.Headers[0].Contains("№") || tableData.Headers[0].Contains("Номер"))
+			for (int i = 1; i <= table.Columns.Count; i++)
 			{
-				float firstColumnWidth = 28;
+				table.Cell(1, i).Range.Text = headers[i - 1];
+			}
+
+			FormatTableWidth(headers);
+		}
+
+		private void FormatTableWidth(string[] headers)
+		{
+			Word.Table table = _doc.Tables[1];
+
+			if (headers[0].Contains("№") || headers[0].Contains("Номер"))
+			{
+				int columnCount = headers.Length;
+				float firstColumnWidth = 30;
 				float tableWidth = 488;
 				table.Columns[1].PreferredWidth = firstColumnWidth;
 				float columnWidth = (tableWidth - firstColumnWidth) / (columnCount - 1);
 
-				for(int i = 2; i <= table.Columns.Count; i++)
+				for (int i = 2; i <= table.Columns.Count; i++)
 				{
 					table.Columns[i].PreferredWidth = columnWidth;
 				}
-			}				
-			
-			table.Range.Font.Size = 10.5f;
-			table.Range.Bold = 0;
+			}
+			else
+			{
+				table.Columns.DistributeWidth();
+			}
 		}
 
-		private void PasteBonuses(Word.Table table, Table<Bonus> tableBonuses)
+		private void PasteBonuses(List<Bonus> bonuses)
 		{
-			for (int i = 1; i <= table.Columns.Count; i++)
-			{
-				table.Cell(1, i).Range.Text = tableBonuses.Headers[i - 1];
-			}
+			Word.Table table = _doc.Tables[1];
+			table.Range.Bold = 0;			
 
 			for (int i = 2; i <= table.Rows.Count; i++)
 			{
 				table.Cell(i, 1).Range.Text = (i - 1).ToString();
-				table.Cell(i, 2).Range.Text = tableBonuses.Rows[i - 2].Employee.Name;
-				table.Cell(i, 3).Range.Text = tableBonuses.Rows[i - 2].Employee.Position.Name;
-				table.Cell(i, 4).Range.Text = tableBonuses.Rows[i - 2].Detection.Description;
-				table.Cell(i, 5).Range.Text = tableBonuses.Rows[i - 2].Count.ToString();
+				table.Cell(i, 2).Range.Text = bonuses[i - 2].Employee.Name;
+				table.Cell(i, 3).Range.Text = bonuses[i - 2].Employee.Position.Name;
+				table.Cell(i, 4).Range.Text = bonuses[i - 2].Detection.Description;
+				table.Cell(i, 5).Range.Text = bonuses[i - 2].Count.ToString();
+
+				if (i <= bonuses.Count)
+				{
+					table.Rows.Add();
+				}
 			}
 
 			table.Rows[1].Range.Bold = 20;
 			//table.Columns[2].Range.Font.Size = 12;
-			table.Rows.DistributeHeight();
+			//table.Rows.DistributeHeight();
 		}
 
 		private void Save()

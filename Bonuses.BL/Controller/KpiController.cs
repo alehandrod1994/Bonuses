@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bonuses.BL.Controller
@@ -21,7 +22,7 @@ namespace Bonuses.BL.Controller
 		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
-		private Table<Bonus> _table;
+		private List<Bonus> _bonuses;
 
 		private int _currentRow = 2;
 		private int _employeeIndex;
@@ -35,7 +36,7 @@ namespace Bonuses.BL.Controller
 			_messages.Add(Status.Start, "Начало подсчёта.");
 			_messages.Add(Status.Success, "Успешно.");	
 
-			Kpi = GetPath();
+			Kpi = GetKpi();
 		}
 
 		public Kpi Kpi { get; }
@@ -43,7 +44,7 @@ namespace Bonuses.BL.Controller
 		public event EventHandler OnNewEmployeeFinded;
 		public event EventHandler ShutdownCalculate;
 
-		public Kpi GetPath()
+		public Kpi GetKpi()
 		{
 			List<Kpi> kpis = Load<Kpi>();
 			return kpis.Count > 0 ? kpis.First() : new Kpi();
@@ -58,7 +59,6 @@ namespace Bonuses.BL.Controller
 				if (directory.Name.ToString().ToUpper().Contains(keyFolder) && directory.Name.ToString().ToUpper().Contains(month.ToUpper()))
 				{
 					nextFolder = directory.Name;
-
 					break;
 				}
 			}
@@ -66,48 +66,54 @@ namespace Bonuses.BL.Controller
 			dir = new DirectoryInfo(sourceFolder + nextFolder);
 			foreach (FileInfo files in dir.GetFiles())
 			{
-				if ((files.Name.ToString().ToUpper().Contains(keyFile) || files.Name.ToString().ToUpper().Contains(month.ToUpper()))
+				if ((files.Name.ToUpper().Contains(keyFile) || files.Name.ToUpper().Contains(month.ToUpper()))
 					&& !files.Name.ToString().Contains("$"))
 				{
 					Kpi.Path = sourceFolder + nextFolder + @"\" + files.Name;
 					var fi = new FileInfo(Kpi.Path);
 					Kpi.FileName = fi.Name;
-
 					break;
 				}
 			}
 
-			return Kpi.Path;
+			return Kpi.FileName;
 		}
 
-		//public void Import();
-		public string DragDrop(string key, Month[] months, string file, string fullPath)
+		public string Import()
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.FileName = "";
+			ofd.Filter = "Документ Excel (*.xls; *xlsx) | *.xls; *.xlsx";
+			ofd.Title = "Выберите файл \"KPI\"";
+
+			if (ofd.ShowDialog() != DialogResult.Cancel)
+			{
+				try
+				{
+					Kpi.Path = ofd.FileName;
+					Kpi.FileName = ofd.SafeFileName;
+				}
+				catch
+				{
+					MessageBox.Show("Недопустимый формат файла");					 
+				}
+			}
+	
+			return Kpi.FileName;		
+		}
+
+		public string DragDrop(string file)
 		{
 			var fi = new FileInfo(file);
 
-			if (file.ToUpper().Contains(key))
-			{					
+			if (fi.Extension.Contains(".xls"))
+			{
 				Kpi.Path = file;
 				Kpi.FileName = fi.Name;
-				fullPath = file;
-			}
-			else
-			{
-				for (int i = 0; i < months.Length; i++)
-				{
-					if (file.Contains(months[i].Name))
-					{
-						Kpi.Path = file;
-						Kpi.FileName = fi.Name;
-						fullPath = file;
-						break;
-					}
-				}
+				Save();
 			}
 
-			Save();
-
-			return fullPath;
+			return Kpi.FileName;
 		}
 
 		private bool OpenConnection()
@@ -146,7 +152,7 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public Table<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
+		public List<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
 		{
 			if (cancel == true)
 			{
@@ -185,7 +191,7 @@ namespace Bonuses.BL.Controller
 						var detection = _detectionColumnIndexes[columnIndex];
 						int count = ParseInt(ToString(_currentRow, columnIndex));
 						var bonus = new Bonus(employee, detection, count);
-						_table.Rows.Add(bonus);
+						_bonuses.Add(bonus);
 					}
 				}
 
@@ -196,7 +202,7 @@ namespace Bonuses.BL.Controller
 
 			_status = Status.Success;
 			_logger.Info(_messages[_status]);
-			return _table;
+			return _bonuses;
 		}
 
 		public void CancelCalculate()
@@ -207,16 +213,8 @@ namespace Bonuses.BL.Controller
 		}
 
 		private void SetBonusesSourceData(List<Detection> detections)
-		{
-			var headers = new string[]
-			{
-				"№ п/п",
-				"Ф.И.О.",
-				"Должность/ структурное подразделение",
-				"Наименование показателя (критерия)",
-				"Количество/ средняя оценка"
-			};
-			_table = new Table<Bonus>(headers);
+		{			
+			_bonuses = new List<Bonus>();
 
 			_employeeIndex = GetEmployeeColumnIndex();
 			_detectionColumnIndexes = GetDetectionColumnIndexes(detections);
@@ -266,14 +264,14 @@ namespace Bonuses.BL.Controller
 			return detectionColumnIndexes;
 		}
 
-		private bool Equals(int i, int j, string key)
+		private bool Equals(int i, int j, string value)
 		{
-			return ToString(i, j).Equals(key, StringComparison.CurrentCultureIgnoreCase);
+			return ToString(i, j).Equals(value, StringComparison.CurrentCultureIgnoreCase);
 		}
 
-		private bool Contains(int i, int j, string key)
+		private bool Contains(int i, int j, string value)
 		{
-			return ToString(i, j).ToUpper().Contains(key);
+			return ToString(i, j).ToUpper().Contains(value);
 		}
 
 		private string ToString(int i, int j)

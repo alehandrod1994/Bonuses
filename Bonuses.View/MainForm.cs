@@ -29,7 +29,6 @@ namespace Bonuses.View
 		private KpiController _kpiController;
 		private ReportController _reportController;
 		private GroupController _groupController;
-		private BonusController _bonusController;
 		private PositionController _positionController;
 
 		private Button _selectedButton;
@@ -52,7 +51,6 @@ namespace Bonuses.View
 			_kpiController = new KpiController();
 			_reportController = new ReportController();
 			_groupController = new GroupController();
-			_bonusController = new BonusController();
 			_positionController = new PositionController(_employeeController.Employees);
 
 			_groupController.OnNameChanged += Group_OnNameChanged;
@@ -75,7 +73,6 @@ namespace Bonuses.View
 
 			AutoImportDate();
 			AutoImportDocuments();
-
 		}
 
 		private void AutoImportDate()
@@ -90,13 +87,13 @@ namespace Bonuses.View
 
 			try
 			{
-				listBoxFiles.Items[1] = _kpiController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "KPI");
+				labelKpiFileName.Text = _kpiController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "KPI");
 			}
 			catch { }
 
 			try
 			{
-				listBoxFiles.Items[4] = _reportController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "ПОКАЗ");
+				labelReportFileName.Text = _reportController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "ПОКАЗ");
 			}
 			catch { }
 		}
@@ -135,20 +132,20 @@ namespace Bonuses.View
 
 		private void ListBoxFiles_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
-				e.Effect = DragDropEffects.All;
+			//if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+			//	e.Effect = DragDropEffects.All;
 		}
 
 		private void ListBoxFiles_DragDrop(object sender, DragEventArgs e)
 		{
-			var date = new Date();
+			//var date = new Date();
 
-			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-			foreach (string file in files)
-			{
-				listBoxFiles.Items[1] = _kpiController.DragDrop("KPI", date.Months, file, listBoxFiles.Items[1].ToString());
-				listBoxFiles.Items[4] = _reportController.DragDrop("ПОКАЗ", file, listBoxFiles.Items[4].ToString());
-			}
+			//string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+			//foreach (string file in files)
+			//{
+			//	listBoxFiles.Items[1] = _kpiController.DragDrop("KPI", date.Months, file, listBoxFiles.Items[1].ToString());
+			//	listBoxFiles.Items[4] = _reportController.DragDrop("ПОКАЗ", file, listBoxFiles.Items[4].ToString());
+			//}
 		}
 
 		private void OpenTab(Button button, Panel tab)
@@ -196,7 +193,7 @@ namespace Bonuses.View
 
 			if (!CheckErrors()) return;
 
-			CalculateStart();
+			StartCalculate();
 
 			_cancel = false;
 
@@ -207,27 +204,27 @@ namespace Bonuses.View
 
 			//	// TODO: Прогресс KPI.
 			//Table<Bonus> table = await Task.Run(() => _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections));
-			Table<Bonus> table = _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel);
+			List<Bonus> bonuses = _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel);
 				// TODO: Отработка ситуации, если появился новый сотрудник.	
-				if (table == null) return;
+				if (bonuses == null) return;
 
 			//	// TODO: Прогресс Report.
 			//	//progressBar1.Location.X = 400;
 			//	string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
-				string newPath = _reportController.StartBonusesReport(table, _groupController.Group, _date, _cancel);
+				string newPath = _reportController.StartBonusesReport(bonuses, _groupController.Group, _date, _cancel);
 				if (newPath == null) return;
 
 
 
 
 			//	// TODO: Конец анимации прогресса.	
-			//	CalculateStop();
+				EndCalculate();
 
 			//	// TODO: Уведомление об успешном завершении подсчёта.	
 			//	ShowSuccessfullyForm(newPath);
 		}
 
-		private void CalculateStart()
+		private void StartCalculate()
 		{
 			//progressBar.Start();
 			progressBar1.Visible = true;
@@ -240,7 +237,7 @@ namespace Bonuses.View
 			progressBar1.Visible = true;
 		}
 
-		private void CalculateStop()
+		private void EndCalculate()
 		{
 			//progressBar.Stop();
 			progressBar1.Visible = false;
@@ -255,7 +252,7 @@ namespace Bonuses.View
 		{
 			if (result != "Успешно.")
 			{
-				CalculateStop();
+				EndCalculate();
 				ShowNoticeForm(result, 67, "");
 				return false;
 			}
@@ -440,6 +437,52 @@ namespace Bonuses.View
 		private void BtnCancel_Click(object sender, EventArgs e)
 		{
 			_cancel = true;
+		}
+
+		private void BtnKpi_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+			{
+				e.Effect = DragDropEffects.All;
+			}
+		}
+
+		private void BtnKpi_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+			foreach (string file in files)
+			{				
+				labelKpiFileName.Text = _kpiController.DragDrop(file);				
+			}
+		}
+
+		private void btnReport_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+			{
+				e.Effect = DragDropEffects.All;
+			}
+		}
+
+		private void btnReport_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+			foreach (string file in files)
+			{
+				labelReportFileName.Text = _reportController.DragDrop(file);				
+			}
+		}
+
+		private void BtnKpi_Click(object sender, EventArgs e)
+		{
+			labelKpiFileName.Text = _kpiController.Import();
+		}
+
+		private void btnReport_Click(object sender, EventArgs e)
+		{
+			labelReportFileName.Text = _reportController.Import();
 		}
 
 		

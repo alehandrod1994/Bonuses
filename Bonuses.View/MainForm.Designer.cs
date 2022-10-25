@@ -33,6 +33,8 @@ namespace Bonuses.View
             this.listBoxFiles = new System.Windows.Forms.ListBox();
             this.btnCalculate = new System.Windows.Forms.Button();
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.panelGroup = new System.Windows.Forms.Panel();
+            this.btnCancelGroup = new System.Windows.Forms.Button();
             this.tbGroup = new System.Windows.Forms.TextBox();
             this.btnApplyGroup = new System.Windows.Forms.Button();
             this.btnChangeGroup = new System.Windows.Forms.Button();
@@ -42,6 +44,12 @@ namespace Bonuses.View
             this.btnEmployees = new System.Windows.Forms.Button();
             this.btnMain = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.labelReportFileName = new System.Windows.Forms.Label();
+            this.labelKpiFileName = new System.Windows.Forms.Label();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnKpi = new System.Windows.Forms.Button();
+            this.labelReport = new System.Windows.Forms.Label();
+            this.labelKpi = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.tbYear = new System.Windows.Forms.TextBox();
@@ -52,22 +60,20 @@ namespace Bonuses.View
             this.btnSaveDetections = new System.Windows.Forms.Button();
             this.tableDetections = new System.Windows.Forms.DataGridView();
             this.labelDetections = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelEmployees = new System.Windows.Forms.Panel();
             this.btnCancelEmployees = new System.Windows.Forms.Button();
             this.btnSaveEmployees = new System.Windows.Forms.Button();
             this.tableEmployees = new System.Windows.Forms.DataGridView();
             this.labelEmployees = new System.Windows.Forms.Label();
-            this.panelGroup = new System.Windows.Forms.Panel();
-            this.btnCancelGroup = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelMenu.SuspendLayout();
+            this.panelGroup.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelDetections.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelEmployees.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).BeginInit();
-            this.panelGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // listBoxFiles
@@ -81,7 +87,7 @@ namespace Bonuses.View
             "",
             "О показателях (шаблон):",
             "С://"});
-            this.listBoxFiles.Location = new System.Drawing.Point(57, 152);
+            this.listBoxFiles.Location = new System.Drawing.Point(580, 550);
             this.listBoxFiles.Name = "listBoxFiles";
             this.listBoxFiles.Size = new System.Drawing.Size(455, 95);
             this.listBoxFiles.TabIndex = 0;
@@ -90,7 +96,7 @@ namespace Bonuses.View
             // 
             // btnCalculate
             // 
-            this.btnCalculate.Location = new System.Drawing.Point(200, 275);
+            this.btnCalculate.Location = new System.Drawing.Point(367, 430);
             this.btnCalculate.Name = "btnCalculate";
             this.btnCalculate.Size = new System.Drawing.Size(148, 64);
             this.btnCalculate.TabIndex = 1;
@@ -110,8 +116,29 @@ namespace Bonuses.View
             this.panelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelMenu.Location = new System.Drawing.Point(0, 0);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(180, 450);
+            this.panelMenu.Size = new System.Drawing.Size(180, 669);
             this.panelMenu.TabIndex = 2;
+            // 
+            // panelGroup
+            // 
+            this.panelGroup.Controls.Add(this.btnCancelGroup);
+            this.panelGroup.Controls.Add(this.tbGroup);
+            this.panelGroup.Controls.Add(this.btnApplyGroup);
+            this.panelGroup.Controls.Add(this.btnChangeGroup);
+            this.panelGroup.Location = new System.Drawing.Point(5, 195);
+            this.panelGroup.Name = "panelGroup";
+            this.panelGroup.Size = new System.Drawing.Size(175, 100);
+            this.panelGroup.TabIndex = 7;
+            // 
+            // btnCancelGroup
+            // 
+            this.btnCancelGroup.Location = new System.Drawing.Point(100, 60);
+            this.btnCancelGroup.Name = "btnCancelGroup";
+            this.btnCancelGroup.Size = new System.Drawing.Size(63, 23);
+            this.btnCancelGroup.TabIndex = 7;
+            this.btnCancelGroup.Text = "Отмена";
+            this.btnCancelGroup.UseVisualStyleBackColor = true;
+            this.btnCancelGroup.Click += new System.EventHandler(this.BtnCancelGroup_Click);
             // 
             // tbGroup
             // 
@@ -213,6 +240,12 @@ namespace Bonuses.View
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
+            this.panelMain.Controls.Add(this.labelReportFileName);
+            this.panelMain.Controls.Add(this.labelKpiFileName);
+            this.panelMain.Controls.Add(this.btnReport);
+            this.panelMain.Controls.Add(this.btnKpi);
+            this.panelMain.Controls.Add(this.labelReport);
+            this.panelMain.Controls.Add(this.labelKpi);
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.progressBar1);
             this.panelMain.Controls.Add(this.tbYear);
@@ -222,12 +255,79 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Location = new System.Drawing.Point(200, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(585, 450);
+            this.panelMain.Size = new System.Drawing.Size(1046, 669);
             this.panelMain.TabIndex = 3;
+            // 
+            // labelReportFileName
+            // 
+            this.labelReportFileName.AutoSize = true;
+            this.labelReportFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelReportFileName.Location = new System.Drawing.Point(531, 327);
+            this.labelReportFileName.Name = "labelReportFileName";
+            this.labelReportFileName.Size = new System.Drawing.Size(83, 13);
+            this.labelReportFileName.TabIndex = 12;
+            this.labelReportFileName.Text = "ReportFileName";
+            // 
+            // labelKpiFileName
+            // 
+            this.labelKpiFileName.AutoSize = true;
+            this.labelKpiFileName.BackColor = System.Drawing.SystemColors.Window;
+            this.labelKpiFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelKpiFileName.Location = new System.Drawing.Point(350, 329);
+            this.labelKpiFileName.Name = "labelKpiFileName";
+            this.labelKpiFileName.Size = new System.Drawing.Size(66, 13);
+            this.labelKpiFileName.TabIndex = 11;
+            this.labelKpiFileName.Text = "KpiFileName";
+            // 
+            // btnReport
+            // 
+            this.btnReport.AllowDrop = true;
+            this.btnReport.Image = global::Bonuses.View.Properties.Resources.WordLogo;
+            this.btnReport.Location = new System.Drawing.Point(534, 170);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(148, 174);
+            this.btnReport.TabIndex = 10;
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
+            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
+            // 
+            // btnKpi
+            // 
+            this.btnKpi.AllowDrop = true;
+            this.btnKpi.Image = global::Bonuses.View.Properties.Resources.ExcelLogo;
+            this.btnKpi.Location = new System.Drawing.Point(353, 170);
+            this.btnKpi.Name = "btnKpi";
+            this.btnKpi.Size = new System.Drawing.Size(148, 174);
+            this.btnKpi.TabIndex = 9;
+            this.btnKpi.UseVisualStyleBackColor = true;
+            this.btnKpi.Click += new System.EventHandler(this.BtnKpi_Click);
+            this.btnKpi.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragDrop);
+            this.btnKpi.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragEnter);
+            // 
+            // labelReport
+            // 
+            this.labelReport.AutoSize = true;
+            this.labelReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelReport.Location = new System.Drawing.Point(543, 138);
+            this.labelReport.Name = "labelReport";
+            this.labelReport.Size = new System.Drawing.Size(116, 18);
+            this.labelReport.TabIndex = 8;
+            this.labelReport.Text = "О показателях:";
+            // 
+            // labelKpi
+            // 
+            this.labelKpi.AutoSize = true;
+            this.labelKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelKpi.Location = new System.Drawing.Point(408, 138);
+            this.labelKpi.Name = "labelKpi";
+            this.labelKpi.Size = new System.Drawing.Size(35, 18);
+            this.labelKpi.TabIndex = 7;
+            this.labelKpi.Text = "KPI:";
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(364, 275);
+            this.btnCancel.Location = new System.Drawing.Point(546, 430);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(148, 64);
             this.btnCancel.TabIndex = 6;
@@ -237,16 +337,16 @@ namespace Bonuses.View
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(56, 371);
+            this.progressBar1.Location = new System.Drawing.Point(353, 379);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.Size = new System.Drawing.Size(148, 23);
             this.progressBar1.TabIndex = 5;
             // 
             // tbYear
             // 
             this.tbYear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbYear.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tbYear.Location = new System.Drawing.Point(163, 63);
+            this.tbYear.Location = new System.Drawing.Point(231, 109);
             this.tbYear.Name = "tbYear";
             this.tbYear.Size = new System.Drawing.Size(40, 22);
             this.tbYear.TabIndex = 4;
@@ -271,7 +371,7 @@ namespace Bonuses.View
             "Октябрь",
             "Ноябрь",
             "Декабрь"});
-            this.cbMonth.Location = new System.Drawing.Point(57, 63);
+            this.cbMonth.Location = new System.Drawing.Point(125, 109);
             this.cbMonth.Name = "cbMonth";
             this.cbMonth.Size = new System.Drawing.Size(100, 24);
             this.cbMonth.TabIndex = 3;
@@ -294,7 +394,7 @@ namespace Bonuses.View
             this.panelDetections.Controls.Add(this.labelDetections);
             this.panelDetections.Location = new System.Drawing.Point(200, 0);
             this.panelDetections.Name = "panelDetections";
-            this.panelDetections.Size = new System.Drawing.Size(585, 450);
+            this.panelDetections.Size = new System.Drawing.Size(1046, 669);
             this.panelDetections.TabIndex = 5;
             this.panelDetections.Visible = false;
             // 
@@ -337,16 +437,6 @@ namespace Bonuses.View
             this.labelDetections.TabIndex = 0;
             this.labelDetections.Text = "Нарушения";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.edit;
-            this.pictureBox1.Location = new System.Drawing.Point(178, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(24, 24);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            // 
             // panelEmployees
             // 
             this.panelEmployees.Controls.Add(this.btnCancelEmployees);
@@ -355,7 +445,7 @@ namespace Bonuses.View
             this.panelEmployees.Controls.Add(this.labelEmployees);
             this.panelEmployees.Location = new System.Drawing.Point(200, 0);
             this.panelEmployees.Name = "panelEmployees";
-            this.panelEmployees.Size = new System.Drawing.Size(585, 450);
+            this.panelEmployees.Size = new System.Drawing.Size(1046, 669);
             this.panelEmployees.TabIndex = 7;
             this.panelEmployees.Visible = false;
             // 
@@ -398,33 +488,22 @@ namespace Bonuses.View
             this.labelEmployees.TabIndex = 1;
             this.labelEmployees.Text = "Сотрудники";
             // 
-            // panelGroup
+            // pictureBox1
             // 
-            this.panelGroup.Controls.Add(this.btnCancelGroup);
-            this.panelGroup.Controls.Add(this.tbGroup);
-            this.panelGroup.Controls.Add(this.btnApplyGroup);
-            this.panelGroup.Controls.Add(this.btnChangeGroup);
-            this.panelGroup.Location = new System.Drawing.Point(5, 195);
-            this.panelGroup.Name = "panelGroup";
-            this.panelGroup.Size = new System.Drawing.Size(175, 100);
-            this.panelGroup.TabIndex = 7;
-            // 
-            // btnCancelGroup
-            // 
-            this.btnCancelGroup.Location = new System.Drawing.Point(100, 60);
-            this.btnCancelGroup.Name = "btnCancelGroup";
-            this.btnCancelGroup.Size = new System.Drawing.Size(63, 23);
-            this.btnCancelGroup.TabIndex = 7;
-            this.btnCancelGroup.Text = "Отмена";
-            this.btnCancelGroup.UseVisualStyleBackColor = true;
-            this.btnCancelGroup.Click += new System.EventHandler(this.BtnCancelGroup_Click);
+            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.edit;
+            this.pictureBox1.Location = new System.Drawing.Point(178, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(24, 24);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1247, 669);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelEmployees);
             this.Controls.Add(this.panelDetections);
@@ -434,17 +513,17 @@ namespace Bonuses.View
             this.Name = "MainForm";
             this.Text = "Form1";
             this.panelMenu.ResumeLayout(false);
+            this.panelGroup.ResumeLayout(false);
+            this.panelGroup.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.panelDetections.ResumeLayout(false);
             this.panelDetections.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelEmployees.ResumeLayout(false);
             this.panelEmployees.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
-            this.panelGroup.ResumeLayout(false);
-            this.panelGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -481,6 +560,12 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Panel panelGroup;
         private System.Windows.Forms.Button btnCancelGroup;
+        private System.Windows.Forms.Label labelReport;
+        private System.Windows.Forms.Label labelKpi;
+        private System.Windows.Forms.Button btnKpi;
+        private System.Windows.Forms.Button btnReport;
+        private System.Windows.Forms.Label labelKpiFileName;
+        private System.Windows.Forms.Label labelReportFileName;
     }
 }
 

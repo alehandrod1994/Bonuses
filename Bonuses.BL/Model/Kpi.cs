@@ -6,15 +6,26 @@ namespace Bonuses.BL.Model
     [DataContract]
     public class Kpi
     {
-        public Kpi() { }
-        public Kpi(string path)
+        public Kpi() 
+        {
+            Path = "";
+            FileName = "";
+        }
+
+        public Kpi(string path, string fileName)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
                 throw new ArgumentNullException("Неверно задано расположение файла.", nameof(path));
             }
 
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentNullException("Неверно задано название файла.", nameof(fileName));
+            }
+
             Path = path;
+            FileName = fileName;
         }
 
         [DataMember]

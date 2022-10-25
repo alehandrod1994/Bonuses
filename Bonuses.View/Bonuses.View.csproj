@@ -134,5 +134,11 @@
   <ItemGroup>
     <None Include="Resources\edit.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExcelLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WordLogo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

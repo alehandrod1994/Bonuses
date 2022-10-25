@@ -6,15 +6,26 @@ namespace Bonuses.BL.Model
     [DataContract]
     public class Report
     {
-        public Report() { }
-        public Report(string path)
+        public Report() 
+        {
+            Path = "";
+            FileName = "";
+        }
+
+        public Report(string path, string fileName)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
                 throw new ArgumentNullException("Неверно задано расположение файла.", nameof(path));
             }
 
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentNullException("Неверно задано имя файла.", nameof(fileName));
+            }
+
             Path = path;
+            FileName = fileName;
         }
 
         [DataMember]
