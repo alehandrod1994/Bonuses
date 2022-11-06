@@ -12,14 +12,14 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bonuses.BL.Controller
 {
-	public class KpiController : ControllerBase
+	public class KpiController : DocumentController
 	{
 		private Excel.Application _app;
 		private Excel.Workbook _book;
 		private Excel.Worksheet _sheet;
 
 		private Status _status = Status.Start;
-		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
+		private Dictionary<Status, string> _messages;
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private List<Bonus> _bonuses;
@@ -30,51 +30,32 @@ namespace Bonuses.BL.Controller
 
 		public KpiController()
 		{
-			_messages.Add(Status.Cancel, "Отмена.");
-			_messages.Add(Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется.");
-			_messages.Add(Status.Pause, "Остановлено.");
-			_messages.Add(Status.Start, "Начало подсчёта.");
-			_messages.Add(Status.Success, "Успешно.");	
+			_messages = new Dictionary<Status, string>()
+			{
+				{ Status.Cancel, "Отмена."},
+				{ Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется."},
+				{ Status.Pause, "Остановлено."},
+				{ Status.Start, "Начало подсчёта."},
+				{ Status.Success, "Успешно."},
+				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
+			};
 
-			Kpi = GetKpi();
+			Kpi = new Kpi();
 		}
 
-		public Kpi Kpi { get; }
+		public Kpi Kpi { get; private set; }
 
 		public event EventHandler OnNewEmployeeFinded;
-		public event EventHandler ShutdownCalculate;
+		public event EventHandler ShutdownCalculate;      
 
-		public Kpi GetKpi()
+		public string AutoImportKpi(string sourceFolder, string keyFolder, string month, string keyFile)
 		{
-			List<Kpi> kpis = Load<Kpi>();
-			return kpis.Count > 0 ? kpis.First() : new Kpi();
-		}
-
-		public string AutoImport(string sourceFolder, string keyFolder, string month, string keyFile)
-		{
-			string nextFolder = "";
-			DirectoryInfo dir = new DirectoryInfo(sourceFolder);
-			foreach (DirectoryInfo directory in dir.GetDirectories())
+			try
 			{
-				if (directory.Name.ToString().ToUpper().Contains(keyFolder) && directory.Name.ToString().ToUpper().Contains(month.ToUpper()))
-				{
-					nextFolder = directory.Name;
-					break;
-				}
+				string path = AutoImport(sourceFolder, keyFolder, month, keyFile, Kpi.Extention);
+				Kpi = new Kpi(path);
 			}
-			
-			dir = new DirectoryInfo(sourceFolder + nextFolder);
-			foreach (FileInfo files in dir.GetFiles())
-			{
-				if ((files.Name.ToUpper().Contains(keyFile) || files.Name.ToUpper().Contains(month.ToUpper()))
-					&& !files.Name.ToString().Contains("$"))
-				{
-					Kpi.Path = sourceFolder + nextFolder + @"\" + files.Name;
-					var fi = new FileInfo(Kpi.Path);
-					Kpi.FileName = fi.Name;
-					break;
-				}
-			}
+			catch { }
 
 			return Kpi.FileName;
 		}
@@ -110,7 +91,6 @@ namespace Bonuses.BL.Controller
 			{
 				Kpi.Path = file;
 				Kpi.FileName = fi.Name;
-				Save();
 			}
 
 			return Kpi.FileName;
@@ -126,6 +106,8 @@ namespace Bonuses.BL.Controller
 			}
 			catch
 			{
+				//var message = new KeyValuePair<Status, string>(_status, _messages[_status]);
+
 				_status = Status.Failed;
 				_logger.Info(_messages[_status]);
 				ShutdownCalculate?.Invoke(_messages[_status], null);
@@ -164,10 +146,16 @@ namespace Bonuses.BL.Controller
 
 			if (_status != Status.Pause)
 			{
-				SetBonusesSourceData(detections);
+				if (!SetBonusesSourceData(detections))
+				{
+					_status = Status.UnknownData;
+					_logger.Info(_messages[_status]);
+					ShutdownCalculate?.Invoke(_messages[_status], null);
+					return null;
+				}
 			}
 
-			while (!Contains(_currentRow, _employeeIndex, "ИТОГО") && ToString(_currentRow, _employeeIndex) != "")
+			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
 			{
 				foreach (var detectionColumnIndex in _detectionColumnIndexes)
 				{
@@ -176,6 +164,11 @@ namespace Bonuses.BL.Controller
 					{
 						//string employeeName = Regex.Replace(ToString(sheet, _currentRow, _employeeIndex), @"\s+", " ");
 						string employeeName = ToString(_currentRow, _employeeIndex);
+						if (string.IsNullOrWhiteSpace(employeeName))
+						{
+							continue;
+						}
+
 						var employee = employees.FirstOrDefault(e => e.Name.Equals(employeeName, StringComparison.CurrentCultureIgnoreCase));
 						if (employee == null)
 						{
@@ -212,15 +205,21 @@ namespace Bonuses.BL.Controller
 			ShutdownCalculate?.Invoke(_messages[_status], null);
 		}
 
-		private void SetBonusesSourceData(List<Detection> detections)
+		private bool SetBonusesSourceData(List<Detection> detections)
 		{			
 			_bonuses = new List<Bonus>();
 
 			_employeeIndex = GetEmployeeColumnIndex();
 			_detectionColumnIndexes = GetDetectionColumnIndexes(detections);
-			_currentRow = 2;
 
+			if (_employeeIndex < 1 || _detectionColumnIndexes.Count < 1)
+			{
+				return false;
+			}
+
+			_currentRow = 2;
 			_status = Status.Start;
+			return true;
 		}
 
 		private int GetEmployeeColumnIndex()

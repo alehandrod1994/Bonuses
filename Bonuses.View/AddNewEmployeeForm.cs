@@ -31,11 +31,15 @@ namespace Bonuses.View
         {
             // TODO: Проверка, чтобы в начале и в конце должности не было лишних пробелов.
 
-            var position = new Position(cbPositions.Text);
-            var employee = new Employee(labelEmployee.Text, position);
-            _positionController.Add(position);
-            _employeeController.Add(employee);
-            Close();
+            if (!string.IsNullOrWhiteSpace(cbPositions.Text))
+            {
+                Close();
+
+                var position = new Position(cbPositions.Text);
+                var employee = new Employee(labelEmployee.Text, position);
+                _positionController.Add(position);
+                _employeeController.Add(employee);
+            }               
         }
 
         private void AddNewEmployeeForm_FormClosed(object sender, FormClosedEventArgs e)

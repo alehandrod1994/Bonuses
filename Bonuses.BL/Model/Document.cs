@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 
 namespace Bonuses.BL.Model
 {
-    public abstract class Document
+    public class Document
     {
+        public Document() { }
+
         public Document(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -12,10 +15,19 @@ namespace Bonuses.BL.Model
             }
 
             Path = path;
+            FileName = GetFileName();
         }
 
-        public string Path { get; }
-        public string FileName { get; set; }
+        public string Name { get; set; } 
+        public string Type { get; set; }
+        public string Path { get; set; } = "";
+        public string FileName { get; set; } = "";
+        public string Extention { get; set; }
+
+        protected string GetFileName()
+        {
+            return new FileInfo(Path).Name;
+        }
 
         public override string ToString()
         {

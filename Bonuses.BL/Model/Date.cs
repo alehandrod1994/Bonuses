@@ -35,7 +35,7 @@ namespace Bonuses.BL.Model
 		public Month GetTodayMonth()
 		{
 			int monthNumber = DateTime.Today.Month;
-			return Months.SingleOrDefault(m => m.Number == monthNumber);
+			return Months[monthNumber - 1];
 		}
 	}
 }

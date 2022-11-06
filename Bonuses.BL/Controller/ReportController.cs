@@ -9,64 +9,44 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace Bonuses.BL.Controller
 {
-	public class ReportController : ControllerBase
+	public class ReportController : DocumentController
 	{
 		private Word.Application _app;
 		private Word.Document _doc;
 		private Word.Range _location;
 
 		private Status _status = Status.Start;
-		private Dictionary<Status, string> _messages = new Dictionary<Status, string>();
+		private Dictionary<Status, string> _messages;
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
 		public ReportController()
 		{
-			_messages.Add(Status.Cancel, "Отмена.");
-			_messages.Add(Status.Failed, "Не удалось открыть файл \"О показателях (шаблон)\". Возможно, он сейчас используется.");
-			_messages.Add(Status.Pause, "Остановлено.");
-			_messages.Add(Status.Start, "Начало подсчёта.");
-			_messages.Add(Status.Success, "Успешно.");
+			_messages = new Dictionary<Status, string>()
+			{
+				{ Status.Cancel, "Отмена."},
+				{ Status.Failed, "Не удалось открыть файл \"О показателях (шаблон)\". Возможно, он сейчас используется."},
+				{ Status.Pause, "Остановлено."},
+				{ Status.Start, "Начало подсчёта."},
+				{ Status.Success, "Успешно."},
+			};
 
-			Report = GetReport();
+			Report = new Report();
 		}
 
-		public Report Report { get; }
+		public Report Report { get; private set; }
 
 		public event EventHandler ShutdownCalculate;
 
-		public Report GetReport()
+		
+
+		public string AutoImportReport(string sourceFolder, string keyFolder, string month, string keyFile)
 		{
-			List<Report> reports = Load<Report>();
-			return reports.Count > 0 ? reports.First() : new Report();
-		}
-
-		public string AutoImport(string sourceFolder, string keyFolder, string month, string keyFile)
-		{
-			string nextFolder = "";
-			DirectoryInfo dir = new DirectoryInfo(sourceFolder);
-			foreach (DirectoryInfo directory in dir.GetDirectories())
+			try
 			{
-				if (directory.Name.ToString().ToUpper().Contains(keyFolder) && directory.Name.ToString().ToUpper().Contains(month.ToUpper()))
-				{
-					nextFolder = directory.Name;
-
-					break;
-				}
+				string path = AutoImport(sourceFolder, keyFolder, month, keyFile, Report.Extention);
+				Report = new Report(path);
 			}
-
-			dir = new DirectoryInfo(sourceFolder + nextFolder);
-			foreach (FileInfo files in dir.GetFiles())
-			{
-				if ((files.Name.ToString().ToUpper().Contains(keyFile) || files.Name.ToString().ToUpper().Contains(month.ToUpper()))
-					&& !files.Name.ToString().Contains("$"))
-				{
-					Report.Path = sourceFolder + nextFolder + @"\" + files.Name;
-					var fi = new FileInfo(Report.Path);
-					Report.FileName = fi.Name;
-
-					break;
-				}
-			}
+			catch { }
 
 			return Report.FileName;
 		}
@@ -102,7 +82,6 @@ namespace Bonuses.BL.Controller
 			{
 				Report.Path = file;
 				Report.FileName = fi.Name;
-				Save();
 			}
 
 			return Report.FileName;

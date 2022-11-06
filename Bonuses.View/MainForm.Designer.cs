@@ -29,6 +29,10 @@ namespace Bonuses.View
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.listBoxFiles = new System.Windows.Forms.ListBox();
             this.btnCalculate = new System.Windows.Forms.Button();
@@ -46,8 +50,6 @@ namespace Bonuses.View
             this.panelMain = new System.Windows.Forms.Panel();
             this.labelReportFileName = new System.Windows.Forms.Label();
             this.labelKpiFileName = new System.Windows.Forms.Label();
-            this.btnReport = new System.Windows.Forms.Button();
-            this.btnKpi = new System.Windows.Forms.Button();
             this.labelReport = new System.Windows.Forms.Label();
             this.labelKpi = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -65,6 +67,8 @@ namespace Bonuses.View
             this.btnSaveEmployees = new System.Windows.Forms.Button();
             this.tableEmployees = new System.Windows.Forms.DataGridView();
             this.labelEmployees = new System.Windows.Forms.Label();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnKpi = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelMenu.SuspendLayout();
             this.panelGroup.SuspendLayout();
@@ -96,12 +100,16 @@ namespace Bonuses.View
             // 
             // btnCalculate
             // 
-            this.btnCalculate.Location = new System.Drawing.Point(367, 430);
+            this.btnCalculate.BackColor = System.Drawing.SystemColors.Window;
+            this.btnCalculate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCalculate.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCalculate.ForeColor = System.Drawing.Color.MediumBlue;
+            this.btnCalculate.Location = new System.Drawing.Point(353, 430);
             this.btnCalculate.Name = "btnCalculate";
             this.btnCalculate.Size = new System.Drawing.Size(148, 64);
             this.btnCalculate.TabIndex = 1;
             this.btnCalculate.Text = "Подсчитать";
-            this.btnCalculate.UseVisualStyleBackColor = true;
+            this.btnCalculate.UseVisualStyleBackColor = false;
             this.btnCalculate.Click += new System.EventHandler(this.BtnCalculate_Click);
             // 
             // panelMenu
@@ -246,13 +254,13 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.btnKpi);
             this.panelMain.Controls.Add(this.labelReport);
             this.panelMain.Controls.Add(this.labelKpi);
+            this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.progressBar1);
             this.panelMain.Controls.Add(this.tbYear);
             this.panelMain.Controls.Add(this.cbMonth);
             this.panelMain.Controls.Add(this.label1);
             this.panelMain.Controls.Add(this.listBoxFiles);
-            this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Location = new System.Drawing.Point(200, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1046, 669);
@@ -262,7 +270,7 @@ namespace Bonuses.View
             // 
             this.labelReportFileName.AutoSize = true;
             this.labelReportFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelReportFileName.Location = new System.Drawing.Point(531, 327);
+            this.labelReportFileName.Location = new System.Drawing.Point(531, 347);
             this.labelReportFileName.Name = "labelReportFileName";
             this.labelReportFileName.Size = new System.Drawing.Size(83, 13);
             this.labelReportFileName.TabIndex = 12;
@@ -273,37 +281,11 @@ namespace Bonuses.View
             this.labelKpiFileName.AutoSize = true;
             this.labelKpiFileName.BackColor = System.Drawing.SystemColors.Window;
             this.labelKpiFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelKpiFileName.Location = new System.Drawing.Point(350, 329);
+            this.labelKpiFileName.Location = new System.Drawing.Point(350, 347);
             this.labelKpiFileName.Name = "labelKpiFileName";
             this.labelKpiFileName.Size = new System.Drawing.Size(66, 13);
             this.labelKpiFileName.TabIndex = 11;
             this.labelKpiFileName.Text = "KpiFileName";
-            // 
-            // btnReport
-            // 
-            this.btnReport.AllowDrop = true;
-            this.btnReport.Image = global::Bonuses.View.Properties.Resources.WordLogo;
-            this.btnReport.Location = new System.Drawing.Point(534, 170);
-            this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(148, 174);
-            this.btnReport.TabIndex = 10;
-            this.btnReport.UseVisualStyleBackColor = true;
-            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
-            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
-            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
-            // 
-            // btnKpi
-            // 
-            this.btnKpi.AllowDrop = true;
-            this.btnKpi.Image = global::Bonuses.View.Properties.Resources.ExcelLogo;
-            this.btnKpi.Location = new System.Drawing.Point(353, 170);
-            this.btnKpi.Name = "btnKpi";
-            this.btnKpi.Size = new System.Drawing.Size(148, 174);
-            this.btnKpi.TabIndex = 9;
-            this.btnKpi.UseVisualStyleBackColor = true;
-            this.btnKpi.Click += new System.EventHandler(this.BtnKpi_Click);
-            this.btnKpi.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragDrop);
-            this.btnKpi.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragEnter);
             // 
             // labelReport
             // 
@@ -327,12 +309,16 @@ namespace Bonuses.View
             // 
             // btnCancel
             // 
+            this.btnCancel.BackColor = System.Drawing.SystemColors.Window;
+            this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancel.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancel.ForeColor = System.Drawing.Color.Navy;
             this.btnCancel.Location = new System.Drawing.Point(546, 430);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(148, 64);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Отмена";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.UseVisualStyleBackColor = false;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // progressBar1
@@ -400,9 +386,12 @@ namespace Bonuses.View
             // 
             // btnCancelDetections
             // 
-            this.btnCancelDetections.Location = new System.Drawing.Point(309, 327);
+            this.btnCancelDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelDetections.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelDetections.ForeColor = System.Drawing.Color.Navy;
+            this.btnCancelDetections.Location = new System.Drawing.Point(505, 500);
             this.btnCancelDetections.Name = "btnCancelDetections";
-            this.btnCancelDetections.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelDetections.Size = new System.Drawing.Size(148, 64);
             this.btnCancelDetections.TabIndex = 3;
             this.btnCancelDetections.Text = "Отмена";
             this.btnCancelDetections.UseVisualStyleBackColor = true;
@@ -410,21 +399,43 @@ namespace Bonuses.View
             // 
             // btnSaveDetections
             // 
-            this.btnSaveDetections.Location = new System.Drawing.Point(150, 327);
+            this.btnSaveDetections.BackColor = System.Drawing.Color.Navy;
+            this.btnSaveDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveDetections.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveDetections.ForeColor = System.Drawing.SystemColors.Window;
+            this.btnSaveDetections.Location = new System.Drawing.Point(346, 500);
             this.btnSaveDetections.Name = "btnSaveDetections";
-            this.btnSaveDetections.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveDetections.Size = new System.Drawing.Size(148, 64);
             this.btnSaveDetections.TabIndex = 2;
             this.btnSaveDetections.Text = "Сохранить";
-            this.btnSaveDetections.UseVisualStyleBackColor = true;
+            this.btnSaveDetections.UseVisualStyleBackColor = false;
             this.btnSaveDetections.Click += new System.EventHandler(this.BtnSaveDetections_Click);
             // 
             // tableDetections
             // 
             this.tableDetections.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.tableDetections.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Bahnschrift Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableDetections.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.tableDetections.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.tableDetections.Location = new System.Drawing.Point(40, 55);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Bahnschrift Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableDetections.DefaultCellStyle = dataGridViewCellStyle2;
+            this.tableDetections.Location = new System.Drawing.Point(63, 78);
             this.tableDetections.Name = "tableDetections";
-            this.tableDetections.Size = new System.Drawing.Size(488, 240);
+            this.tableDetections.RowTemplate.Height = 30;
+            this.tableDetections.Size = new System.Drawing.Size(900, 388);
             this.tableDetections.TabIndex = 1;
             // 
             // labelDetections
@@ -451,9 +462,12 @@ namespace Bonuses.View
             // 
             // btnCancelEmployees
             // 
-            this.btnCancelEmployees.Location = new System.Drawing.Point(332, 350);
+            this.btnCancelEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelEmployees.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelEmployees.ForeColor = System.Drawing.Color.Navy;
+            this.btnCancelEmployees.Location = new System.Drawing.Point(505, 500);
             this.btnCancelEmployees.Name = "btnCancelEmployees";
-            this.btnCancelEmployees.Size = new System.Drawing.Size(75, 23);
+            this.btnCancelEmployees.Size = new System.Drawing.Size(148, 64);
             this.btnCancelEmployees.TabIndex = 6;
             this.btnCancelEmployees.Text = "Отмена";
             this.btnCancelEmployees.UseVisualStyleBackColor = true;
@@ -461,21 +475,44 @@ namespace Bonuses.View
             // 
             // btnSaveEmployees
             // 
-            this.btnSaveEmployees.Location = new System.Drawing.Point(173, 350);
+            this.btnSaveEmployees.BackColor = System.Drawing.Color.Navy;
+            this.btnSaveEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSaveEmployees.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveEmployees.ForeColor = System.Drawing.SystemColors.Window;
+            this.btnSaveEmployees.Location = new System.Drawing.Point(346, 500);
             this.btnSaveEmployees.Name = "btnSaveEmployees";
-            this.btnSaveEmployees.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveEmployees.Size = new System.Drawing.Size(148, 64);
             this.btnSaveEmployees.TabIndex = 5;
             this.btnSaveEmployees.Text = "Сохранить";
-            this.btnSaveEmployees.UseVisualStyleBackColor = true;
+            this.btnSaveEmployees.UseVisualStyleBackColor = false;
             this.btnSaveEmployees.Click += new System.EventHandler(this.BtnSaveEmployees_Click);
             // 
             // tableEmployees
             // 
             this.tableEmployees.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.tableEmployees.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Bahnschrift Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.tableEmployees.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.tableEmployees.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.tableEmployees.Cursor = System.Windows.Forms.Cursors.Default;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Bahnschrift Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.tableEmployees.DefaultCellStyle = dataGridViewCellStyle4;
             this.tableEmployees.Location = new System.Drawing.Point(63, 78);
             this.tableEmployees.Name = "tableEmployees";
-            this.tableEmployees.Size = new System.Drawing.Size(488, 240);
+            this.tableEmployees.RowTemplate.Height = 30;
+            this.tableEmployees.Size = new System.Drawing.Size(900, 388);
             this.tableEmployees.TabIndex = 4;
             // 
             // labelEmployees
@@ -487,6 +524,32 @@ namespace Bonuses.View
             this.labelEmployees.Size = new System.Drawing.Size(131, 25);
             this.labelEmployees.TabIndex = 1;
             this.labelEmployees.Text = "Сотрудники";
+            // 
+            // btnReport
+            // 
+            this.btnReport.AllowDrop = true;
+            this.btnReport.Image = global::Bonuses.View.Properties.Resources.WordLogo_WB;
+            this.btnReport.Location = new System.Drawing.Point(534, 170);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(148, 174);
+            this.btnReport.TabIndex = 10;
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.BtnReport_Click);
+            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
+            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
+            // 
+            // btnKpi
+            // 
+            this.btnKpi.AllowDrop = true;
+            this.btnKpi.Image = global::Bonuses.View.Properties.Resources.ExcelLogo_BW;
+            this.btnKpi.Location = new System.Drawing.Point(353, 170);
+            this.btnKpi.Name = "btnKpi";
+            this.btnKpi.Size = new System.Drawing.Size(148, 174);
+            this.btnKpi.TabIndex = 9;
+            this.btnKpi.UseVisualStyleBackColor = true;
+            this.btnKpi.Click += new System.EventHandler(this.BtnKpi_Click);
+            this.btnKpi.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragDrop);
+            this.btnKpi.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragEnter);
             // 
             // pictureBox1
             // 
@@ -511,6 +574,7 @@ namespace Bonuses.View
             this.Controls.Add(this.panelMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.panelMenu.ResumeLayout(false);
             this.panelGroup.ResumeLayout(false);

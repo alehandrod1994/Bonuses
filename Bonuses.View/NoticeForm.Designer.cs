@@ -29,11 +29,12 @@ namespace Bonuses.View
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoticeForm));
             this.labelNoticeTitle = new System.Windows.Forms.Label();
             this.labelNoticeDescription = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.labelHelp = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,14 +58,6 @@ namespace Bonuses.View
             this.labelNoticeDescription.Text = "Информация";
             this.labelNoticeDescription.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(10, 9);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
-            this.pictureBox1.TabIndex = 22;
-            this.pictureBox1.TabStop = false;
-            // 
             // btnOK
             // 
             this.btnOK.Location = new System.Drawing.Point(197, 123);
@@ -78,6 +71,7 @@ namespace Bonuses.View
             // labelHelp
             // 
             this.labelHelp.AutoSize = true;
+            this.labelHelp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.labelHelp.Location = new System.Drawing.Point(368, 126);
@@ -87,17 +81,30 @@ namespace Bonuses.View
             this.labelHelp.Text = "Нужна помощь?";
             this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.notice2;
+            this.pictureBox1.Location = new System.Drawing.Point(10, 9);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(64, 64);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 22;
+            this.pictureBox1.TabStop = false;
+            // 
             // NoticeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(483, 171);
             this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.labelNoticeTitle);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.labelNoticeDescription);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "NoticeForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NoticeForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

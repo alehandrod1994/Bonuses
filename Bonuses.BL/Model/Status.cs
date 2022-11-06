@@ -8,6 +8,7 @@ namespace Bonuses.BL.Model
         Failed,
         Pause,
         Start,
-        Success
+        Success,
+        UnknownData
     }
 }

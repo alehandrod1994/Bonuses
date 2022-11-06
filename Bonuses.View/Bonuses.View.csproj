@@ -140,5 +140,23 @@
   <ItemGroup>
     <None Include="Resources\WordLogo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExcelLogo_BW.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WordLogo_WB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\success.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\success2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notice3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notice2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -29,6 +29,7 @@ namespace Bonuses.View
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddNewEmployeeForm));
             this.label1 = new System.Windows.Forms.Label();
             this.btnSaveEmployee = new System.Windows.Forms.Button();
             this.cbPositions = new System.Windows.Forms.ComboBox();
@@ -76,6 +77,7 @@ namespace Bonuses.View
             // labelHelp
             // 
             this.labelHelp.AutoSize = true;
+            this.labelHelp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.labelHelp.Location = new System.Drawing.Point(384, 146);
@@ -89,13 +91,16 @@ namespace Bonuses.View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(507, 217);
             this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.labelEmployee);
             this.Controls.Add(this.cbPositions);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSaveEmployee);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddNewEmployeeForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddNewEmployeeForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddNewEmployeeForm_FormClosed);
             this.ResumeLayout(false);

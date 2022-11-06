@@ -1,27 +1,48 @@
 ﻿using Bonuses.BL.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Bonuses.BL.Controller
 {
 	public abstract class DocumentController : ControllerBase
 	{
-		//public List<Document> AutoImport()
-		//{
-		//	return Load<Document>() ?? new List<Document>();
-		//}
+		public string AutoImport(string sourceFolder, string keyFolder, string month, string keyFile, string extention)
+		{
+			string nextFolder = "";
+			string path = "";
 
-		//public void Import();
-		//public string DragDrop(string key, string file, string fullPath)
-		//{
-		//	if (file.ToUpper().Contains(key))
-		//	{
-		//		Path = file;
-		//		FileName = GetFileName(file);
-		//		fullPath = FillingPaths(fullPath, file);
-		//	}
+			var dir = new DirectoryInfo(sourceFolder);
+			foreach (DirectoryInfo directory in dir.GetDirectories())
+			{
+				if (directory.Name.ToUpper().Contains(keyFolder) && directory.Name.ToUpper().Contains(month.ToUpper()))
+				{
+					nextFolder = directory.Name;
+					break;
+				}
+			}
 
-		//	return fullPath;
-		//}
+			dir = new DirectoryInfo(sourceFolder + nextFolder);
+			foreach (FileInfo file in dir.GetFiles())
+			{
+				if (file.Name.ToUpper().Contains(keyFile.ToUpper()) && file.Name.ToUpper().Contains(extention.ToUpper()) && !file.Name.Contains("$"))
+				{
+					path = file.FullName;
+					break;
+				}
+			}
+
+			return path;
+		}
+
+		public void Import()
+		{
+			// Общий.
+		}
+
+		public void DragDrop()
+		{
+			// Общий.
+		}
 	}
 }

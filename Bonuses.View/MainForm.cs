@@ -85,18 +85,47 @@ namespace Bonuses.View
 		{
 			string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
 
-			try
+			labelKpiFileName.Text = _kpiController.AutoImportKpi(currentDisk, "KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
+			if (labelKpiFileName.Text != "")
 			{
-				labelKpiFileName.Text = _kpiController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "KPI");
+				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
-			catch { }
-
-			try
+			
+			labelReportFileName.Text = _reportController.AutoImportReport(currentDisk, "KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
+			if (labelReportFileName.Text != "")
 			{
-				labelReportFileName.Text = _reportController.AutoImport(currentDisk, "KPI", _date.TodayMonth.Name, "ПОКАЗ");
-			}
-			catch { }
+				btnReport.Image = Properties.Resources.WordLogo;
+			}		
 		}
+
+		//private string ImportFile(Document document)
+		//{
+		//	string name = document.Name;
+		//	string type = document.Type;
+		//	string extention = document.Extention;
+
+		//	OpenFileDialog ofd = new OpenFileDialog();
+		//	ofd.FileName = "";
+		//	ofd.Filter = $"Документ {type} (*{extention}; *{extention}x) | *{extention}; *{extention}x";
+		//	ofd.Title = $"Выберите файл {name}";
+
+		//	if (ofd.ShowDialog() != DialogResult.Cancel)
+		//	{
+		//		try
+		//		{
+		//			document = new Document(ofd.FileName);
+
+		//			//document.Path = ofd.FileName;
+		//			//document.FileName = ofd.SafeFileName;
+		//		}
+		//		catch
+		//		{
+		//			ShowNoticeForm("Недопустимый формат файла", 27, "");
+		//		}
+		//	}
+
+		//	return document.FileName;
+		//}
 
 		private int ParseInt(string value)
 		{
@@ -221,7 +250,7 @@ namespace Bonuses.View
 				EndCalculate();
 
 			//	// TODO: Уведомление об успешном завершении подсчёта.	
-			//	ShowSuccessfullyForm(newPath);
+				ShowSuccessfullyForm(newPath);
 		}
 
 		private void StartCalculate()
@@ -262,9 +291,9 @@ namespace Bonuses.View
 
 		private void ShutdownCalculate(object sender, EventArgs e)
 		{
-			//if (sender is dictItem)
+			//if (sender is KeyValuePair<Status, string>)
 			//{
-			//    CalculateStop();
+			//    EndCalculate();
 			//    if (sender.Key == Status.Failed)
 			//    {
 			//        ShowNoticeForm(sender.Value, 67, "");
@@ -297,7 +326,7 @@ namespace Bonuses.View
 			if (sender is string employeeName)
 			{
 				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController, _kpiController);
-				addNewEmployeeForm.Show();
+				addNewEmployeeForm.ShowDialog();
 			}
 		}
 
@@ -453,7 +482,11 @@ namespace Bonuses.View
 
 			foreach (string file in files)
 			{				
-				labelKpiFileName.Text = _kpiController.DragDrop(file);				
+				labelKpiFileName.Text = _kpiController.DragDrop(file);
+				if (labelKpiFileName.Text != "")
+				{
+					btnKpi.Image = Properties.Resources.ExcelLogo;
+				}
 			}
 		}
 
@@ -471,18 +504,30 @@ namespace Bonuses.View
 
 			foreach (string file in files)
 			{
-				labelReportFileName.Text = _reportController.DragDrop(file);				
+				labelReportFileName.Text = _reportController.DragDrop(file);
+				if (labelReportFileName.Text != "")
+				{
+					btnReport.Image = Properties.Resources.WordLogo;
+				}
 			}
 		}
 
 		private void BtnKpi_Click(object sender, EventArgs e)
 		{
 			labelKpiFileName.Text = _kpiController.Import();
+			if (labelKpiFileName.Text != "")
+			{
+				btnKpi.Image = Properties.Resources.ExcelLogo;
+			}
 		}
 
-		private void btnReport_Click(object sender, EventArgs e)
+		private void BtnReport_Click(object sender, EventArgs e)
 		{
 			labelReportFileName.Text = _reportController.Import();
+			if (labelReportFileName.Text != "")
+			{
+				btnReport.Image = Properties.Resources.WordLogo;
+			}
 		}
 
 		

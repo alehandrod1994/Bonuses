@@ -29,6 +29,7 @@ namespace Bonuses.View
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddGroupForm));
             this.btnSaveGroup = new System.Windows.Forms.Button();
             this.tbGroup = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -64,6 +65,7 @@ namespace Bonuses.View
             // labelHelp
             // 
             this.labelHelp.AutoSize = true;
+            this.labelHelp.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.labelHelp.Location = new System.Drawing.Point(196, 91);
@@ -77,12 +79,15 @@ namespace Bonuses.View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(308, 134);
             this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tbGroup);
             this.Controls.Add(this.btnSaveGroup);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddGroupForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddGroupForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddGroupForm_FormClosed);
             this.ResumeLayout(false);
