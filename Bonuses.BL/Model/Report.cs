@@ -44,6 +44,11 @@ namespace Bonuses.BL.Model
             SetProperties();
         }
 
+        public Report(string path, string sourceDirectory) : base(path, sourceDirectory)
+        {
+            SetProperties();
+        }
+
         private void SetProperties()
         {
             Name = "О показателях";

@@ -37,5 +37,10 @@ namespace Bonuses.BL.Model
 			int monthNumber = DateTime.Today.Month;
 			return Months[monthNumber - 1];
 		}
+
+		public override string ToString()
+		{
+			return DateTime.Today.ToString();
+		}
 	}
 }

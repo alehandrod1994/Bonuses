@@ -29,5 +29,10 @@ namespace Bonuses.BL.Model
 		public int Number { get; }
 		public string Name { get; }
 		public string OfName { get; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }

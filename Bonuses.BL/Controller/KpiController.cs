@@ -40,20 +40,26 @@ namespace Bonuses.BL.Controller
 				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
 			};
 
-			Kpi = new Kpi();
+			Kpi = GetKpi();
 		}
 
 		public Kpi Kpi { get; private set; }
 
 		public event EventHandler OnNewEmployeeFinded;
-		public event EventHandler ShutdownCalculate;      
+		public event EventHandler ShutdownCalculate;
 
-		public string AutoImportKpi(string sourceFolder, string keyFolder, string month, string keyFile)
+		public Kpi GetKpi()
+		{
+			List<Kpi> kpis = Load<Kpi>();
+			return kpis.Count > 0 ? kpis.First() : new Kpi();
+		}
+
+		public string AutoImportKpi(string keyFolder, string month, string keyFile)
 		{
 			try
 			{
-				string path = AutoImport(sourceFolder, keyFolder, month, keyFile, Kpi.Extention);
-				Kpi = new Kpi(path);
+				string path = AutoImport(Kpi.SourceDirectory, keyFolder, month, keyFile, Kpi.Extention);
+				Kpi = new Kpi(path, Kpi.SourceDirectory);				
 			}
 			catch { }
 
@@ -282,6 +288,11 @@ namespace Bonuses.BL.Controller
 		private void Save()
 		{
 			Save(new List<Kpi>() { Kpi });
+		}
+
+		public void Save(Kpi kpi)
+		{
+			Save(new List<Kpi>() { kpi });
 		}
 	}
 }

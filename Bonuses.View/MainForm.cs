@@ -83,15 +83,15 @@ namespace Bonuses.View
 
 		private void AutoImportDocuments()
 		{
-			string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
+			//string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
 
-			labelKpiFileName.Text = _kpiController.AutoImportKpi(currentDisk, "KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
+			labelKpiFileName.Text = _kpiController.AutoImportKpi("KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
 			if (labelKpiFileName.Text != "")
 			{
 				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
 			
-			labelReportFileName.Text = _reportController.AutoImportReport(currentDisk, "KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
+			labelReportFileName.Text = _reportController.AutoImportReport("KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
 			if (labelReportFileName.Text != "")
 			{
 				btnReport.Image = Properties.Resources.WordLogo;
@@ -530,6 +530,32 @@ namespace Bonuses.View
 			}
 		}
 
-		
+		private void BtnSettings_Click(object sender, EventArgs e)
+		{
+			InsertSettingsData();
+			OpenTab(btnSettings, panelSettings);
+		}
+
+		private void btnSaveSettings_Click(object sender, EventArgs e)
+		{
+			var kpi = new Kpi() { SourceDirectory = tbKpiSouceDirectory.Text };
+			_kpiController.Save(kpi);
+			_kpiController.Kpi.SourceDirectory = kpi.SourceDirectory;
+
+			var report = new Report() { SourceDirectory = tbReportSourceDirectory.Text };
+			_reportController.Save(report);
+			_reportController.Report.SourceDirectory = report.SourceDirectory;
+		}
+
+		private void btnCancelSettings_Click(object sender, EventArgs e)
+		{
+			InsertSettingsData();
+		}
+
+		private void InsertSettingsData()
+		{
+			tbKpiSouceDirectory.Text = _kpiController.Kpi.SourceDirectory;
+			tbReportSourceDirectory.Text = _reportController.Report.SourceDirectory;
+		}
 	}
 }

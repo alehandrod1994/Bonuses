@@ -30,21 +30,25 @@ namespace Bonuses.BL.Controller
 				{ Status.Success, "Успешно."},
 			};
 
-			Report = new Report();
+			Report = GetReport();
 		}
 
 		public Report Report { get; private set; }
 
 		public event EventHandler ShutdownCalculate;
 
-		
+		private Report GetReport()
+		{
+			List<Report> reports = Load<Report>();
+			return reports.Count > 0 ? reports.First() : new Report();
+		}
 
-		public string AutoImportReport(string sourceFolder, string keyFolder, string month, string keyFile)
+		public string AutoImportReport(string keyFolder, string month, string keyFile)
 		{
 			try
 			{
-				string path = AutoImport(sourceFolder, keyFolder, month, keyFile, Report.Extention);
-				Report = new Report(path);
+				string path = AutoImport(Report.SourceDirectory, keyFolder, month, keyFile, Report.Extention);
+				Report = new Report(path, Report.SourceDirectory);
 			}
 			catch { }
 
@@ -273,5 +277,9 @@ namespace Bonuses.BL.Controller
 			Save(new List<Report>() { Report });
 		}
 
+		public void Save(Report report)
+		{
+			Save(new List<Report>() { report });
+		}
 	}
 }

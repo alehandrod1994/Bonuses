@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Bonuses.BL.Model
@@ -40,6 +41,11 @@ namespace Bonuses.BL.Model
         }
 
         public Kpi(string path) : base(path)
+        {
+            SetProperties();
+        }
+
+        public Kpi(string path, string sourceDirectory) : base(path, sourceDirectory)
         {
             SetProperties();
         }
