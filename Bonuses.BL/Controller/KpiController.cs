@@ -140,7 +140,7 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public List<Bonus> CalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel)
+		public List<Bonus> StartCalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel, IProgress<int> progress)
 		{
 			if (cancel == true)
 			{
@@ -160,6 +160,8 @@ namespace Bonuses.BL.Controller
 					return null;
 				}
 			}
+
+			int linesCount = 20;
 
 			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
 			{
@@ -183,7 +185,7 @@ namespace Bonuses.BL.Controller
 							_status = Status.Pause;
 							_logger.Info(_messages[_status]);
 							OnNewEmployeeFinded?.Invoke(employeeName, null);
-							
+
 							return null;
 						}
 
@@ -194,6 +196,7 @@ namespace Bonuses.BL.Controller
 					}
 				}
 
+				progress.Report(CalculateProgress(_currentRow, linesCount));
 				_currentRow++;
 			}
 
@@ -202,6 +205,11 @@ namespace Bonuses.BL.Controller
 			_status = Status.Success;
 			_logger.Info(_messages[_status]);
 			return _bonuses;
+		}
+
+		private int CalculateProgress(int currentIndex, int maxCount)
+		{
+			return currentIndex * 100 / maxCount;
 		}
 
 		public void CancelCalculate()

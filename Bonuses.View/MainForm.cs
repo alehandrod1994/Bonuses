@@ -159,24 +159,6 @@ namespace Bonuses.View
 			return true;
 		}
 
-		private void ListBoxFiles_DragEnter(object sender, DragEventArgs e)
-		{
-			//if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
-			//	e.Effect = DragDropEffects.All;
-		}
-
-		private void ListBoxFiles_DragDrop(object sender, DragEventArgs e)
-		{
-			//var date = new Date();
-
-			//string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-			//foreach (string file in files)
-			//{
-			//	listBoxFiles.Items[1] = _kpiController.DragDrop("KPI", date.Months, file, listBoxFiles.Items[1].ToString());
-			//	listBoxFiles.Items[4] = _reportController.DragDrop("ПОКАЗ", file, listBoxFiles.Items[4].ToString());
-			//}
-		}
-
 		private void OpenTab(Button button, Panel tab)
 		{
 			tab.BringToFront();
@@ -216,10 +198,13 @@ namespace Bonuses.View
 			OpenTab(btnDetections, panelDetections);
 		}
 
-		private void BtnCalculate_Click(object sender, EventArgs e)
+		private async void BtnCalculate_Click(object sender, EventArgs e)
 		{
-		//	//вставить async
+			await CalculateAsync();
+		}
 
+		private async Task CalculateAsync()
+		{
 			if (!CheckErrors()) return;
 
 			StartCalculate();
@@ -229,52 +214,36 @@ namespace Bonuses.View
 			_date.TodayMonth = _date.Months[cbMonth.SelectedIndex];
 			_date.Year = Convert.ToInt32(tbYear.Text);
 
-			//	// TODO: Начало анимации прогресса.	
+			var progress = new Progress<int>(value => progressBar1.Value = value);
+			List<Bonus> bonuses = await Task.Run(() => _kpiController.StartCalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel, progress));
+			if (bonuses == null) return;
 
-			//	// TODO: Прогресс KPI.
-			//Table<Bonus> table = await Task.Run(() => _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections));
-			List<Bonus> bonuses = _kpiController.CalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel);
-				// TODO: Отработка ситуации, если появился новый сотрудник.	
-				if (bonuses == null) return;
+			progressBar1.Left = 534;
+			progressBar1.Value = 0;
 
-			//	// TODO: Прогресс Report.
-			//	//progressBar1.Location.X = 400;
-			//	string newPath = await Task.Run(() => _reportController.StartBonusesReport(_groupController.Group));
-				string newPath = _reportController.StartBonusesReport(bonuses, _groupController.Group, _date, _cancel);
-				if (newPath == null) return;
+			string newPath = await Task.Run(() => _reportController.StartBonusesReport(bonuses, _groupController.Group, _date, _cancel, progress));
+			if (newPath == null) return;
 
-
-
-
-			//	// TODO: Конец анимации прогресса.	
-				EndCalculate();
-
-			//	// TODO: Уведомление об успешном завершении подсчёта.	
-				ShowSuccessfullyForm(newPath);
+			EndCalculate();
+			ShowSuccessfullyForm(newPath);
 		}
 
 		private void StartCalculate()
 		{
-			//progressBar.Start();
-			progressBar1.Visible = true;
-
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
 
 			// TODO: Начало анимации.
-			//progressBar1.Location.X = 200;
+			progressBar1.Left = 353;
+			progressBar1.Value = 0;
 			progressBar1.Visible = true;
 		}
 
 		private void EndCalculate()
-		{
-			//progressBar.Stop();
-			progressBar1.Visible = false;
-
+		{		
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
-
-			// TODO: Конец анимации.
+			progressBar1.Visible = false;
 		}
 
 		private bool CheckCalculateErrors(string result)
@@ -330,21 +299,9 @@ namespace Bonuses.View
 			}
 		}
 
-		private void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
+		private async void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
 		{
-			BtnCalculate_Click(sender, e);
-		}
-
-		private void LabelGroup_DoubleClick(object sender, EventArgs e)
-		{
-			//вставить на форме btnChangeGroup_OnClick;
-			BtnChangeGroup_Click(sender, e);
-		}
-
-		private void BtnChangeGroup_Click(object sender, EventArgs e)
-		{
-			tbGroup.Text = "";
-			panelGroup.Visible = true;
+			await CalculateAsync();
 		}
 
 		private void BtnApplyGroup_Click(object sender, EventArgs e)
@@ -353,12 +310,18 @@ namespace Bonuses.View
 			{
 				_groupController.Change(new Group(tbGroup.Text));
 				panelGroup.Visible = false;
+				tbGroup.Visible = false;
+				btnApplyGroup.Visible = false;
+				btnCancelGroup.Visible = false;
 			}
 		}
 
 		private void BtnCancelGroup_Click(object sender, EventArgs e)
 		{
 			panelGroup.Visible = false;
+			tbGroup.Visible = false;
+			btnApplyGroup.Visible = false;
+			btnCancelGroup.Visible = false;
 		}
 
 		private void FormatTable(DataGridView table)
@@ -556,6 +519,71 @@ namespace Bonuses.View
 		{
 			tbKpiSouceDirectory.Text = _kpiController.Kpi.SourceDirectory;
 			tbReportSourceDirectory.Text = _reportController.Report.SourceDirectory;
+		}
+
+		private void panelKpi_MouseEnter(object sender, EventArgs e)
+		{
+			panelKpi.BackColor = Color.Gainsboro;
+		}
+
+		private void panelKpi_MouseLeave(object sender, EventArgs e)
+		{
+			panelKpi.BackColor = Color.White;
+		}
+
+		private void panelKpi_MouseDown(object sender, MouseEventArgs e)
+		{
+			panelKpi.BackColor = Color.LightGray;
+		}
+
+		private void panelKpi_MouseUp(object sender, MouseEventArgs e)
+		{
+			panelKpi.BackColor = Color.Gainsboro;
+		}
+
+		private void panelReport_MouseEnter(object sender, EventArgs e)
+		{
+			panelReport.BackColor = Color.Gainsboro;
+		}
+
+		private void panelReport_MouseLeave(object sender, EventArgs e)
+		{
+			panelReport.BackColor = Color.White;
+		}
+
+		private void panelReport_MouseDown(object sender, MouseEventArgs e)
+		{
+			panelReport.BackColor = Color.LightGray;
+		}		
+
+		private void panelReport_MouseUp(object sender, MouseEventArgs e)
+		{
+			panelReport.BackColor = Color.Gainsboro;
+		}
+
+		private void BtnChooseKpiDirectory_Click(object sender, EventArgs e)
+		{
+			if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+			{
+				tbKpiSouceDirectory.Text = folderBrowserDialog.SelectedPath;
+			}
+		}
+
+		private void BtnChooseReportDirectory_Click(object sender, EventArgs e)
+		{
+			if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+			{
+				tbReportSourceDirectory.Text = folderBrowserDialog.SelectedPath;
+			}
+		}
+
+		private void LabelGroup_DoubleClick(object sender, EventArgs e)
+		{
+			tbGroup.Text = "";
+			tbGroup.Visible = true;
+			btnApplyGroup.Visible = true;
+			btnCancelGroup.Visible = true;
+			panelGroup.Visible = true;
 		}
 	}
 }

@@ -34,21 +34,22 @@ namespace Bonuses.View
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.listBoxFiles = new System.Windows.Forms.ListBox();
             this.btnCalculate = new System.Windows.Forms.Button();
             this.panelMenu = new System.Windows.Forms.Panel();
-            this.btnSettings = new System.Windows.Forms.Button();
-            this.panelGroup = new System.Windows.Forms.Panel();
             this.btnCancelGroup = new System.Windows.Forms.Button();
-            this.tbGroup = new System.Windows.Forms.TextBox();
+            this.btnSettings = new System.Windows.Forms.Button();
             this.btnApplyGroup = new System.Windows.Forms.Button();
-            this.btnChangeGroup = new System.Windows.Forms.Button();
+            this.tbGroup = new System.Windows.Forms.TextBox();
+            this.panelGroup = new System.Windows.Forms.Panel();
             this.labelGroup = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.btnDetections = new System.Windows.Forms.Button();
             this.btnEmployees = new System.Windows.Forms.Button();
             this.btnMain = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panelReport = new System.Windows.Forms.Panel();
+            this.panelKpi = new System.Windows.Forms.Panel();
             this.labelReportFileName = new System.Windows.Forms.Label();
             this.labelKpiFileName = new System.Windows.Forms.Label();
             this.btnReport = new System.Windows.Forms.Button();
@@ -70,52 +71,34 @@ namespace Bonuses.View
             this.btnSaveEmployees = new System.Windows.Forms.Button();
             this.tableEmployees = new System.Windows.Forms.DataGridView();
             this.labelEmployees = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelSettings = new System.Windows.Forms.Panel();
+            this.btnChooseDirectoryReport = new System.Windows.Forms.Button();
+            this.btnChooseDirectoryKpi = new System.Windows.Forms.Button();
             this.btnCancelSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.tbReportSourceDirectory = new System.Windows.Forms.TextBox();
             this.tbKpiSouceDirectory = new System.Windows.Forms.TextBox();
             this.labelReportSourceDirectory = new System.Windows.Forms.Label();
             this.labelKpiSouceDirectory = new System.Windows.Forms.Label();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.panelMenu.SuspendLayout();
-            this.panelGroup.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelDetections.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).BeginInit();
             this.panelEmployees.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelSettings.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listBoxFiles
-            // 
-            this.listBoxFiles.AllowDrop = true;
-            this.listBoxFiles.FormattingEnabled = true;
-            this.listBoxFiles.HorizontalScrollbar = true;
-            this.listBoxFiles.Items.AddRange(new object[] {
-            "KPI:",
-            "C://",
-            "",
-            "О показателях (шаблон):",
-            "С://"});
-            this.listBoxFiles.Location = new System.Drawing.Point(580, 550);
-            this.listBoxFiles.Name = "listBoxFiles";
-            this.listBoxFiles.Size = new System.Drawing.Size(455, 95);
-            this.listBoxFiles.TabIndex = 0;
-            this.listBoxFiles.DragDrop += new System.Windows.Forms.DragEventHandler(this.ListBoxFiles_DragDrop);
-            this.listBoxFiles.DragEnter += new System.Windows.Forms.DragEventHandler(this.ListBoxFiles_DragEnter);
-            // 
             // btnCalculate
             // 
-            this.btnCalculate.BackColor = System.Drawing.SystemColors.Window;
+            this.btnCalculate.BackColor = System.Drawing.Color.Navy;
             this.btnCalculate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCalculate.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnCalculate.ForeColor = System.Drawing.Color.MediumBlue;
-            this.btnCalculate.Location = new System.Drawing.Point(353, 430);
+            this.btnCalculate.ForeColor = System.Drawing.Color.White;
+            this.btnCalculate.Location = new System.Drawing.Point(445, 500);
             this.btnCalculate.Name = "btnCalculate";
-            this.btnCalculate.Size = new System.Drawing.Size(148, 64);
+            this.btnCalculate.Size = new System.Drawing.Size(160, 64);
             this.btnCalculate.TabIndex = 1;
             this.btnCalculate.Text = "Подсчитать";
             this.btnCalculate.UseVisualStyleBackColor = false;
@@ -124,7 +107,10 @@ namespace Bonuses.View
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.Navy;
+            this.panelMenu.Controls.Add(this.btnCancelGroup);
             this.panelMenu.Controls.Add(this.btnSettings);
+            this.panelMenu.Controls.Add(this.btnApplyGroup);
+            this.panelMenu.Controls.Add(this.tbGroup);
             this.panelMenu.Controls.Add(this.panelGroup);
             this.panelMenu.Controls.Add(this.labelGroup);
             this.panelMenu.Controls.Add(this.button1);
@@ -137,13 +123,29 @@ namespace Bonuses.View
             this.panelMenu.Size = new System.Drawing.Size(180, 669);
             this.panelMenu.TabIndex = 2;
             // 
+            // btnCancelGroup
+            // 
+            this.btnCancelGroup.BackColor = System.Drawing.Color.DarkOrchid;
+            this.btnCancelGroup.FlatAppearance.BorderSize = 0;
+            this.btnCancelGroup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCancelGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelGroup.ForeColor = System.Drawing.SystemColors.Window;
+            this.btnCancelGroup.Location = new System.Drawing.Point(98, 41);
+            this.btnCancelGroup.Name = "btnCancelGroup";
+            this.btnCancelGroup.Size = new System.Drawing.Size(74, 23);
+            this.btnCancelGroup.TabIndex = 7;
+            this.btnCancelGroup.Text = "Отмена";
+            this.btnCancelGroup.UseVisualStyleBackColor = false;
+            this.btnCancelGroup.Visible = false;
+            this.btnCancelGroup.Click += new System.EventHandler(this.BtnCancelGroup_Click);
+            // 
             // btnSettings
             // 
             this.btnSettings.FlatAppearance.BorderSize = 0;
             this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSettings.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSettings.ForeColor = System.Drawing.SystemColors.Window;
-            this.btnSettings.Location = new System.Drawing.Point(0, 170);
+            this.btnSettings.Location = new System.Drawing.Point(0, 204);
             this.btnSettings.Name = "btnSettings";
             this.btnSettings.Size = new System.Drawing.Size(180, 45);
             this.btnSettings.TabIndex = 8;
@@ -151,53 +153,42 @@ namespace Bonuses.View
             this.btnSettings.UseVisualStyleBackColor = true;
             this.btnSettings.Click += new System.EventHandler(this.BtnSettings_Click);
             // 
-            // panelGroup
-            // 
-            this.panelGroup.Controls.Add(this.btnCancelGroup);
-            this.panelGroup.Controls.Add(this.tbGroup);
-            this.panelGroup.Controls.Add(this.btnApplyGroup);
-            this.panelGroup.Controls.Add(this.btnChangeGroup);
-            this.panelGroup.Location = new System.Drawing.Point(3, 244);
-            this.panelGroup.Name = "panelGroup";
-            this.panelGroup.Size = new System.Drawing.Size(175, 100);
-            this.panelGroup.TabIndex = 7;
-            // 
-            // btnCancelGroup
-            // 
-            this.btnCancelGroup.Location = new System.Drawing.Point(100, 60);
-            this.btnCancelGroup.Name = "btnCancelGroup";
-            this.btnCancelGroup.Size = new System.Drawing.Size(63, 23);
-            this.btnCancelGroup.TabIndex = 7;
-            this.btnCancelGroup.Text = "Отмена";
-            this.btnCancelGroup.UseVisualStyleBackColor = true;
-            this.btnCancelGroup.Click += new System.EventHandler(this.BtnCancelGroup_Click);
-            // 
-            // tbGroup
-            // 
-            this.tbGroup.Location = new System.Drawing.Point(3, 5);
-            this.tbGroup.Name = "tbGroup";
-            this.tbGroup.Size = new System.Drawing.Size(100, 20);
-            this.tbGroup.TabIndex = 6;
-            // 
             // btnApplyGroup
             // 
-            this.btnApplyGroup.Location = new System.Drawing.Point(9, 60);
+            this.btnApplyGroup.BackColor = System.Drawing.Color.DarkOrchid;
+            this.btnApplyGroup.FlatAppearance.BorderSize = 0;
+            this.btnApplyGroup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApplyGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnApplyGroup.ForeColor = System.Drawing.SystemColors.Window;
+            this.btnApplyGroup.Location = new System.Drawing.Point(7, 41);
             this.btnApplyGroup.Name = "btnApplyGroup";
             this.btnApplyGroup.Size = new System.Drawing.Size(85, 23);
             this.btnApplyGroup.TabIndex = 5;
             this.btnApplyGroup.Text = "ОК";
-            this.btnApplyGroup.UseVisualStyleBackColor = true;
+            this.btnApplyGroup.UseVisualStyleBackColor = false;
+            this.btnApplyGroup.Visible = false;
             this.btnApplyGroup.Click += new System.EventHandler(this.BtnApplyGroup_Click);
             // 
-            // btnChangeGroup
+            // tbGroup
             // 
-            this.btnChangeGroup.Location = new System.Drawing.Point(38, 31);
-            this.btnChangeGroup.Name = "btnChangeGroup";
-            this.btnChangeGroup.Size = new System.Drawing.Size(125, 23);
-            this.btnChangeGroup.TabIndex = 3;
-            this.btnChangeGroup.Text = "Изменить отдел";
-            this.btnChangeGroup.UseVisualStyleBackColor = true;
-            this.btnChangeGroup.Click += new System.EventHandler(this.BtnChangeGroup_Click);
+            this.tbGroup.BackColor = System.Drawing.Color.DarkOrchid;
+            this.tbGroup.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbGroup.ForeColor = System.Drawing.SystemColors.Window;
+            this.tbGroup.Location = new System.Drawing.Point(5, 4);
+            this.tbGroup.Name = "tbGroup";
+            this.tbGroup.Size = new System.Drawing.Size(167, 31);
+            this.tbGroup.TabIndex = 6;
+            this.tbGroup.Visible = false;
+            // 
+            // panelGroup
+            // 
+            this.panelGroup.BackColor = System.Drawing.Color.Navy;
+            this.panelGroup.Location = new System.Drawing.Point(5, 302);
+            this.panelGroup.Name = "panelGroup";
+            this.panelGroup.Size = new System.Drawing.Size(175, 100);
+            this.panelGroup.TabIndex = 7;
+            this.panelGroup.Visible = false;
             // 
             // labelGroup
             // 
@@ -233,7 +224,7 @@ namespace Bonuses.View
             this.btnDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDetections.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnDetections.ForeColor = System.Drawing.SystemColors.Window;
-            this.btnDetections.Location = new System.Drawing.Point(0, 122);
+            this.btnDetections.Location = new System.Drawing.Point(0, 162);
             this.btnDetections.Name = "btnDetections";
             this.btnDetections.Size = new System.Drawing.Size(180, 45);
             this.btnDetections.TabIndex = 2;
@@ -247,7 +238,7 @@ namespace Bonuses.View
             this.btnEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEmployees.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnEmployees.ForeColor = System.Drawing.SystemColors.Window;
-            this.btnEmployees.Location = new System.Drawing.Point(0, 80);
+            this.btnEmployees.Location = new System.Drawing.Point(0, 120);
             this.btnEmployees.Name = "btnEmployees";
             this.btnEmployees.Size = new System.Drawing.Size(180, 45);
             this.btnEmployees.TabIndex = 1;
@@ -261,7 +252,7 @@ namespace Bonuses.View
             this.btnMain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMain.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnMain.ForeColor = System.Drawing.SystemColors.Window;
-            this.btnMain.Location = new System.Drawing.Point(0, 38);
+            this.btnMain.Location = new System.Drawing.Point(0, 78);
             this.btnMain.Name = "btnMain";
             this.btnMain.Size = new System.Drawing.Size(180, 45);
             this.btnMain.TabIndex = 0;
@@ -272,6 +263,9 @@ namespace Bonuses.View
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
+            this.panelMain.Controls.Add(this.label2);
+            this.panelMain.Controls.Add(this.panelReport);
+            this.panelMain.Controls.Add(this.panelKpi);
             this.panelMain.Controls.Add(this.labelReportFileName);
             this.panelMain.Controls.Add(this.labelKpiFileName);
             this.panelMain.Controls.Add(this.btnReport);
@@ -284,11 +278,53 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.tbYear);
             this.panelMain.Controls.Add(this.cbMonth);
             this.panelMain.Controls.Add(this.label1);
-            this.panelMain.Controls.Add(this.listBoxFiles);
             this.panelMain.Location = new System.Drawing.Point(200, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1046, 669);
             this.panelMain.TabIndex = 3;
+            // 
+            // label2
+            // 
+            this.label2.AutoEllipsis = true;
+            this.label2.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label2.Location = new System.Drawing.Point(143, 347);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(147, 31);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "Файл не загружен";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panelReport
+            // 
+            this.panelReport.BackColor = System.Drawing.Color.White;
+            this.panelReport.BackgroundImage = global::Bonuses.View.Properties.Resources.WordLogo;
+            this.panelReport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.panelReport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelReport.Location = new System.Drawing.Point(750, 170);
+            this.panelReport.Name = "panelReport";
+            this.panelReport.Size = new System.Drawing.Size(148, 174);
+            this.panelReport.TabIndex = 14;
+            this.panelReport.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseDown);
+            this.panelReport.MouseEnter += new System.EventHandler(this.panelReport_MouseEnter);
+            this.panelReport.MouseLeave += new System.EventHandler(this.panelReport_MouseLeave);
+            this.panelReport.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseUp);
+            // 
+            // panelKpi
+            // 
+            this.panelKpi.BackColor = System.Drawing.Color.White;
+            this.panelKpi.BackgroundImage = global::Bonuses.View.Properties.Resources.ExcelLogo;
+            this.panelKpi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.panelKpi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelKpi.Location = new System.Drawing.Point(142, 170);
+            this.panelKpi.Name = "panelKpi";
+            this.panelKpi.Size = new System.Drawing.Size(148, 174);
+            this.panelKpi.TabIndex = 13;
+            this.panelKpi.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseDown);
+            this.panelKpi.MouseEnter += new System.EventHandler(this.panelKpi_MouseEnter);
+            this.panelKpi.MouseLeave += new System.EventHandler(this.panelKpi_MouseLeave);
+            this.panelKpi.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseUp);
             // 
             // labelReportFileName
             // 
@@ -363,12 +399,13 @@ namespace Bonuses.View
             this.btnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancel.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCancel.ForeColor = System.Drawing.Color.Navy;
-            this.btnCancel.Location = new System.Drawing.Point(546, 430);
+            this.btnCancel.Location = new System.Drawing.Point(445, 500);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(148, 64);
+            this.btnCancel.Size = new System.Drawing.Size(160, 64);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Отмена";
             this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Visible = false;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
             // progressBar1
@@ -377,6 +414,7 @@ namespace Bonuses.View
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(148, 23);
             this.progressBar1.TabIndex = 5;
+            this.progressBar1.Visible = false;
             // 
             // tbYear
             // 
@@ -575,18 +613,10 @@ namespace Bonuses.View
             this.labelEmployees.TabIndex = 1;
             this.labelEmployees.Text = "Сотрудники";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.edit;
-            this.pictureBox1.Location = new System.Drawing.Point(178, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(24, 24);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 6;
-            this.pictureBox1.TabStop = false;
-            // 
             // panelSettings
             // 
+            this.panelSettings.Controls.Add(this.btnChooseDirectoryReport);
+            this.panelSettings.Controls.Add(this.btnChooseDirectoryKpi);
             this.panelSettings.Controls.Add(this.btnCancelSettings);
             this.panelSettings.Controls.Add(this.btnSaveSettings);
             this.panelSettings.Controls.Add(this.tbReportSourceDirectory);
@@ -597,6 +627,28 @@ namespace Bonuses.View
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(1046, 669);
             this.panelSettings.TabIndex = 8;
+            // 
+            // btnChooseDirectoryReport
+            // 
+            this.btnChooseDirectoryReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnChooseDirectoryReport.Location = new System.Drawing.Point(734, 244);
+            this.btnChooseDirectoryReport.Name = "btnChooseDirectoryReport";
+            this.btnChooseDirectoryReport.Size = new System.Drawing.Size(75, 26);
+            this.btnChooseDirectoryReport.TabIndex = 10;
+            this.btnChooseDirectoryReport.Text = "...";
+            this.btnChooseDirectoryReport.UseVisualStyleBackColor = true;
+            this.btnChooseDirectoryReport.Click += new System.EventHandler(this.BtnChooseReportDirectory_Click);
+            // 
+            // btnChooseDirectoryKpi
+            // 
+            this.btnChooseDirectoryKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnChooseDirectoryKpi.Location = new System.Drawing.Point(734, 122);
+            this.btnChooseDirectoryKpi.Name = "btnChooseDirectoryKpi";
+            this.btnChooseDirectoryKpi.Size = new System.Drawing.Size(75, 26);
+            this.btnChooseDirectoryKpi.TabIndex = 9;
+            this.btnChooseDirectoryKpi.Text = "...";
+            this.btnChooseDirectoryKpi.UseVisualStyleBackColor = true;
+            this.btnChooseDirectoryKpi.Click += new System.EventHandler(this.BtnChooseKpiDirectory_Click);
             // 
             // btnCancelSettings
             // 
@@ -630,7 +682,7 @@ namespace Bonuses.View
             this.tbReportSourceDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbReportSourceDirectory.Location = new System.Drawing.Point(175, 244);
             this.tbReportSourceDirectory.Name = "tbReportSourceDirectory";
-            this.tbReportSourceDirectory.Size = new System.Drawing.Size(612, 26);
+            this.tbReportSourceDirectory.Size = new System.Drawing.Size(552, 26);
             this.tbReportSourceDirectory.TabIndex = 3;
             // 
             // tbKpiSouceDirectory
@@ -638,7 +690,7 @@ namespace Bonuses.View
             this.tbKpiSouceDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbKpiSouceDirectory.Location = new System.Drawing.Point(172, 122);
             this.tbKpiSouceDirectory.Name = "tbKpiSouceDirectory";
-            this.tbKpiSouceDirectory.Size = new System.Drawing.Size(615, 26);
+            this.tbKpiSouceDirectory.Size = new System.Drawing.Size(555, 26);
             this.tbKpiSouceDirectory.TabIndex = 2;
             // 
             // labelReportSourceDirectory
@@ -661,6 +713,10 @@ namespace Bonuses.View
             this.labelKpiSouceDirectory.TabIndex = 0;
             this.labelKpiSouceDirectory.Text = "Исходная папка для файла \"KPI\"";
             // 
+            // folderBrowserDialog
+            // 
+            this.folderBrowserDialog.Description = "Выберите папку:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -670,7 +726,6 @@ namespace Bonuses.View
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelEmployees);
             this.Controls.Add(this.panelDetections);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panelMenu);
             this.Controls.Add(this.panelSettings);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -678,8 +733,7 @@ namespace Bonuses.View
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.panelMenu.ResumeLayout(false);
-            this.panelGroup.ResumeLayout(false);
-            this.panelGroup.PerformLayout();
+            this.panelMenu.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.panelDetections.ResumeLayout(false);
@@ -688,7 +742,6 @@ namespace Bonuses.View
             this.panelEmployees.ResumeLayout(false);
             this.panelEmployees.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelSettings.ResumeLayout(false);
             this.panelSettings.PerformLayout();
             this.ResumeLayout(false);
@@ -696,8 +749,6 @@ namespace Bonuses.View
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox listBoxFiles;
         private System.Windows.Forms.Button btnCalculate;
         private System.Windows.Forms.Panel panelMenu;
         private System.Windows.Forms.Button btnMain;
@@ -712,12 +763,10 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnSaveDetections;
         private System.Windows.Forms.DataGridView tableDetections;
         private System.Windows.Forms.Label labelGroup;
-        private System.Windows.Forms.Button btnChangeGroup;
         private System.Windows.Forms.Button btnApplyGroup;
         private System.Windows.Forms.TextBox tbGroup;
         private System.Windows.Forms.TextBox tbYear;
         private System.Windows.Forms.ComboBox cbMonth;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel panelEmployees;
         private System.Windows.Forms.Button btnCancelEmployees;
         private System.Windows.Forms.Button btnSaveEmployees;
@@ -741,6 +790,12 @@ namespace Bonuses.View
         private System.Windows.Forms.TextBox tbKpiSouceDirectory;
         private System.Windows.Forms.Label labelReportSourceDirectory;
         private System.Windows.Forms.Label labelKpiSouceDirectory;
+        private System.Windows.Forms.Panel panelKpi;
+        private System.Windows.Forms.Panel panelReport;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnChooseDirectoryReport;
+        private System.Windows.Forms.Button btnChooseDirectoryKpi;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
     }
 }
 

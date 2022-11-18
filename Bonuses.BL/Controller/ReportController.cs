@@ -124,7 +124,7 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public string StartBonusesReport(List<Bonus> bonuses, Group group, Date date, bool cancel)
+		public string StartBonusesReport(List<Bonus> bonuses, Group group, Date date, bool cancel, IProgress<int> progress)
 		{
 			if (cancel == true)
 			{
@@ -150,7 +150,7 @@ namespace Bonuses.BL.Controller
 				};
 				CreateTable(headers);
 			}
-			PasteBonuses(bonuses);
+			PasteBonuses(bonuses, progress);
 
 			string directory = Directory.GetParent(Report.Path).FullName;
 			string newFileName = $"О показателях {group.Name} {date.TodayMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
@@ -248,28 +248,32 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		private void PasteBonuses(List<Bonus> bonuses)
+		private void PasteBonuses(List<Bonus> bonuses, IProgress<int> progress)
 		{
 			Word.Table table = _doc.Tables[1];
-			table.Range.Bold = 0;			
+			table.Range.Bold = 0;
 
-			for (int i = 2; i <= table.Rows.Count; i++)
+			int linesCount = bonuses.Count;
+			for (int i = 0; i < bonuses.Count; i++)
 			{
-				table.Cell(i, 1).Range.Text = (i - 1).ToString();
-				table.Cell(i, 2).Range.Text = bonuses[i - 2].Employee.Name;
-				table.Cell(i, 3).Range.Text = bonuses[i - 2].Employee.Position.Name;
-				table.Cell(i, 4).Range.Text = bonuses[i - 2].Detection.Description;
-				table.Cell(i, 5).Range.Text = bonuses[i - 2].Count.ToString();
+				table.Rows.Add();
 
-				if (i <= bonuses.Count)
-				{
-					table.Rows.Add();
-				}
+				table.Cell(i + 2, 1).Range.Text = (i + 1).ToString();
+				table.Cell(i + 2, 2).Range.Text = bonuses[i].Employee.Name;
+				table.Cell(i + 2, 3).Range.Text = bonuses[i].Employee.Position.Name;
+				table.Cell(i + 2, 4).Range.Text = bonuses[i].Detection.Description;
+				table.Cell(i + 2, 5).Range.Text = bonuses[i].Count.ToString();
+
+				progress.Report(CalculateProgress(i + 1, linesCount));
 			}
 
-			table.Rows[1].Range.Bold = 20;
-			//table.Columns[2].Range.Font.Size = 12;
-			//table.Rows.DistributeHeight();
+			int lastRowIndex = table.Rows.Count;
+			table.Rows[lastRowIndex].Delete();
+		}
+
+		private int CalculateProgress(int currentIndex, int maxCount)
+		{
+			return currentIndex * 100 / maxCount;
 		}
 
 		private void Save()
