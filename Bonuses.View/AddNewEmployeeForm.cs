@@ -21,10 +21,16 @@ namespace Bonuses.View
 
             labelEmployee.Text = employeeName;
 
-            foreach (var position in _positionController.Positions)
-            {
-                cbPositions.Items.Add(position.Name);
-            }          
+           // if (_positionController.Positions.Count > 0)
+           // {
+                foreach (var position in _positionController.Positions)
+                {
+                    cbPositions.Items.Add(position.Name);
+                }
+                cbPositions.SelectedIndex = 0;
+           // }
+
+            
         }
 
         private void BtnSaveEmployee_Click(object sender, EventArgs e)

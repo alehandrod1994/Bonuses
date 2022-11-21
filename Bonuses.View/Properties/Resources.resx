@@ -121,6 +121,9 @@
   <data name="WordLogo_WB" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WordLogo_WB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="notice2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\notice2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="notice3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\notice3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -142,7 +145,10 @@
   <data name="WordLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WordLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="notice2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\notice2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NewEmployee" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewEmployee.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NewGroup4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewGroup4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

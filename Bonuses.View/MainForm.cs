@@ -268,6 +268,8 @@ namespace Bonuses.View
 			//        ShowNoticeForm(sender.Value, 67, "");
 			//    }
 			//}
+
+			//EndCalculate();
 		}
 
 		private void ShowNoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
@@ -584,6 +586,20 @@ namespace Bonuses.View
 			btnApplyGroup.Visible = true;
 			btnCancelGroup.Visible = true;
 			panelGroup.Visible = true;
+		}
+
+		private void BtnTest_Click(object sender, EventArgs e)
+		{
+			//ShowSuccessfullyForm(@"C:\PUBLIC_VS3\KPI Ноябрь 2022\О показателях ГПУ ОТБ НОЯБРЬ 2022г.docx");
+
+			//AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm("Бериншвили Александр Константинович", _employeeController, _positionController, _kpiController);
+			//addNewEmployeeForm.ShowDialog();
+
+			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
+			//addGroupForm.ShowDialog();
+
+			ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
+
 		}
 	}
 }

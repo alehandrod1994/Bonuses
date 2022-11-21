@@ -161,6 +161,18 @@ namespace Bonuses.BL.Controller
 				}
 			}
 
+			bool result = CalculateBonuses(employees, progress);
+			if (!result) return null;
+
+			CloseConnection();
+
+			_status = Status.Success;
+			_logger.Info(_messages[_status]);
+			return _bonuses;
+		}
+
+		private bool CalculateBonuses(List<Employee> employees, IProgress<int> progress)
+		{
 			int linesCount = 20;
 
 			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
@@ -186,7 +198,7 @@ namespace Bonuses.BL.Controller
 							_logger.Info(_messages[_status]);
 							OnNewEmployeeFinded?.Invoke(employeeName, null);
 
-							return null;
+							return false;
 						}
 
 						var detection = _detectionColumnIndexes[columnIndex];
@@ -200,11 +212,7 @@ namespace Bonuses.BL.Controller
 				_currentRow++;
 			}
 
-			CloseConnection();
-
-			_status = Status.Success;
-			_logger.Info(_messages[_status]);
-			return _bonuses;
+			return true;
 		}
 
 		private int CalculateProgress(int currentIndex, int maxCount)
