@@ -86,12 +86,14 @@ namespace Bonuses.View
 			//string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
 
 			labelKpiFileName.Text = _kpiController.AutoImportKpi("KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
+			labelKpiFileName.ForeColor = Color.Black;
 			if (labelKpiFileName.Text != "")
 			{
 				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
 			
 			labelReportFileName.Text = _reportController.AutoImportReport("KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
+			labelReportFileName.ForeColor = Color.Black;
 			if (labelReportFileName.Text != "")
 			{
 				btnReport.Image = Properties.Resources.WordLogo;
@@ -448,6 +450,7 @@ namespace Bonuses.View
 			foreach (string file in files)
 			{				
 				labelKpiFileName.Text = _kpiController.DragDrop(file);
+				labelKpiFileName.ForeColor = Color.Black;
 				if (labelKpiFileName.Text != "")
 				{
 					btnKpi.Image = Properties.Resources.ExcelLogo;
@@ -470,6 +473,7 @@ namespace Bonuses.View
 			foreach (string file in files)
 			{
 				labelReportFileName.Text = _reportController.DragDrop(file);
+				labelReportFileName.ForeColor = Color.Black;
 				if (labelReportFileName.Text != "")
 				{
 					btnReport.Image = Properties.Resources.WordLogo;
@@ -480,6 +484,7 @@ namespace Bonuses.View
 		private void BtnKpi_Click(object sender, EventArgs e)
 		{
 			labelKpiFileName.Text = _kpiController.Import();
+			labelKpiFileName.ForeColor = Color.Black;
 			if (labelKpiFileName.Text != "")
 			{
 				btnKpi.Image = Properties.Resources.ExcelLogo;
@@ -489,6 +494,7 @@ namespace Bonuses.View
 		private void BtnReport_Click(object sender, EventArgs e)
 		{
 			labelReportFileName.Text = _reportController.Import();
+			labelReportFileName.ForeColor = Color.Black;
 			if (labelReportFileName.Text != "")
 			{
 				btnReport.Image = Properties.Resources.WordLogo;

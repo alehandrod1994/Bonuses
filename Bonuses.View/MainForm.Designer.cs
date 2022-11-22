@@ -47,9 +47,13 @@ namespace Bonuses.View
             this.btnEmployees = new System.Windows.Forms.Button();
             this.btnMain = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.labelReportFileName = new System.Windows.Forms.Label();
             this.labelKpiFileName = new System.Windows.Forms.Label();
+            this.panelReport = new System.Windows.Forms.Panel();
+            this.panelKpi = new System.Windows.Forms.Panel();
+            this.labelReportFileName2 = new System.Windows.Forms.Label();
+            this.labelKpiFileName2 = new System.Windows.Forms.Label();
+            this.btnReport = new System.Windows.Forms.Button();
+            this.btnKpi = new System.Windows.Forms.Button();
             this.labelReport = new System.Windows.Forms.Label();
             this.labelKpi = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -77,10 +81,7 @@ namespace Bonuses.View
             this.labelReportSourceDirectory = new System.Windows.Forms.Label();
             this.labelKpiSouceDirectory = new System.Windows.Forms.Label();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.panelReport = new System.Windows.Forms.Panel();
-            this.panelKpi = new System.Windows.Forms.Panel();
-            this.btnReport = new System.Windows.Forms.Button();
-            this.btnKpi = new System.Windows.Forms.Button();
+            this.labelReportFileName = new System.Windows.Forms.Label();
             this.panelMenu.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelDetections.SuspendLayout();
@@ -263,11 +264,12 @@ namespace Bonuses.View
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
-            this.panelMain.Controls.Add(this.label2);
-            this.panelMain.Controls.Add(this.panelReport);
-            this.panelMain.Controls.Add(this.panelKpi);
             this.panelMain.Controls.Add(this.labelReportFileName);
             this.panelMain.Controls.Add(this.labelKpiFileName);
+            this.panelMain.Controls.Add(this.panelReport);
+            this.panelMain.Controls.Add(this.panelKpi);
+            this.panelMain.Controls.Add(this.labelReportFileName2);
+            this.panelMain.Controls.Add(this.labelKpiFileName2);
             this.panelMain.Controls.Add(this.btnReport);
             this.panelMain.Controls.Add(this.btnKpi);
             this.panelMain.Controls.Add(this.labelReport);
@@ -283,39 +285,97 @@ namespace Bonuses.View
             this.panelMain.Size = new System.Drawing.Size(1046, 669);
             this.panelMain.TabIndex = 3;
             // 
-            // label2
-            // 
-            this.label2.AutoEllipsis = true;
-            this.label2.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label2.Location = new System.Drawing.Point(143, 347);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(147, 31);
-            this.label2.TabIndex = 15;
-            this.label2.Text = "Файл не загружен";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labelReportFileName
-            // 
-            this.labelReportFileName.AutoSize = true;
-            this.labelReportFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelReportFileName.Location = new System.Drawing.Point(531, 347);
-            this.labelReportFileName.Name = "labelReportFileName";
-            this.labelReportFileName.Size = new System.Drawing.Size(83, 13);
-            this.labelReportFileName.TabIndex = 12;
-            this.labelReportFileName.Text = "ReportFileName";
-            // 
             // labelKpiFileName
             // 
-            this.labelKpiFileName.AutoSize = true;
-            this.labelKpiFileName.BackColor = System.Drawing.SystemColors.Window;
-            this.labelKpiFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelKpiFileName.Location = new System.Drawing.Point(350, 347);
+            this.labelKpiFileName.AutoEllipsis = true;
+            this.labelKpiFileName.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.labelKpiFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelKpiFileName.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelKpiFileName.Location = new System.Drawing.Point(354, 347);
             this.labelKpiFileName.Name = "labelKpiFileName";
-            this.labelKpiFileName.Size = new System.Drawing.Size(66, 13);
-            this.labelKpiFileName.TabIndex = 11;
-            this.labelKpiFileName.Text = "KpiFileName";
+            this.labelKpiFileName.Size = new System.Drawing.Size(147, 31);
+            this.labelKpiFileName.TabIndex = 15;
+            this.labelKpiFileName.Text = "Файл не загружен";
+            this.labelKpiFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panelReport
+            // 
+            this.panelReport.BackColor = System.Drawing.Color.White;
+            this.panelReport.BackgroundImage = global::Bonuses.View.Properties.Resources.WordLogo;
+            this.panelReport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.panelReport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelReport.Location = new System.Drawing.Point(750, 170);
+            this.panelReport.Name = "panelReport";
+            this.panelReport.Size = new System.Drawing.Size(148, 174);
+            this.panelReport.TabIndex = 14;
+            this.panelReport.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseDown);
+            this.panelReport.MouseEnter += new System.EventHandler(this.panelReport_MouseEnter);
+            this.panelReport.MouseLeave += new System.EventHandler(this.panelReport_MouseLeave);
+            this.panelReport.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseUp);
+            // 
+            // panelKpi
+            // 
+            this.panelKpi.BackColor = System.Drawing.Color.White;
+            this.panelKpi.BackgroundImage = global::Bonuses.View.Properties.Resources.ExcelLogo;
+            this.panelKpi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.panelKpi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelKpi.Location = new System.Drawing.Point(142, 170);
+            this.panelKpi.Name = "panelKpi";
+            this.panelKpi.Size = new System.Drawing.Size(148, 174);
+            this.panelKpi.TabIndex = 13;
+            this.panelKpi.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseDown);
+            this.panelKpi.MouseEnter += new System.EventHandler(this.panelKpi_MouseEnter);
+            this.panelKpi.MouseLeave += new System.EventHandler(this.panelKpi_MouseLeave);
+            this.panelKpi.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseUp);
+            // 
+            // labelReportFileName2
+            // 
+            this.labelReportFileName2.AutoSize = true;
+            this.labelReportFileName2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelReportFileName2.Location = new System.Drawing.Point(271, 425);
+            this.labelReportFileName2.Name = "labelReportFileName2";
+            this.labelReportFileName2.Size = new System.Drawing.Size(83, 13);
+            this.labelReportFileName2.TabIndex = 12;
+            this.labelReportFileName2.Text = "ReportFileName";
+            this.labelReportFileName2.Visible = false;
+            // 
+            // labelKpiFileName2
+            // 
+            this.labelKpiFileName2.AutoSize = true;
+            this.labelKpiFileName2.BackColor = System.Drawing.SystemColors.Window;
+            this.labelKpiFileName2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelKpiFileName2.Location = new System.Drawing.Point(172, 425);
+            this.labelKpiFileName2.Name = "labelKpiFileName2";
+            this.labelKpiFileName2.Size = new System.Drawing.Size(66, 13);
+            this.labelKpiFileName2.TabIndex = 11;
+            this.labelKpiFileName2.Text = "KpiFileName";
+            this.labelKpiFileName2.Visible = false;
+            // 
+            // btnReport
+            // 
+            this.btnReport.AllowDrop = true;
+            this.btnReport.Image = global::Bonuses.View.Properties.Resources.WordLogo_WB;
+            this.btnReport.Location = new System.Drawing.Point(534, 170);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(148, 174);
+            this.btnReport.TabIndex = 10;
+            this.btnReport.UseVisualStyleBackColor = true;
+            this.btnReport.Click += new System.EventHandler(this.BtnReport_Click);
+            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
+            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
+            // 
+            // btnKpi
+            // 
+            this.btnKpi.AllowDrop = true;
+            this.btnKpi.Image = global::Bonuses.View.Properties.Resources.ExcelLogo_BW;
+            this.btnKpi.Location = new System.Drawing.Point(353, 170);
+            this.btnKpi.Name = "btnKpi";
+            this.btnKpi.Size = new System.Drawing.Size(148, 174);
+            this.btnKpi.TabIndex = 9;
+            this.btnKpi.UseVisualStyleBackColor = true;
+            this.btnKpi.Click += new System.EventHandler(this.BtnKpi_Click);
+            this.btnKpi.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragDrop);
+            this.btnKpi.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragEnter);
             // 
             // labelReport
             // 
@@ -354,7 +414,7 @@ namespace Bonuses.View
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(353, 379);
+            this.progressBar1.Location = new System.Drawing.Point(353, 393);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(148, 23);
             this.progressBar1.TabIndex = 5;
@@ -661,61 +721,18 @@ namespace Bonuses.View
             // 
             this.folderBrowserDialog.Description = "Выберите папку:";
             // 
-            // panelReport
+            // labelReportFileName
             // 
-            this.panelReport.BackColor = System.Drawing.Color.White;
-            this.panelReport.BackgroundImage = global::Bonuses.View.Properties.Resources.WordLogo;
-            this.panelReport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.panelReport.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelReport.Location = new System.Drawing.Point(750, 170);
-            this.panelReport.Name = "panelReport";
-            this.panelReport.Size = new System.Drawing.Size(148, 174);
-            this.panelReport.TabIndex = 14;
-            this.panelReport.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseDown);
-            this.panelReport.MouseEnter += new System.EventHandler(this.panelReport_MouseEnter);
-            this.panelReport.MouseLeave += new System.EventHandler(this.panelReport_MouseLeave);
-            this.panelReport.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseUp);
-            // 
-            // panelKpi
-            // 
-            this.panelKpi.BackColor = System.Drawing.Color.White;
-            this.panelKpi.BackgroundImage = global::Bonuses.View.Properties.Resources.ExcelLogo;
-            this.panelKpi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.panelKpi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelKpi.Location = new System.Drawing.Point(142, 170);
-            this.panelKpi.Name = "panelKpi";
-            this.panelKpi.Size = new System.Drawing.Size(148, 174);
-            this.panelKpi.TabIndex = 13;
-            this.panelKpi.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseDown);
-            this.panelKpi.MouseEnter += new System.EventHandler(this.panelKpi_MouseEnter);
-            this.panelKpi.MouseLeave += new System.EventHandler(this.panelKpi_MouseLeave);
-            this.panelKpi.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseUp);
-            // 
-            // btnReport
-            // 
-            this.btnReport.AllowDrop = true;
-            this.btnReport.Image = global::Bonuses.View.Properties.Resources.WordLogo_WB;
-            this.btnReport.Location = new System.Drawing.Point(534, 170);
-            this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(148, 174);
-            this.btnReport.TabIndex = 10;
-            this.btnReport.UseVisualStyleBackColor = true;
-            this.btnReport.Click += new System.EventHandler(this.BtnReport_Click);
-            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
-            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
-            // 
-            // btnKpi
-            // 
-            this.btnKpi.AllowDrop = true;
-            this.btnKpi.Image = global::Bonuses.View.Properties.Resources.ExcelLogo_BW;
-            this.btnKpi.Location = new System.Drawing.Point(353, 170);
-            this.btnKpi.Name = "btnKpi";
-            this.btnKpi.Size = new System.Drawing.Size(148, 174);
-            this.btnKpi.TabIndex = 9;
-            this.btnKpi.UseVisualStyleBackColor = true;
-            this.btnKpi.Click += new System.EventHandler(this.BtnKpi_Click);
-            this.btnKpi.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragDrop);
-            this.btnKpi.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnKpi_DragEnter);
+            this.labelReportFileName.AutoEllipsis = true;
+            this.labelReportFileName.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.labelReportFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelReportFileName.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelReportFileName.Location = new System.Drawing.Point(535, 347);
+            this.labelReportFileName.Name = "labelReportFileName";
+            this.labelReportFileName.Size = new System.Drawing.Size(147, 31);
+            this.labelReportFileName.TabIndex = 16;
+            this.labelReportFileName.Text = "Файл не загружен";
+            this.labelReportFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
             // 
@@ -780,8 +797,8 @@ namespace Bonuses.View
         private System.Windows.Forms.Label labelKpi;
         private System.Windows.Forms.Button btnKpi;
         private System.Windows.Forms.Button btnReport;
-        private System.Windows.Forms.Label labelKpiFileName;
-        private System.Windows.Forms.Label labelReportFileName;
+        private System.Windows.Forms.Label labelKpiFileName2;
+        private System.Windows.Forms.Label labelReportFileName2;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Panel panelSettings;
         private System.Windows.Forms.Button btnCancelSettings;
@@ -792,10 +809,11 @@ namespace Bonuses.View
         private System.Windows.Forms.Label labelKpiSouceDirectory;
         private System.Windows.Forms.Panel panelKpi;
         private System.Windows.Forms.Panel panelReport;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelKpiFileName;
         private System.Windows.Forms.Button btnChooseDirectoryReport;
         private System.Windows.Forms.Button btnChooseDirectoryKpi;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Label labelReportFileName;
     }
 }
 
