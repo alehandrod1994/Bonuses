@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Bonuses.BL.Controller
@@ -14,14 +15,28 @@ namespace Bonuses.BL.Controller
         }
 
         public List<Employee> Employees { get; set; }
-       
+        public string NewEmployee { get; set; } = "";
+
+
         public event EventHandler OnNewEmployeeAdded;
 
         public void Add(Employee employee)
         {
             Employees.Add(employee);
-            Save();
+            NewEmployee = "";
+            Save();          
             OnNewEmployeeAdded?.Invoke(employee, null);
+        }
+
+        public bool TryGetEmployee(string employeeName, out Employee employee)
+        {
+            employee = Employees.FirstOrDefault(e => e.Name == employeeName);
+            if (employee == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public void ReWrite(List<Employee> employees)

@@ -19,6 +19,7 @@ namespace Bonuses.View
 	public partial class MainForm : Form
 	{
 		private bool _cancel = false;
+		private Dictionary<Status, string> _messages;
 
 		private Date _date;
 
@@ -39,6 +40,17 @@ namespace Bonuses.View
 
 			_logger = LogManager.GetCurrentClassLogger();
 
+			_messages = new Dictionary<Status, string>()
+			{
+				{ Status.Cancel, "Отмена."},
+				{ Status.Failed, "Не удалось открыть файл "},
+				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
+				{ Status.NotSave, "Не удалось сохранить."},
+				{ Status.Start, "Начало подсчёта."},
+				{ Status.Success, "Успешно."},
+				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
+			};
+
 			tableEmployees.Columns.Add("Name", "Имя");
 			tableEmployees.Columns.Add("Position", "Должность");
 			tableDetections.Columns.Add("Name", "Название");
@@ -53,10 +65,7 @@ namespace Bonuses.View
 			_groupController = new GroupController();
 			_positionController = new PositionController(_employeeController.Employees);
 
-			_groupController.OnNameChanged += Group_OnNameChanged;
-			_kpiController.OnNewEmployeeFinded += Kpi_OnNewEmployeeFinded;
-			_kpiController.ShutdownCalculate += ShutdownCalculate;
-			_reportController.ShutdownCalculate += ShutdownCalculate;
+			_groupController.OnNameChanged += Group_OnNameChanged;			
 			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
 
 			if (_groupController.Group.Name == null)
@@ -145,7 +154,7 @@ namespace Bonuses.View
 
 			if (ParseInt(tbYear.Text) < 2000)
 			{
-				ShowNoticeForm("Неверно задана дата", 27, "");
+				ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
 				return false;
 			}
 
@@ -202,13 +211,14 @@ namespace Bonuses.View
 
 		private async void BtnCalculate_Click(object sender, EventArgs e)
 		{
-			await CalculateAsync();
+			if (CheckErrors())
+			{
+				await CalculateAsync();
+			}
 		}
 
 		private async Task CalculateAsync()
 		{
-			if (!CheckErrors()) return;
-
 			StartCalculate();
 
 			_cancel = false;
@@ -217,17 +227,25 @@ namespace Bonuses.View
 			_date.Year = Convert.ToInt32(tbYear.Text);
 
 			var progress = new Progress<int>(value => progressBar1.Value = value);
-			List<Bonus> bonuses = await Task.Run(() => _kpiController.StartCalculateBonuses(_employeeController.Employees, _detectionController.Detections, _cancel, progress));
-			if (bonuses == null) return;
+			Status status = await Task.Run(() => _kpiController.StartCalculateBonuses(_employeeController, _detectionController.Detections, _cancel, progress));
+			if (status != Status.Success)
+			{
+				ShutdownCalculate(status, _kpiController.Kpi.Name);
+				return;
+			}
 
 			progressBar1.Left = 534;
 			progressBar1.Value = 0;
 
-			string newPath = await Task.Run(() => _reportController.StartBonusesReport(bonuses, _groupController.Group, _date, _cancel, progress));
-			if (newPath == null) return;
+			status = await Task.Run(() => _reportController.StartBonusesReport(_kpiController.Bonuses, _groupController.Group, _date, _cancel, progress));
+			if (status != Status.Success)
+			{
+				ShutdownCalculate(status, _reportController.Report.Name);
+				return;
+			}
 
 			EndCalculate();
-			ShowSuccessfullyForm(newPath);
+			ShowSuccessfullyForm(_reportController.NewFilePath);
 		}
 
 		private void StartCalculate()
@@ -260,18 +278,40 @@ namespace Bonuses.View
 			return true;
 		}
 
-		private void ShutdownCalculate(object sender, EventArgs e)
+		private void ShutdownCalculate(Status status, string name)
 		{
-			//if (sender is KeyValuePair<Status, string>)
-			//{
-			//    EndCalculate();
-			//    if (sender.Key == Status.Failed)
-			//    {
-			//        ShowNoticeForm(sender.Value, 67, "");
-			//    }
-			//}
+			EndCalculate();
 
-			//EndCalculate();
+			switch(status)
+			{
+				case Status.NewEmployeeFound:
+					ShowAddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+					break;
+
+				case Status.Failed:
+					ShowNoticeForm(_messages[status] + name, 67, "");
+					break;
+
+				case Status.Cancel:
+					break;
+
+				default:
+					ShowNoticeForm(_messages[status], 67, "");
+					break;
+			}
+
+			//if (status == Status.NewEmployeeFound)
+			//{
+			//	ShowAddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+			//}
+			//else if (status == Status.Failed)
+			//{
+			//	ShowNoticeForm(_messages[status] + name, 67, "");
+			//}
+			//else
+			//{
+			//	ShowNoticeForm(_messages[status], 67, "");
+			//}
 		}
 
 		private void ShowNoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
@@ -286,6 +326,15 @@ namespace Bonuses.View
 			successfullyForm.Show();
 		}
 
+		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController, KpiController _kpiController)
+		{
+			if (_employeeController.NewEmployee != "")
+			{
+				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+				addNewEmployeeForm.ShowDialog();
+			}
+		}
+
 		private void Group_OnNameChanged(object sender, EventArgs e)
 		{
 			if (sender is Group group)
@@ -294,14 +343,14 @@ namespace Bonuses.View
 			}
 		}
 
-		private void Kpi_OnNewEmployeeFinded(object sender, EventArgs e)
-		{
-			if (sender is string employeeName)
-			{
-				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController, _kpiController);
-				addNewEmployeeForm.ShowDialog();
-			}
-		}
+		//private void Kpi_OnNewEmployeeFinded(object sender, EventArgs e)
+		//{
+		//	if (sender is string employeeName)
+		//	{
+		//		AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController, _kpiController);
+		//		addNewEmployeeForm.ShowDialog();
+		//	}
+		//}
 
 		private async void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
 		{

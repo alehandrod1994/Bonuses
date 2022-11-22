@@ -25,7 +25,7 @@ namespace Bonuses.BL.Controller
 			{
 				{ Status.Cancel, "Отмена."},
 				{ Status.Failed, "Не удалось открыть файл \"О показателях (шаблон)\". Возможно, он сейчас используется."},
-				{ Status.Pause, "Остановлено."},
+				{ Status.NotSave, "Не удалось сохранить."},
 				{ Status.Start, "Начало подсчёта."},
 				{ Status.Success, "Успешно."},
 			};
@@ -34,6 +34,7 @@ namespace Bonuses.BL.Controller
 		}
 
 		public Report Report { get; private set; }
+		public string NewFilePath { get; private set; }
 
 		public event EventHandler ShutdownCalculate;
 
@@ -104,7 +105,7 @@ namespace Bonuses.BL.Controller
 			{
 				_status = Status.Failed;
 				_logger.Info(_messages[_status]);
-				ShutdownCalculate?.Invoke(_messages[_status], null);
+				//ShutdownCalculate?.Invoke(_messages[_status], null);
 				return false;
 			}
 		}
@@ -124,17 +125,27 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public string StartBonusesReport(List<Bonus> bonuses, Group group, Date date, bool cancel, IProgress<int> progress)
+		private void CancelCalculate()
+		{
+			_status = Status.Cancel;
+			_logger.Info(_messages[_status]);
+			//ShutdownCalculate?.Invoke(_messages[_status], null);	
+		}
+
+		public Status StartBonusesReport(List<Bonus> bonuses, Group group, Date date, bool cancel, IProgress<int> progress)
 		{
 			if (cancel == true)
 			{
 				_status = Status.Cancel;
 				_logger.Info(_messages[_status]);
 				ShutdownCalculate?.Invoke(_messages[_status], null);
-				return null;
+				return _status;
 			}
 
-			if (!OpenConnection()) return null;           
+			if (!OpenConnection())
+			{
+				return _status;
+			}
 
 			SetDate(date.TodayMonth);
 
@@ -155,13 +166,25 @@ namespace Bonuses.BL.Controller
 			string directory = Directory.GetParent(Report.Path).FullName;
 			string newFileName = $"О показателях {group.Name} {date.TodayMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
 			string newFilePath = $"{directory}\\{newFileName}";
-			_doc.SaveAs(newFilePath);
 
+			try
+			{
+				_doc.SaveAs(newFilePath);
+				NewFilePath = newFilePath;
+			}
+			catch
+			{
+				_status = Status.NotSave;
+				_logger.Info(_messages[_status]);
+				//ShutdownCalculate?.Invoke(_messages[_status], null);	
+				CloseConnection();
+				return _status;
+			}
+			
 			CloseConnection();
-
 			_status = Status.Success;
 			_logger.Info(_messages[_status]);
-			return newFilePath;
+			return _status;
 		}
 
 		private void SetDate(Month month)
@@ -258,11 +281,17 @@ namespace Bonuses.BL.Controller
 			{
 				table.Rows.Add();
 
-				table.Cell(i + 2, 1).Range.Text = (i + 1).ToString();
-				table.Cell(i + 2, 2).Range.Text = bonuses[i].Employee.Name;
-				table.Cell(i + 2, 3).Range.Text = bonuses[i].Employee.Position.Name;
-				table.Cell(i + 2, 4).Range.Text = bonuses[i].Detection.Description;
-				table.Cell(i + 2, 5).Range.Text = bonuses[i].Count.ToString();
+				//table.Cell(i + 2, 1).Range.Text = (i + 1).ToString();
+				//table.Cell(i + 2, 2).Range.Text = bonuses[i].Employee.Name;
+				//table.Cell(i + 2, 3).Range.Text = bonuses[i].Employee.Position.Name;
+				//table.Cell(i + 2, 4).Range.Text = bonuses[i].Detection.Description;
+				//table.Cell(i + 2, 5).Range.Text = bonuses[i].Count.ToString();
+
+				table.Rows[i + 2].Cells[1].Range.Text = (i + 1).ToString();
+				table.Rows[i + 2].Cells[2].Range.Text = bonuses[i].Employee.Name;
+				table.Rows[i + 2].Cells[3].Range.Text = bonuses[i].Employee.Position.Name;
+				table.Rows[i + 2].Cells[4].Range.Text = bonuses[i].Detection.Description;
+				table.Rows[i + 2].Cells[5].Range.Text = bonuses[i].Count.ToString();
 
 				progress.Report(CalculateProgress(i + 1, linesCount));
 			}

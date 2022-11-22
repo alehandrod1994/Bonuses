@@ -11,7 +11,7 @@ namespace Bonuses.View
         private PositionController _positionController;
         private KpiController _kpiController;
 
-        public AddNewEmployeeForm(string employeeName, EmployeeController employeeController, PositionController positionController, KpiController kpiController)
+        public AddNewEmployeeForm(EmployeeController employeeController, PositionController positionController, KpiController kpiController)
         {
             InitializeComponent();
          
@@ -19,11 +19,11 @@ namespace Bonuses.View
             _positionController = positionController;
             _kpiController = kpiController;
 
-            labelEmployee.Text = employeeName;
+            labelEmployee.Text = employeeController.NewEmployee;
 
-           // if (_positionController.Positions.Count > 0)
-           // {
-                foreach (var position in _positionController.Positions)
+            // if (_positionController.Positions.Count > 0)
+            // {
+            foreach (var position in _positionController.Positions)
                 {
                     cbPositions.Items.Add(position.Name);
                 }
@@ -42,7 +42,7 @@ namespace Bonuses.View
                 Close();
 
                 var position = new Position(cbPositions.Text);
-                var employee = new Employee(labelEmployee.Text, position);
+                var employee = new Employee(_employeeController.NewEmployee, position);
                 _positionController.Add(position);
                 _employeeController.Add(employee);
             }               

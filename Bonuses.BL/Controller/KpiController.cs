@@ -22,8 +22,6 @@ namespace Bonuses.BL.Controller
 		private Dictionary<Status, string> _messages;
 		private Logger _logger = LogManager.GetCurrentClassLogger();
 
-		private List<Bonus> _bonuses;
-
 		private int _currentRow = 2;
 		private int _employeeIndex;
 		private Dictionary<int, Detection> _detectionColumnIndexes;
@@ -34,7 +32,7 @@ namespace Bonuses.BL.Controller
 			{
 				{ Status.Cancel, "Отмена."},
 				{ Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется."},
-				{ Status.Pause, "Остановлено."},
+				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
 				{ Status.Start, "Начало подсчёта."},
 				{ Status.Success, "Успешно."},
 				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
@@ -44,6 +42,7 @@ namespace Bonuses.BL.Controller
 		}
 
 		public Kpi Kpi { get; private set; }
+		public List<Bonus> Bonuses { get; private set; }
 
 		public event EventHandler OnNewEmployeeFinded;
 		public event EventHandler ShutdownCalculate;
@@ -116,7 +115,7 @@ namespace Bonuses.BL.Controller
 
 				_status = Status.Failed;
 				_logger.Info(_messages[_status]);
-				ShutdownCalculate?.Invoke(_messages[_status], null);
+				//ShutdownCalculate?.Invoke(_messages[_status], null);
 				return false;
 			}
 			_sheet = null;
@@ -140,38 +139,42 @@ namespace Bonuses.BL.Controller
 			}
 		}
 
-		public List<Bonus> StartCalculateBonuses(List<Employee> employees, List<Detection> detections, bool cancel, IProgress<int> progress)
+		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, bool cancel, IProgress<int> progress)
 		{
 			if (cancel == true)
 			{
 				CancelCalculate();
-				return null;
+				return _status;
 			}
 
-			if (!OpenConnection()) return null;
-
-			if (_status != Status.Pause)
+			if (!OpenConnection())
 			{
-				if (!SetBonusesSourceData(detections))
-				{
-					_status = Status.UnknownData;
-					_logger.Info(_messages[_status]);
-					ShutdownCalculate?.Invoke(_messages[_status], null);
-					return null;
-				}
+				return _status;
 			}
 
-			bool result = CalculateBonuses(employees, progress);
-			if (!result) return null;
+			if (_status != Status.NewEmployeeFound && !SetBonusesSourceData(detections))
+			{
+				_status = Status.UnknownData;
+				_logger.Info(_messages[_status]);
+				//ShutdownCalculate?.Invoke(_messages[_status], null);	
+				CloseConnection();
+				return _status;
+			}
+
+			if (!CalculateBonuses(employeeController, progress))
+			{
+				CloseConnection();
+				return _status;
+			}
 
 			CloseConnection();
 
 			_status = Status.Success;
 			_logger.Info(_messages[_status]);
-			return _bonuses;
+			return _status;
 		}
 
-		private bool CalculateBonuses(List<Employee> employees, IProgress<int> progress)
+		private bool CalculateBonuses(EmployeeController employeeController, IProgress<int> progress)
 		{
 			int linesCount = 20;
 
@@ -189,22 +192,23 @@ namespace Bonuses.BL.Controller
 							continue;
 						}
 
-						var employee = employees.FirstOrDefault(e => e.Name.Equals(employeeName, StringComparison.CurrentCultureIgnoreCase));
-						if (employee == null)
+						if (employeeController.TryGetEmployee(employeeName, out Employee employee))
 						{
-							CloseConnection();
-
-							_status = Status.Pause;
+							var detection = _detectionColumnIndexes[columnIndex];
+							int count = ParseInt(ToString(_currentRow, columnIndex));
+							var bonus = new Bonus(employee, detection, count);
+							Bonuses.Add(bonus);						
+						}
+						else
+						{
+							employeeController.NewEmployee = employeeName;
+							
+							_status = Status.NewEmployeeFound;
 							_logger.Info(_messages[_status]);
-							OnNewEmployeeFinded?.Invoke(employeeName, null);
+							//OnNewEmployeeFinded?.Invoke(employeeName, null);
 
 							return false;
-						}
-
-						var detection = _detectionColumnIndexes[columnIndex];
-						int count = ParseInt(ToString(_currentRow, columnIndex));
-						var bonus = new Bonus(employee, detection, count);
-						_bonuses.Add(bonus);
+						}						
 					}
 				}
 
@@ -224,12 +228,12 @@ namespace Bonuses.BL.Controller
 		{
 			_status = Status.Cancel;
 			_logger.Info(_messages[_status]);
-			ShutdownCalculate?.Invoke(_messages[_status], null);
+			//ShutdownCalculate?.Invoke(_messages[_status], null);
 		}
 
 		private bool SetBonusesSourceData(List<Detection> detections)
 		{			
-			_bonuses = new List<Bonus>();
+			Bonuses = new List<Bonus>();
 
 			_employeeIndex = GetEmployeeColumnIndex();
 			_detectionColumnIndexes = GetDetectionColumnIndexes(detections);

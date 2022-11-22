@@ -82,6 +82,7 @@ namespace Bonuses.View
             this.labelKpiSouceDirectory = new System.Windows.Forms.Label();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.labelReportFileName = new System.Windows.Forms.Label();
+            this.labelDate = new System.Windows.Forms.Label();
             this.panelMenu.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelDetections.SuspendLayout();
@@ -217,6 +218,7 @@ namespace Bonuses.View
             this.btnTest.TabIndex = 3;
             this.btnTest.Text = "Тест";
             this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Visible = false;
             this.btnTest.Click += new System.EventHandler(this.BtnTest_Click);
             // 
             // btnDetections
@@ -264,6 +266,9 @@ namespace Bonuses.View
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.SystemColors.Window;
+            this.panelMain.Controls.Add(this.labelDate);
+            this.panelMain.Controls.Add(this.cbMonth);
+            this.panelMain.Controls.Add(this.tbYear);
             this.panelMain.Controls.Add(this.labelReportFileName);
             this.panelMain.Controls.Add(this.labelKpiFileName);
             this.panelMain.Controls.Add(this.panelReport);
@@ -277,8 +282,6 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.progressBar1);
-            this.panelMain.Controls.Add(this.tbYear);
-            this.panelMain.Controls.Add(this.cbMonth);
             this.panelMain.Controls.Add(this.label1);
             this.panelMain.Location = new System.Drawing.Point(200, 0);
             this.panelMain.Name = "panelMain";
@@ -308,6 +311,7 @@ namespace Bonuses.View
             this.panelReport.Name = "panelReport";
             this.panelReport.Size = new System.Drawing.Size(148, 174);
             this.panelReport.TabIndex = 14;
+            this.panelReport.Visible = false;
             this.panelReport.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelReport_MouseDown);
             this.panelReport.MouseEnter += new System.EventHandler(this.panelReport_MouseEnter);
             this.panelReport.MouseLeave += new System.EventHandler(this.panelReport_MouseLeave);
@@ -319,10 +323,11 @@ namespace Bonuses.View
             this.panelKpi.BackgroundImage = global::Bonuses.View.Properties.Resources.ExcelLogo;
             this.panelKpi.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.panelKpi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelKpi.Location = new System.Drawing.Point(142, 170);
+            this.panelKpi.Location = new System.Drawing.Point(137, 189);
             this.panelKpi.Name = "panelKpi";
             this.panelKpi.Size = new System.Drawing.Size(148, 174);
             this.panelKpi.TabIndex = 13;
+            this.panelKpi.Visible = false;
             this.panelKpi.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelKpi_MouseDown);
             this.panelKpi.MouseEnter += new System.EventHandler(this.panelKpi_MouseEnter);
             this.panelKpi.MouseLeave += new System.EventHandler(this.panelKpi_MouseLeave);
@@ -424,7 +429,7 @@ namespace Bonuses.View
             // 
             this.tbYear.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbYear.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.tbYear.Location = new System.Drawing.Point(231, 109);
+            this.tbYear.Location = new System.Drawing.Point(244, 170);
             this.tbYear.Name = "tbYear";
             this.tbYear.Size = new System.Drawing.Size(41, 24);
             this.tbYear.TabIndex = 4;
@@ -449,7 +454,7 @@ namespace Bonuses.View
             "Октябрь",
             "Ноябрь",
             "Декабрь"});
-            this.cbMonth.Location = new System.Drawing.Point(125, 109);
+            this.cbMonth.Location = new System.Drawing.Point(138, 170);
             this.cbMonth.Name = "cbMonth";
             this.cbMonth.Size = new System.Drawing.Size(100, 26);
             this.cbMonth.TabIndex = 3;
@@ -734,6 +739,16 @@ namespace Bonuses.View
             this.labelReportFileName.Text = "Файл не загружен";
             this.labelReportFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // labelDate
+            // 
+            this.labelDate.AutoSize = true;
+            this.labelDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelDate.Location = new System.Drawing.Point(190, 138);
+            this.labelDate.Name = "labelDate";
+            this.labelDate.Size = new System.Drawing.Size(52, 20);
+            this.labelDate.TabIndex = 17;
+            this.labelDate.Text = "Дата:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -814,6 +829,7 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnChooseDirectoryKpi;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.Label labelReportFileName;
+        private System.Windows.Forms.Label labelDate;
     }
 }
 

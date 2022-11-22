@@ -6,7 +6,8 @@ namespace Bonuses.BL.Model
     {
         Cancel,
         Failed,
-        Pause,
+        NewEmployeeFound,
+        NotSave,
         Start,
         Success,
         UnknownData
