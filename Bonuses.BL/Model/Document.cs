@@ -5,61 +5,100 @@ using System.Runtime.Serialization;
 
 namespace Bonuses.BL.Model
 {
-    [DataContract]
-    public class Document
-    {
-        public Document() { }
+	/// <summary>
+	/// Документ.
+	/// </summary>
+	[DataContract]
+	public abstract class Document
+	{
+		/// <summary>
+		/// Создаёт новый документ.
+		/// </summary>
+		/// <param name="path"> Полный путь файла. </param>
+		public Document() { }
 
-        public Document(string path) : this(path, "") { }
+		/// <summary>
+		/// Создаёт новый документ.
+		/// </summary>
+		/// <param name="path"> Полный путь файла. </param>
+		public Document(string path) : this(path, "") { }
 
-        public Document(string path, string sourceDirectory)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                throw new ArgumentNullException("Неверно задано расположение файла.", nameof(path));
-            }
+		/// <summary>
+		/// Создаёт новый документ.
+		/// </summary>
+		/// <param name="path"> Полный путь файла. </param>
+		/// <param name="sourceDirectory"> Корневая папка. </param>
+		public Document(string path, string sourceDirectory)
+		{
+			if (string.IsNullOrWhiteSpace(path))
+			{
+				throw new ArgumentNullException("Путь файла не может быть пустым.", nameof(path));
+			}
 
-            if (string.IsNullOrWhiteSpace(sourceDirectory))
-            {
-                throw new ArgumentNullException("Неверно задано исходная папка расположения файла.", nameof(sourceDirectory));
-            }
+			if (string.IsNullOrWhiteSpace(sourceDirectory))
+			{
+				throw new ArgumentNullException("Путь к корневой папке не может быть пустым.", nameof(sourceDirectory));
+			}
 
-            Path = path;
-            FileName = GetFileName();
-            SourceDirectory = sourceDirectory;
-        }
+			Path = path;
+			FileName = GetFileName();
+			SourceDirectory = sourceDirectory;
+		}
 
-        [DataMember]
-        public string Name { get; set; }
+		/// <summary>
+		/// Название документа.
+		/// </summary>
+		[DataMember]
+		public string Name { get; set; }
 
-        [DataMember]
-        public string Type { get; set; }
+		/// <summary>
+		/// Тип.
+		/// </summary>
+		[DataMember]
+		public string Type { get; set; }
 
-        [DataMember]
-        public string SourceDirectory { get; set; } = "";
 
-        [DataMember]
-        public string Path { get; set; } = "";
+		/// <summary>
+		/// Корневая папка.
+		/// </summary>
+		[DataMember]
+		public string SourceDirectory { get; set; } = "";
 
-        [DataMember]
-        public string FileName { get; set; } = "";
+		/// <summary>
+		/// Полный путь файла.
+		/// </summary>
+		[DataMember]
+		public string Path { get; set; } = "";
 
-        [DataMember]
-        public string Extention { get; set; }
+		/// <summary>
+		/// Имя файла.
+		/// </summary>
+		[DataMember]
+		public string FileName { get; set; } = "";
 
-        protected string GetFileName()
-        {
-            //if (Path != "")
-            //{
-                return new FileInfo(Path).Name;
-            //}
+		/// <summary>
+		/// Расширение файла.
+		/// </summary>
+		[DataMember]
+		public string Extention { get; set; }
 
-            //return "";
-        }
+		/// <summary>
+		/// Возвращает имя файла.
+		/// </summary>
+		/// <returns></returns>
+		protected string GetFileName()
+		{
+			//if (Path != "")
+			//{
+				return new FileInfo(Path).Name;
+			//}
 
-        public override string ToString()
-        {
-            return Path;
-        }
-    }
+			//return "";
+		}
+
+		public override string ToString()
+		{
+			return Path;
+		}
+	}
 }

@@ -5,33 +5,56 @@ using System.Linq;
 
 namespace Bonuses.BL.Controller
 {
-    public class GroupController : ControllerBase
-    {
-        public GroupController()
-        {
-            Group = GetGroup();
-        }
+	/// <summary>
+	/// Контроллер отдела.
+	/// </summary>
+	public class GroupController : ControllerBase
+	{
+		/// <summary>
+		/// Создаёт новый контроллер отдела.
+		/// </summary>
+		public GroupController()
+		{
+			Group = GetGroup();
+		}
 
-        public Group Group { get; set; }
+		/// <summary>
+		/// Отдел.
+		/// </summary>
+		public Group Group { get; set; }
 
-        public event EventHandler OnNameChanged;
+		// <summary>
+		/// Событие, которое происходит при изменении названия отдела.
+		/// </summary>
+		public event EventHandler OnNameChanged;
 
-        public void Change(Group group)
-        {
-            Group = group;
-            Save();
-            OnNameChanged?.Invoke(Group, null);
-        }
+		/// <summary>
+		/// Изменяет название отдела.
+		/// </summary>
+		/// <param name="group"> Название отдела. </param>
+		public void Change(Group group)
+		{
+			Group = group;
+			Save();
+			OnNameChanged?.Invoke(Group, null);
+		}
 
-        private Group GetGroup()
-        {
-            List<Group> groups = Load<Group>();
-            return groups.Count > 0 ? groups.First() : new Group();
-        }
+		/// <summary>
+		/// Возвращает отдел.
+		/// </summary>
+		/// <returns> Отдел. </returns>
+		private Group GetGroup()
+		{
+			List<Group> groups = Load<Group>();
+			return groups.Count > 0 ? groups.First() : new Group();
+		}
 
-        private void Save()
-        {
-            Save(new List<Group>() { Group });
-        }
-    }
+		/// <summary>
+		/// Сохраняет данные.
+		/// </summary>
+		private void Save()
+		{
+			Save(new List<Group>() { Group });
+		}
+	}
 }

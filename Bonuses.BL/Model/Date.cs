@@ -3,8 +3,14 @@ using System.Linq;
 
 namespace Bonuses.BL.Model
 {
+	/// <summary>
+	/// Дата.
+	/// </summary>
 	public class Date
 	{
+		/// <summary>
+		/// Создаёт новый экземпляр класса Date.
+		/// </summary>
 		public Date()
 		{
 			Months = new Month[]
@@ -27,11 +33,25 @@ namespace Bonuses.BL.Model
 			Year = DateTime.Today.Year;
 		}
 
+		/// <summary>
+		/// Список месяцев.
+		/// </summary>
 		public Month[] Months { get; }
 
+		/// <summary>
+		/// Текущий месяц.
+		/// </summary>
 		public Month TodayMonth { get; set; }
+
+		/// <summary>
+		/// Год.
+		/// </summary>
 		public int Year { get; set; }
 
+		/// <summary>
+		/// Возвращает текущий месяц.
+		/// </summary>
+		/// <returns></returns>
 		public Month GetTodayMonth()
 		{
 			int monthNumber = DateTime.Today.Month;

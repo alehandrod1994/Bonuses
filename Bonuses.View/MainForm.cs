@@ -34,16 +34,19 @@ namespace Bonuses.View
 
 		private Button _selectedButton;
 
+		private readonly int _progressBarKpiPosition = 353;
+		private readonly int _progressBarReportPosition = 534;
+
 		public MainForm()
 		{
 			InitializeComponent();
 
 			_logger = LogManager.GetCurrentClassLogger();
-
+				
 			_messages = new Dictionary<Status, string>()
 			{
 				{ Status.Cancel, "Отмена."},
-				{ Status.Failed, "Не удалось открыть файл "},
+				{ Status.Failed, "Не удалось открыть файл"},
 				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
 				{ Status.NotSave, "Не удалось сохранить."},
 				{ Status.Start, "Начало подсчёта."},
@@ -51,11 +54,32 @@ namespace Bonuses.View
 				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
 			};
 
-			tableEmployees.Columns.Add("Name", "Имя");
-			tableEmployees.Columns.Add("Position", "Должность");
-			tableDetections.Columns.Add("Name", "Название");
-			tableDetections.Columns.Add("Description", "Описание");
+			updateItem.Click += UpdateItem_Click;
+			importKpiItem.Click += ImportKpiItem_Click;
+			importReportItem.Click += ImportReportItem_Click;
+			changeGroupItem.Click += ChangeGroupItem_Click;
+			exitItem.Click += ExitItem_Click;
+			manualItem.Click += ManualItem_Click;
+			aboutItem.Click += AboutItem_Click;
 
+			CreateSourceData();
+
+			AutoImportDate();
+			AutoImportDocuments();
+		}
+
+		private void AboutItem_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void ManualItem_Click(object sender, EventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
+		private void CreateSourceData()
+		{
 			_date = new Date();
 
 			_employeeController = new EmployeeController();
@@ -65,8 +89,10 @@ namespace Bonuses.View
 			_groupController = new GroupController();
 			_positionController = new PositionController(_employeeController.Employees);
 
-			_groupController.OnNameChanged += Group_OnNameChanged;			
+			_groupController.OnNameChanged += Group_OnNameChanged;
 			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
+			_kpiController.CheckCancel += CheckCancel;
+			_reportController.CheckCancel += CheckCancel;
 
 			if (_groupController.Group.Name == null)
 			{
@@ -78,10 +104,47 @@ namespace Bonuses.View
 				labelGroup.Text = _groupController.Group.Name;
 			}
 
+			_selectedButton = btnMain;
+			OpenTab(btnMain, panelMain);
 			PutOnButtonSelect(btnMain);
+		}
 
-			AutoImportDate();
-			AutoImportDocuments();
+		private void UpdateItem_Click(object sender, EventArgs e)
+		{
+			CreateSourceData();
+
+			labelKpiFileName.ForeColor = Color.DimGray;
+			labelKpiFileName.Text = "Файл не загружен";
+			btnKpi.Image = Properties.Resources.ExcelLogo_BW;
+
+			labelReportFileName.ForeColor = Color.DimGray;
+			labelReportFileName.Text = "Файл не загружен";
+			btnReport.Image = Properties.Resources.WordLogo_BW;
+		}
+
+		private void ImportKpiItem_Click(object sender, EventArgs e)
+		{
+			ImportKpi();
+		}
+
+		private void ImportReportItem_Click(object sender, EventArgs e)
+		{
+			ImportReport();
+		}
+
+		private void ChangeGroupItem_Click(object sender, EventArgs e)
+		{
+			ChangeGroup();
+		}
+
+		private void ExitItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private bool CheckCancel()
+		{
+			return _cancel;
 		}
 
 		private void AutoImportDate()
@@ -94,17 +157,19 @@ namespace Bonuses.View
 		{
 			//string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
 
-			labelKpiFileName.Text = _kpiController.AutoImportKpi("KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
-			labelKpiFileName.ForeColor = Color.Black;
-			if (labelKpiFileName.Text != "")
+			string kpiFileName = _kpiController.AutoImportKpi("KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
+			if (kpiFileName != "")
 			{
+				labelKpiFileName.Text = kpiFileName;
+				labelKpiFileName.ForeColor = Color.Black;
 				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
 			
-			labelReportFileName.Text = _reportController.AutoImportReport("KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
-			labelReportFileName.ForeColor = Color.Black;
-			if (labelReportFileName.Text != "")
+			string reportFileName = _reportController.AutoImportReport("KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
+			if (reportFileName != "")
 			{
+				labelReportFileName.Text = reportFileName;
+				labelReportFileName.ForeColor = Color.Black;
 				btnReport.Image = Properties.Resources.WordLogo;
 			}		
 		}
@@ -154,7 +219,8 @@ namespace Bonuses.View
 
 			if (ParseInt(tbYear.Text) < 2000)
 			{
-				ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
+				ShowNoticeForm("Неверно задана дата");
+				//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
 				return false;
 			}
 
@@ -163,7 +229,8 @@ namespace Bonuses.View
 
 			if (errorDescription != "")
 			{
-				ShowNoticeForm("Не загружены файлы:", 27, errorDescription);
+				ShowNoticeForm("Не загружены файлы:\n" + errorDescription);
+				//ShowNoticeForm("Не загружены файлы:", 27, errorDescription);
 				return false;
 			}
 
@@ -219,47 +286,50 @@ namespace Bonuses.View
 
 		private async Task CalculateAsync()
 		{
-			StartCalculate();
+			SetUIForStartCalculate();
 
 			_cancel = false;
+			Status status;
 
 			_date.TodayMonth = _date.Months[cbMonth.SelectedIndex];
 			_date.Year = Convert.ToInt32(tbYear.Text);
 
 			var progress = new Progress<int>(value => progressBar1.Value = value);
-			Status status = await Task.Run(() => _kpiController.StartCalculateBonuses(_employeeController, _detectionController.Detections, _cancel, progress));
+			status = await Task.Run(() => 
+			_kpiController.StartCalculateBonuses(_employeeController, _detectionController.Detections, progress));
 			if (status != Status.Success)
 			{
 				ShutdownCalculate(status, _kpiController.Kpi.Name);
 				return;
 			}
 
-			progressBar1.Left = 534;
+			progressBar1.Left = _progressBarReportPosition;
 			progressBar1.Value = 0;
 
-			status = await Task.Run(() => _reportController.StartBonusesReport(_kpiController.Bonuses, _groupController.Group, _date, _cancel, progress));
+			status = await Task.Run(() => 
+			_reportController.StartBonusesReport(_kpiController.Bonuses, _groupController.Group, _date, progress));
 			if (status != Status.Success)
 			{
 				ShutdownCalculate(status, _reportController.Report.Name);
 				return;
 			}
 
-			EndCalculate();
+			SetUIForEndCalculate();
 			ShowSuccessfullyForm(_reportController.NewFilePath);
 		}
 
-		private void StartCalculate()
+		private void SetUIForStartCalculate()
 		{
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
 
 			// TODO: Начало анимации.
-			progressBar1.Left = 353;
+			progressBar1.Left = _progressBarKpiPosition;
 			progressBar1.Value = 0;
 			progressBar1.Visible = true;
 		}
 
-		private void EndCalculate()
+		private void SetUIForEndCalculate()
 		{		
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
@@ -270,8 +340,9 @@ namespace Bonuses.View
 		{
 			if (result != "Успешно.")
 			{
-				EndCalculate();
-				ShowNoticeForm(result, 67, "");
+				SetUIForEndCalculate();
+				ShowNoticeForm(result);
+				//ShowNoticeForm(result, 67, "");
 				return false;
 			}
 
@@ -280,7 +351,7 @@ namespace Bonuses.View
 
 		private void ShutdownCalculate(Status status, string name)
 		{
-			EndCalculate();
+			SetUIForEndCalculate();
 
 			switch(status)
 			{
@@ -289,14 +360,16 @@ namespace Bonuses.View
 					break;
 
 				case Status.Failed:
-					ShowNoticeForm(_messages[status] + name, 67, "");
+					ShowNoticeForm($"{_messages[status]} \"{name}\"");
+					//ShowNoticeForm($"{_messages[status]} \"{name}\"", 67, "");
 					break;
 
 				case Status.Cancel:
 					break;
 
 				default:
-					ShowNoticeForm(_messages[status], 67, "");
+					ShowNoticeForm(_messages[status]);
+					//ShowNoticeForm(_messages[status], 67, "");
 					break;
 			}
 
@@ -312,6 +385,12 @@ namespace Bonuses.View
 			//{
 			//	ShowNoticeForm(_messages[status], 67, "");
 			//}
+		}
+
+		private void ShowNoticeForm(string noticeDescription)
+		{
+			NoticeForm noticeForm = new NoticeForm(noticeDescription);
+			noticeForm.Show();
 		}
 
 		private void ShowNoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
@@ -377,12 +456,12 @@ namespace Bonuses.View
 			btnCancelGroup.Visible = false;
 		}
 
-		private void FormatTable(DataGridView table)
+		private bool FormatTable(DataGridView table)
 		{
 			for (int i = 0; i < table.RowCount - 1; i++)
 			{
-				string column1 = table.Rows[i].Cells[0].Value.ToString();
-				string column2 = table.Rows[i].Cells[1].Value.ToString();
+				string column1 = table.Rows[i].Cells[0].Value?.ToString();
+				string column2 = table.Rows[i].Cells[1].Value?.ToString();
 
 				if (string.IsNullOrWhiteSpace(column1) && string.IsNullOrWhiteSpace(column2))
 				{
@@ -393,17 +472,22 @@ namespace Bonuses.View
 				else if (string.IsNullOrWhiteSpace(column1) || string.IsNullOrWhiteSpace(column2))
 				{
 					ShowNoticeForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}");
-					return;
+					return false;
 				}
 
 				table.Rows[i].Cells[0].Value = Regex.Replace(column1, @"\s+", " ");
-				table.Rows[i].Cells[1].Value = Regex.Replace(column2, @"\s+", " ");
+				table.Rows[i].Cells[1].Value = Regex.Replace(column2, @"\s+", " ");				
 			}
+
+			return true;
 		}
 
 		private void BtnSaveEmployees_Click(object sender, EventArgs e)
 		{
-			FormatTable(tableEmployees);
+			if (!FormatTable(tableEmployees))
+			{
+				return;
+			}
 
 			var employees = new List<Employee>();
 			for (int i = 0; i < tableEmployees.RowCount - 1; i++)
@@ -498,10 +582,11 @@ namespace Bonuses.View
 
 			foreach (string file in files)
 			{				
-				labelKpiFileName.Text = _kpiController.DragDrop(file);
-				labelKpiFileName.ForeColor = Color.Black;
-				if (labelKpiFileName.Text != "")
+				string kpiFileName = _kpiController.DragDrop(file);
+				if (kpiFileName != "")
 				{
+					labelKpiFileName.Text = kpiFileName;
+					labelKpiFileName.ForeColor = Color.Black;
 					btnKpi.Image = Properties.Resources.ExcelLogo;
 				}
 			}
@@ -521,10 +606,11 @@ namespace Bonuses.View
 
 			foreach (string file in files)
 			{
-				labelReportFileName.Text = _reportController.DragDrop(file);
-				labelReportFileName.ForeColor = Color.Black;
-				if (labelReportFileName.Text != "")
+				string reportFileName = _reportController.DragDrop(file);
+				if (reportFileName != "")
 				{
+					labelReportFileName.Text = reportFileName;
+					labelReportFileName.ForeColor = Color.Black;
 					btnReport.Image = Properties.Resources.WordLogo;
 				}
 			}
@@ -532,20 +618,32 @@ namespace Bonuses.View
 
 		private void BtnKpi_Click(object sender, EventArgs e)
 		{
-			labelKpiFileName.Text = _kpiController.Import();
-			labelKpiFileName.ForeColor = Color.Black;
-			if (labelKpiFileName.Text != "")
+			ImportKpi();
+		}
+
+		private void ImportKpi()
+		{
+			string kpiFileName = _kpiController.Import();
+			if (kpiFileName != "")
 			{
+				labelKpiFileName.Text = kpiFileName;
+				labelKpiFileName.ForeColor = Color.Black;
 				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
 		}
 
 		private void BtnReport_Click(object sender, EventArgs e)
 		{
-			labelReportFileName.Text = _reportController.Import();
-			labelReportFileName.ForeColor = Color.Black;
-			if (labelReportFileName.Text != "")
+			ImportReport();
+		}
+
+		private void ImportReport()
+		{
+			string reportFileName = _reportController.Import();
+			if (reportFileName != "")
 			{
+				labelReportFileName.Text = reportFileName;
+				labelReportFileName.ForeColor = Color.Black;
 				btnReport.Image = Properties.Resources.WordLogo;
 			}
 		}
@@ -636,6 +734,11 @@ namespace Bonuses.View
 
 		private void LabelGroup_DoubleClick(object sender, EventArgs e)
 		{
+			ChangeGroup();
+		}
+
+		private void ChangeGroup()
+		{
 			tbGroup.Text = "";
 			tbGroup.Visible = true;
 			btnApplyGroup.Visible = true;
@@ -653,7 +756,10 @@ namespace Bonuses.View
 			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
 			//addGroupForm.ShowDialog();
 
-			ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
+			//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
+
+			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
+			//addGroupForm.ShowDialog();
 
 		}
 	}

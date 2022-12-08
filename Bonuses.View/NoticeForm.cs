@@ -5,6 +5,14 @@ namespace Bonuses.View
 {
     public partial class NoticeForm : Form
     {
+        public NoticeForm(string noticeDescription)
+        {
+            InitializeComponent();
+
+            labelNoticeTitle.Text = "Ошибка!";
+            labelNoticeDescription.Text = noticeDescription;
+        }
+
         public NoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
         {
             InitializeComponent();

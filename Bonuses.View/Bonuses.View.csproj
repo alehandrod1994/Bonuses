@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icons8-graph-64.ico</ApplicationIcon>
+    <ApplicationIcon>icons8-graph-512.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -168,7 +168,10 @@
     <None Include="Resources\NewGroup4.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="icons8-graph-512.ico" />
     <Content Include="icons8-graph-64.ico" />
+    <None Include="Resources\WordLogo_BW.png" />
+    <None Include="Resources\NewGroup3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

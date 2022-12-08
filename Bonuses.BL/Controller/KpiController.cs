@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bonuses.BL.Controller
 {
+	/// <summary>
+	/// Контроллер документа "KPI".
+	/// </summary>
 	public class KpiController : DocumentController
 	{
 		private Excel.Application _app;
@@ -19,40 +23,51 @@ namespace Bonuses.BL.Controller
 		private Excel.Worksheet _sheet;
 
 		private Status _status = Status.Start;
-		private Dictionary<Status, string> _messages;
-		private Logger _logger = LogManager.GetCurrentClassLogger();
 
 		private int _currentRow = 2;
 		private int _employeeIndex;
 		private Dictionary<int, Detection> _detectionColumnIndexes;
 
+		// <summary>
+		/// Создаёт новый контроллер документа "KPI".
+		/// </summary>
 		public KpiController()
-		{
-			_messages = new Dictionary<Status, string>()
-			{
-				{ Status.Cancel, "Отмена."},
-				{ Status.Failed, "Не удалось открыть файл \"KPI\". Возможно, он сейчас используется."},
-				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
-				{ Status.Start, "Начало подсчёта."},
-				{ Status.Success, "Успешно."},
-				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
-			};
-
+		{		
 			Kpi = GetKpi();
 		}
 
+		/// <summary>
+		/// Документ "KPI".
+		/// </summary>
 		public Kpi Kpi { get; private set; }
+
+		/// <summary>
+		/// Список премий.
+		/// </summary>
 		public List<Bonus> Bonuses { get; private set; }
 
-		public event EventHandler OnNewEmployeeFinded;
-		public event EventHandler ShutdownCalculate;
+		/// <summary>
+		/// Проверяет, не поступал ли запрос на отмену подсчёта.
+		/// </summary>
+		public event Func<bool> CheckCancel;
 
+		/// <summary>
+		/// Возвращает документ "KPI".
+		/// </summary>
+		/// <returns> Документ "KPI". </returns>
 		public Kpi GetKpi()
 		{
 			List<Kpi> kpis = Load<Kpi>();
 			return kpis.Count > 0 ? kpis.First() : new Kpi();
 		}
 
+		/// <summary>
+		/// Автоматически импортирует файл "KPI".
+		/// </summary>
+		/// <param name="keyFolder"> Ключевая фраза в названии папки для поиска. </param>
+		/// <param name="month"> Месяц. </param>
+		/// <param name="keyFile"> Ключевая фраза в названии файла для поиска. </param>
+		/// <returns> Название файла. </returns>
 		public string AutoImportKpi(string keyFolder, string month, string keyFile)
 		{
 			try
@@ -65,6 +80,10 @@ namespace Bonuses.BL.Controller
 			return Kpi.FileName;
 		}
 
+		/// <summary>
+		/// Импортирует файл "KPI".
+		/// </summary>
+		/// <returns> Название файла. </returns>
 		public string Import()
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -88,19 +107,28 @@ namespace Bonuses.BL.Controller
 			return Kpi.FileName;		
 		}
 
-		public string DragDrop(string file)
+		/// <summary>
+		/// Проверяет расширение файла на соответствие документу Excel, чтобы импортирует файл "KPI" с помощью функции Drag&Drop.
+		/// </summary>
+		/// <param name="path"> Полный путь файла. </param>
+		/// <returns> Название файла. </returns>
+		public string DragDrop(string path)
 		{
-			var fi = new FileInfo(file);
+			var fi = new FileInfo(path);
 
 			if (fi.Extension.Contains(".xls"))
 			{
-				Kpi.Path = file;
+				Kpi.Path = path;
 				Kpi.FileName = fi.Name;
 			}
 
 			return Kpi.FileName;
 		}
 
+		/// <summary>
+		/// Открывает подключение к документу.
+		/// </summary>
+		/// <returns> True, если подключение прошло успешно; в противном случае - false. </returns>
 		private bool OpenConnection()
 		{
 			_app = new Excel.Application();
@@ -114,7 +142,6 @@ namespace Bonuses.BL.Controller
 				//var message = new KeyValuePair<Status, string>(_status, _messages[_status]);
 
 				_status = Status.Failed;
-				_logger.Info(_messages[_status]);
 				//ShutdownCalculate?.Invoke(_messages[_status], null);
 				return false;
 			}
@@ -124,6 +151,10 @@ namespace Bonuses.BL.Controller
 			return true;
 		}
 
+		/// <summary>
+		/// Закрывает подключение к документу.
+		/// </summary>
+		/// <returns> True, если закрытие подключения прошло успешно; в противном случае - false. </returns>
 		private bool CloseConnection()
 		{
 			try
@@ -134,19 +165,19 @@ namespace Bonuses.BL.Controller
 			}
 			catch
 			{
-				_logger.Info("Не удалось корректно закрыть файл \"KPI\".");
 				return false;
 			}
 		}
 
-		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, bool cancel, IProgress<int> progress)
+		/// <summary>
+		/// Начинает подсчёт премирования.
+		/// </summary>
+		/// <param name="employeeController"> Контроллер сотрудника. </param>
+		/// <param name="detections"> Список нарушений. </param>
+		/// <param name="progress"> Прогресс выполнения подсчёта. </param>
+		/// <returns> Статус выполнения подсчёта. </returns>
+		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, IProgress<int> progress)
 		{
-			if (cancel == true)
-			{
-				CancelCalculate();
-				return _status;
-			}
-
 			if (!OpenConnection())
 			{
 				return _status;
@@ -155,8 +186,6 @@ namespace Bonuses.BL.Controller
 			if (_status != Status.NewEmployeeFound && !SetBonusesSourceData(detections))
 			{
 				_status = Status.UnknownData;
-				_logger.Info(_messages[_status]);
-				//ShutdownCalculate?.Invoke(_messages[_status], null);	
 				CloseConnection();
 				return _status;
 			}
@@ -170,16 +199,27 @@ namespace Bonuses.BL.Controller
 			CloseConnection();
 
 			_status = Status.Success;
-			_logger.Info(_messages[_status]);
 			return _status;
 		}
 
+		/// <summary>
+		/// Подсчитывает премирования.
+		/// </summary>
+		/// <param name="employeeController"> Контроллер сотрудника. </param>
+		/// <param name="progress"> Прогресс выполнения подсчёта. </param>
+		/// <returns> True, если подсчёт прошёл успешно; в противном случае - false. </returns>
 		private bool CalculateBonuses(EmployeeController employeeController, IProgress<int> progress)
 		{
 			int linesCount = 20;
 
 			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
 			{
+				if (CheckCancel.Invoke())
+				{
+					CancelCalculate();
+					return false;
+				}
+
 				foreach (var detectionColumnIndex in _detectionColumnIndexes)
 				{
 					int columnIndex = detectionColumnIndex.Key;
@@ -204,7 +244,6 @@ namespace Bonuses.BL.Controller
 							employeeController.NewEmployee = employeeName;
 							
 							_status = Status.NewEmployeeFound;
-							_logger.Info(_messages[_status]);
 							//OnNewEmployeeFinded?.Invoke(employeeName, null);
 
 							return false;
@@ -219,18 +258,31 @@ namespace Bonuses.BL.Controller
 			return true;
 		}
 
+		/// <summary>
+		/// Рассчитывает прогресс выполнения подсчёта. 
+		/// </summary>
+		/// <param name="currentIndex"> Текущее значение. </param>
+		/// <param name="maxCount"> Максимальное значение. </param>
+		/// <returns> Процент выполнения подсчёта. </returns>
 		private int CalculateProgress(int currentIndex, int maxCount)
 		{
 			return currentIndex * 100 / maxCount;
 		}
 
+		/// <summary>
+		/// Отменяет подсчёт.
+		/// </summary>
 		public void CancelCalculate()
 		{
 			_status = Status.Cancel;
-			_logger.Info(_messages[_status]);
 			//ShutdownCalculate?.Invoke(_messages[_status], null);
 		}
 
+		/// <summary>
+		/// Устанавливает начальные данные для подсчёта премирования.
+		/// </summary>
+		/// <param name="detections"> Список нарушений. </param>
+		/// <returns> True, если процедура прошла успешно; в противном случае - false. </returns>
 		private bool SetBonusesSourceData(List<Detection> detections)
 		{			
 			Bonuses = new List<Bonus>();
@@ -248,6 +300,10 @@ namespace Bonuses.BL.Controller
 			return true;
 		}
 
+		/// <summary>
+		/// Возвращает индекс столбца с фамилиями сотрудников.
+		/// </summary>
+		/// <returns> Индекс столбца. </returns>
 		private int GetEmployeeColumnIndex()
 		{
 			for (int j = 1; j < 20; j++)
@@ -261,6 +317,11 @@ namespace Bonuses.BL.Controller
 			return 2;
 		}
 
+		/// <summary>
+		/// Преобразует текст в целое число.
+		/// </summary>
+		/// <param name="value"> Текст. </param>
+		/// <returns> True, если преобразование прошло успешно; в противном случае - false. </returns>
 		private int ParseInt(string value)
 		{
 			if (int.TryParse(value, out int result))
@@ -271,6 +332,11 @@ namespace Bonuses.BL.Controller
 			return default;
 		}
 
+		/// <summary>
+		/// Возвращает индексы столбцов с нарушениями.
+		/// </summary>
+		/// <param name="detections"> Список нарушений. </param>
+		/// <returns> Индексы столбцов с нарушениями. </returns>
 		private Dictionary<int, Detection> GetDetectionColumnIndexes(List<Detection> detections)
 		{
 			var detectionColumnIndexes = new Dictionary<int, Detection>();
@@ -289,27 +355,54 @@ namespace Bonuses.BL.Controller
 			return detectionColumnIndexes;
 		}
 
+		/// <summary>
+		/// Проверяет, равны ли значение в ячейке Excel и введённое значение.
+		/// </summary>
+		/// <param name="i"> Номер строки. </param>
+		/// <param name="j"> Номер столбца. </param>
+		/// <param name="value"> Текст. </param>
+		/// <returns> Возвращает true, если равны; в противном случае - false. </returns>
 		private bool Equals(int i, int j, string value)
 		{
 			return ToString(i, j).Equals(value, StringComparison.CurrentCultureIgnoreCase);
 		}
 
+		/// <summary>
+		/// Проверяет, содержит ли ячейка Excel введённую подстроку. 
+		/// </summary>
+		/// <param name="i"> Номер строки. </param>
+		/// <param name="j"> Номер столбца. </param>
+		/// <param name="value"> Текст. </param>
+		/// <returns> Возвращает true, если содержит; в противном случае - false. </returns>
 		private bool Contains(int i, int j, string value)
 		{
 			return ToString(i, j).ToUpper().Contains(value);
 		}
 
+		/// <summary>
+		/// Приводит значение из ячейки Excel к строке.
+		/// </summary>
+		/// <param name="i"> Номер строки. </param>
+		/// <param name="j"> Номер столбца. </param>
+		/// <returns> Результат приведения. </returns>
 		private string ToString(int i, int j)
 		{
 			Excel.Range rng = (Excel.Range)_sheet.Cells[i, j];
 			return rng.Value?.ToString() ?? "";
 		}
 
+		/// <summary>
+		/// Сохраняет данные.
+		/// </summary>
 		private void Save()
 		{
 			Save(new List<Kpi>() { Kpi });
 		}
 
+		/// <summary>
+		/// Сохраняет данные.
+		/// </summary>
+		/// <param name="kpi"> Файл "KPI". </param>
 		public void Save(Kpi kpi)
 		{
 			Save(new List<Kpi>() { kpi });

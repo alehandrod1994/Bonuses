@@ -103,6 +103,16 @@ namespace Bonuses.View.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap NewGroup3 {
+            get {
+                object obj = ResourceManager.GetObject("NewGroup3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NewGroup4 {
             get {
                 object obj = ResourceManager.GetObject("NewGroup4", resourceCulture);
@@ -163,9 +173,9 @@ namespace Bonuses.View.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap WordLogo_WB {
+        internal static System.Drawing.Bitmap WordLogo_BW {
             get {
-                object obj = ResourceManager.GetObject("WordLogo_WB", resourceCulture);
+                object obj = ResourceManager.GetObject("WordLogo_BW", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

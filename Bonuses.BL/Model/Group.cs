@@ -3,27 +3,40 @@ using System.Runtime.Serialization;
 
 namespace Bonuses.BL.Model
 {
-    [DataContract]
-    public class Group
-    {
-        public Group() { }
+	/// <summary>
+	/// Отдел.
+	/// </summary>
+	[DataContract]
+	public class Group
+	{
+		/// <summary>
+		/// Создаёт новый экземпляр класса Group.
+		/// </summary>
+		public Group() { }
 
-        public Group(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentNullException("Неверно задано название отдела.", nameof(name));
-            }
+		/// <summary>
+		/// Создаёт новый экземпляр класса Group.
+		/// </summary>
+		/// <param name="name"> Название. </param>
+		public Group(string name)
+		{
+			if (string.IsNullOrWhiteSpace(name))
+			{
+				throw new ArgumentNullException("Название отдела не может быть пустым.", nameof(name));
+			}
 
-            Name = name;
-        }
+			Name = name;
+		}
 
-        [DataMember]
-        public string Name { get; private set; }
+		/// <summary>
+		/// Название.
+		/// </summary>
+		[DataMember]
+		public string Name { get; private set; }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
+		public override string ToString()
+		{
+			return Name;
+		}
+	}
 }

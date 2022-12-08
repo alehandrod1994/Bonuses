@@ -2,8 +2,17 @@
 
 namespace Bonuses.BL.Model
 {
+	/// <summary>
+	/// Месяц.
+	/// </summary>
 	public class Month
 	{
+		/// <summary>
+		/// Создаёт новый экземпляр класса Month.
+		/// </summary>
+		/// <param name="number"> Номер. </param>
+		/// <param name="name"> Название. </param>
+		/// <param name="ofName"> Название в родительном падеже. </param>
 		public Month(int number, string name, string ofName)
 		{
 			if (number < 1 || number > 12)
@@ -26,8 +35,19 @@ namespace Bonuses.BL.Model
 			OfName = ofName;
 		}
 
+		/// <summary>
+		/// Номер.
+		/// </summary>
 		public int Number { get; }
+
+		/// <summary>
+		/// Название.
+		/// </summary>
 		public string Name { get; }
+
+		/// <summary>
+		/// Название в родительном падеже.
+		/// </summary>
 		public string OfName { get; }
 
 		public override string ToString()

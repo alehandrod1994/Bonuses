@@ -55,16 +55,6 @@ namespace Bonuses.BL.Controller
 			}
 
 			return path;
-		}
-
-		public void Import()
-		{
-			// Общий.
-		}
-
-		public void DragDrop()
-		{
-			// Общий.
-		}
+		}		
 	}
 }

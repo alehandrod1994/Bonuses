@@ -86,7 +86,7 @@ namespace Bonuses.View
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.NewGroup4;
+            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.NewGroup3;
             this.pictureBox1.Location = new System.Drawing.Point(10, 10);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(64, 64);
