@@ -126,8 +126,10 @@ namespace Bonuses.BL.Controller
 		{
 			try
 			{
-				_app = new Word.Application() { Visible = false };
-				_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
+				//_app = new Word.Application() { Visible = false };
+				_app = new Word.Application();
+				_doc = _app.Documents.Open(Report.Path, Visible: true);
+				//_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
 				_doc.Activate();
 				return true;
 			}
@@ -290,6 +292,7 @@ namespace Bonuses.BL.Controller
 			//table.Range.Bold = 0;
 
 			_location.InsertParagraphAfter();
+			_location.InsertParagraphAfter();
 			_location.SetRange(_location.End, _location.End);
 
 			_doc.Tables.Add(_location, 2, headers.Length);
@@ -300,36 +303,54 @@ namespace Bonuses.BL.Controller
 			for (int i = 1; i <= table.Columns.Count; i++)
 			{
 				table.Cell(1, i).Range.Text = headers[i - 1];
-			}
-
-			FormatTableWidth(headers);
+			}			
 		}
 
 		/// <summary>
-		/// Форматирует ширину таблицы.
+		/// Форматирует таблицу.
 		/// </summary>
 		/// <param name="headers"> Заголовки. </param>
-		private void FormatTableWidth(string[] headers)
+		private void FormatTable()
 		{
 			Word.Table table = _doc.Tables[1];
 
-			if (headers[0].Contains("№") || headers[0].Contains("Номер"))
-			{
-				int columnCount = headers.Length;
-				float firstColumnWidth = 30;
-				float tableWidth = 488;
-				table.Columns[1].PreferredWidth = firstColumnWidth;
-				float columnWidth = (tableWidth - firstColumnWidth) / (columnCount - 1);
+			//размеры столбцов: 36, 124, 143, 204, 157.
+			table.Columns[1].PreferredWidth = 27;
+			table.Columns[2].PreferredWidth = 92;
+			table.Columns[3].PreferredWidth = 106;
+			table.Columns[4].PreferredWidth = 151;
+			table.Columns[5].PreferredWidth = 117;
 
-				for (int i = 2; i <= table.Columns.Count; i++)
-				{
-					table.Columns[i].PreferredWidth = columnWidth;
-				}
-			}
-			else
+			table.Rows.Height = 60;
+			table.Rows[1].Height = 45;
+
+			//выравнивание всей таблицы должно быть по центру(по вертикали и по горизонтали)
+			table.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+			for (int i = 1; i <= table.Rows.Count; i++)
 			{
-				table.Columns.DistributeWidth();
-			}
+				table.Rows[i].Cells.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;				
+			}		
+
+			//шапка жирным шрифтом
+			table.Rows[1].Range.Bold = 1;
+
+			//if (headers[0].Contains("№") || headers[0].Contains("Номер"))
+			//{
+			//	int columnCount = headers.Length;
+			//	float firstColumnWidth = 30;
+			//	float tableWidth = 488;
+			//	table.Columns[1].PreferredWidth = firstColumnWidth;
+			//	float columnWidth = (tableWidth - firstColumnWidth) / (columnCount - 1);
+
+			//	for (int i = 2; i <= table.Columns.Count; i++)
+			//	{
+			//		table.Columns[i].PreferredWidth = columnWidth;
+			//	}
+			//}
+			//else
+			//{
+			//	table.Columns.DistributeWidth();
+			//}
 		}
 
 		/// <summary>
@@ -344,32 +365,6 @@ namespace Bonuses.BL.Controller
 
 			int linesCount = bonuses.Count;
 
-			//// Вариант: 2.2.2
-			//for (int i = 0; i < bonuses.Count; i++)
-			//{
-			//	if (CheckCancel.Invoke())
-			//	{
-			//		CancelCalculate();
-			//		return false;
-			//	}
-
-			//	table.Rows.Add();
-
-			//	table.Rows[i + 2].Cells[1].Range.Text = (i + 1).ToString();
-			//	table.Rows[i + 2].Cells[2].Range.Text = bonuses[i].Employee.Name;
-			//	table.Rows[i + 2].Cells[3].Range.Text = bonuses[i].Employee.Position.Name;
-			//	table.Rows[i + 2].Cells[4].Range.Text = bonuses[i].Detection.Description;
-			//	table.Rows[i + 2].Cells[5].Range.Text = bonuses[i].Count.ToString();
-
-			//	progress.Report(CalculateProgress(i + 1, linesCount));
-			//}
-
-			//int lastRowIndex = table.Rows.Count;
-			//table.Rows[lastRowIndex].Delete();
-
-
-
-			// Вариант: 2.2.1
 			for (int i = 0; i < bonuses.Count; i++)
 			{
 				if (CheckCancel.Invoke())
@@ -391,104 +386,7 @@ namespace Bonuses.BL.Controller
 
 			int lastRowIndex = table.Rows.Count;
 			table.Rows[lastRowIndex].Delete();
-
-
-
-			//// Вариант: 2.1.1
-			//for (int i = 0; i < bonuses.Count; i++)
-			//{
-			//    if (CheckCancel.Invoke())
-			//    {
-			//        CancelCalculate();
-			//        return false;
-			//    }
-
-			//    table.Cell(i + 2, 1).Range.Text = (i + 1).ToString();
-			//    table.Cell(i + 2, 2).Range.Text = bonuses[i].Employee.Name;
-			//    table.Cell(i + 2, 3).Range.Text = bonuses[i].Employee.Position.Name;
-			//    table.Cell(i + 2, 4).Range.Text = bonuses[i].Detection.Description;
-			//    table.Cell(i + 2, 5).Range.Text = bonuses[i].Count.ToString();
-
-			//    if (table.Rows.Count <= bonuses.Count)
-			//    {
-			//        table.Rows.Add();
-			//    }
-
-			//    progress.Report(CalculateProgress(i + 1, linesCount));
-			//}
-
-
-			//// Вариант: 2.1.2
-			//for (int i = 0; i < bonuses.Count; i++)
-			//{
-			//    if (CheckCancel.Invoke())
-			//    {
-			//        CancelCalculate();
-			//        return false;
-			//    }
-
-			//    table.Rows[i + 2].Cells[1].Range.Text = (i + 1).ToString();
-			//    table.Rows[i + 2].Cells[2].Range.Text = bonuses[i].Employee.Name;
-			//    table.Rows[i + 2].Cells[3].Range.Text = bonuses[i].Employee.Position.Name;
-			//    table.Rows[i + 2].Cells[4].Range.Text = bonuses[i].Detection.Description;
-			//    table.Rows[i + 2].Cells[5].Range.Text = bonuses[i].Count.ToString();
-
-			//    if (table.Rows.Count <= bonuses.Count)
-			//    {
-			//        table.Rows.Add();
-			//    }
-
-			//    progress.Report(CalculateProgress(i + 1, linesCount));
-			//}
-
-
-			//// Вариант: 1.1.1
-			//for (int i = 2; i <= table.Rows.Count; i++)
-			//{
-			//	if (CheckCancel.Invoke())
-			//	{
-			//		CancelCalculate();
-			//		return false;
-			//	}
-
-			//	table.Cell(i, 1).Range.Text = (i - 1).ToString();
-			//	table.Cell(i, 2).Range.Text = bonuses[i - 2].Employee.Name;
-			//	table.Cell(i, 3).Range.Text = bonuses[i - 2].Employee.Position.Name;
-			//	table.Cell(i, 4).Range.Text = bonuses[i - 2].Detection.Description;
-			//	table.Cell(i, 5).Range.Text = bonuses[i - 2].Count.ToString();
-
-			//	if (table.Rows.Count <= bonuses.Count)
-			//	{
-			//		table.Rows.Add();
-			//	}
-
-			//	progress.Report(CalculateProgress(i - 1, linesCount));
-			//}
-
-
-			//// Вариант: 1.1.2
-			//for (int i = 2; i <= table.Rows.Count; i++)
-			//{
-			//	if (CheckCancel.Invoke())
-			//	{
-			//		CancelCalculate();
-			//		return false;
-			//	}
-
-			//	table.Rows[i].Cells[1].Range.Text = (i - 1).ToString();
-			//	table.Rows[i].Cells[2].Range.Text = bonuses[i - 2].Employee.Name;
-			//	table.Rows[i].Cells[3].Range.Text = bonuses[i - 2].Employee.Position.Name;
-			//	table.Rows[i].Cells[4].Range.Text = bonuses[i - 2].Detection.Description;
-			//	table.Rows[i].Cells[5].Range.Text = bonuses[i - 2].Count.ToString();
-
-			//	if (table.Rows.Count <= bonuses.Count)
-			//	{
-			//		table.Rows.Add();
-			//	}
-
-			//	progress.Report(CalculateProgress(i - 1, linesCount));
-			//}
-
+			FormatTable();
 
 			return true;
 		}
