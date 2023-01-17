@@ -70,12 +70,13 @@ namespace Bonuses.View
 
 		private void AboutItem_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			var aboutForm = new AboutForm();
+			aboutForm.Show();
 		}
 
 		private void ManualItem_Click(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			MessageBox.Show("В разработке.");
 		}
 
 		private void CreateSourceData()
@@ -149,15 +150,15 @@ namespace Bonuses.View
 
 		private void AutoImportDate()
 		{
-			cbMonth.Text = _date.TodayMonth.Name;
-			tbYear.Text = _date.Year.ToString();
+			cbMonth.Text = _date.SelectedMonth.Name;
+			tbYear.Text = _date.SelectedYear.ToString();
 		}
 
 		private void AutoImportDocuments()
 		{
 			//string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
 
-			string kpiFileName = _kpiController.AutoImportKpi("KPI", _date.TodayMonth.Name, _date.TodayMonth.Name);
+			string kpiFileName = _kpiController.AutoImportKpi("KPI", _date.SelectedMonth.Name, _date.SelectedMonth.Name);
 			if (kpiFileName != "")
 			{
 				labelKpiFileName.Text = kpiFileName;
@@ -165,7 +166,7 @@ namespace Bonuses.View
 				btnKpi.Image = Properties.Resources.ExcelLogo;
 			}
 			
-			string reportFileName = _reportController.AutoImportReport("KPI", _date.TodayMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
+			string reportFileName = _reportController.AutoImportReport("KPI", _date.SelectedMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
 			if (reportFileName != "")
 			{
 				labelReportFileName.Text = reportFileName;
@@ -291,8 +292,8 @@ namespace Bonuses.View
 			_cancel = false;
 			Status status;
 
-			_date.TodayMonth = _date.Months[cbMonth.SelectedIndex];
-			_date.Year = Convert.ToInt32(tbYear.Text);
+			_date.SelectedMonth = _date.Months[cbMonth.SelectedIndex];
+			_date.SelectedYear = Convert.ToInt32(tbYear.Text);
 
 			var progress = new Progress<int>(value => progressBar1.Value = value);
 			status = await Task.Run(() => 
@@ -322,8 +323,6 @@ namespace Bonuses.View
 		{
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
-
-			// TODO: Начало анимации.
 			progressBar1.Left = _progressBarKpiPosition;
 			progressBar1.Value = 0;
 			progressBar1.Visible = true;
@@ -334,19 +333,6 @@ namespace Bonuses.View
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
 			progressBar1.Visible = false;
-		}
-
-		private bool CheckCalculateErrors(string result)
-		{
-			if (result != "Успешно.")
-			{
-				SetUIForEndCalculate();
-				ShowNoticeForm(result);
-				//ShowNoticeForm(result, 67, "");
-				return false;
-			}
-
-			return true;
 		}
 
 		private void ShutdownCalculate(Status status, string name)
@@ -421,15 +407,6 @@ namespace Bonuses.View
 				labelGroup.Text = group.Name;
 			}
 		}
-
-		//private void Kpi_OnNewEmployeeFinded(object sender, EventArgs e)
-		//{
-		//	if (sender is string employeeName)
-		//	{
-		//		AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(employeeName, _employeeController, _positionController, _kpiController);
-		//		addNewEmployeeForm.ShowDialog();
-		//	}
-		//}
 
 		private async void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
 		{
@@ -592,7 +569,7 @@ namespace Bonuses.View
 			}
 		}
 
-		private void btnReport_DragEnter(object sender, DragEventArgs e)
+		private void BtnReport_DragEnter(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
 			{
@@ -600,7 +577,7 @@ namespace Bonuses.View
 			}
 		}
 
-		private void btnReport_DragDrop(object sender, DragEventArgs e)
+		private void BtnReport_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 

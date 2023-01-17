@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\BonusController.cs" />
     <Compile Include="Controller\ControllerBase.cs" />
     <Compile Include="Controller\DetectionController.cs" />
     <Compile Include="Controller\DocumentController.cs" />
@@ -74,7 +73,6 @@
     <Compile Include="Model\Position.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\Status.cs" />
-    <Compile Include="Model\Table.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

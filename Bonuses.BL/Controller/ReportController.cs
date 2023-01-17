@@ -16,7 +16,7 @@ namespace Bonuses.BL.Controller
 	{
 		private Word.Application _app;
 		private Word.Document _doc;
-		private Word.Range _location;
+		private Word.Range _position;
 
 		private Status _status = Status.Start;
 		//private Logger _logger = LogManager.GetCurrentClassLogger();
@@ -101,7 +101,7 @@ namespace Bonuses.BL.Controller
 		}
 
 		/// <summary>
-		/// Проверяет расширение файла на соответствие документу Word, чтобы импортирует файл "О показателях" с помощью функции Drag&Drop.
+		/// Проверяет расширение файла на соответствие документу Word, чтобы импортировать файл "О показателях" с помощью функции Drag&Drop.
 		/// </summary>
 		/// <param name="path"> Полный путь файла. </param>
 		/// <returns> Название файла. </returns>
@@ -126,17 +126,16 @@ namespace Bonuses.BL.Controller
 		{
 			try
 			{
-				//_app = new Word.Application() { Visible = false };
-				_app = new Word.Application();
-				_doc = _app.Documents.Open(Report.Path, Visible: true);
-				//_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
+				_app = new Word.Application() { Visible = false };
+				//_app = new Word.Application();
+				//_doc = _app.Documents.Open(Report.Path, Visible: true);
+				_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
 				_doc.Activate();
 				return true;
 			}
 			catch
 			{
 				_status = Status.Failed;
-				//ShutdownCalculate?.Invoke(_messages[_status], null);
 				return false;
 			}
 		}
@@ -161,7 +160,6 @@ namespace Bonuses.BL.Controller
 			}
 			catch
 			{
-				//_logger.Info("Не удалось корректно закрыть файл \"О показателях (шаблон)\".");
 				return false;
 			}
 		}
@@ -172,7 +170,6 @@ namespace Bonuses.BL.Controller
 		private void CancelCalculate()
 		{
 			_status = Status.Cancel;
-			//ShutdownCalculate?.Invoke(_messages[_status], null);	
 		}
 
 		/// <summary>
@@ -190,7 +187,7 @@ namespace Bonuses.BL.Controller
 				return _status;
 			}
 
-			SetDate(date.TodayMonth);
+			SetDate(date);
 
 			if (_doc.Tables.Count < 2)
 			{
@@ -212,7 +209,7 @@ namespace Bonuses.BL.Controller
 			}
 
 			string directory = Directory.GetParent(Report.Path).FullName;
-			string newFileName = $"О показателях {group.Name} {date.TodayMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
+			string newFileName = $"О показателях {group.Name} {date.SelectedMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
 			string newFilePath = $"{directory}\\{newFileName}";
 
 			try
@@ -235,19 +232,22 @@ namespace Bonuses.BL.Controller
 		/// <summary>
 		/// Прописывает все даты в документе.
 		/// </summary>
-		private void SetDate(Month month)
+		private void SetDate(Date date)
 		{
-			object findText = "<!DocDate>";
-			object replacementText = $"от  \"{DateTime.Now.Day}\" {month.OfName} {DateTime.Now.Year} года";
-			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			var todayMonth = date.GetTodayMonth();
+			var todayYear = DateTime.Today.Year;
 
-			findText = "<!DescriptionMonth>";
-			replacementText = $"за {month.Name.ToLower()} месяц {DateTime.Now.Year} г";
-			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			object findText = "[!DocDate]";
+			object replacementText = $"от  \"{DateTime.Now.Day}\" {todayMonth.OfName} {todayYear} года";
+			_position = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
-			findText = "<!HeaderMonth>";
-			replacementText = $"за  {month.Name} {DateTime.Now.Year} года";
-			_location = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+			findText = "[!DescriptionMonth]";
+			replacementText = $"за {date.SelectedMonth.Name.ToLower()} месяц {date.SelectedYear} г";
+			_position = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
+
+			findText = "[!HeaderMonth]";
+			replacementText = $"за  {date.SelectedMonth.Name} {date.SelectedYear} года";
+			_position = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 		}
 
 		/// <summary>
@@ -291,11 +291,11 @@ namespace Bonuses.BL.Controller
 			//table.Range.Font.Size = 10.5f;
 			//table.Range.Bold = 0;
 
-			_location.InsertParagraphAfter();
-			_location.InsertParagraphAfter();
-			_location.SetRange(_location.End, _location.End);
+			_position.InsertParagraphAfter();
+			_position.InsertParagraphAfter();
+			_position.SetRange(_position.End, _position.End);
 
-			_doc.Tables.Add(_location, 2, headers.Length);
+			_doc.Tables.Add(_position, 2, headers.Length);
 			Word.Table table = _doc.Tables[1];
 			table.Borders.Enable = 1;			
 			table.Range.Font.Size = 10.5f;
@@ -324,14 +324,12 @@ namespace Bonuses.BL.Controller
 			table.Rows.Height = 60;
 			table.Rows[1].Height = 45;
 
-			//выравнивание всей таблицы должно быть по центру(по вертикали и по горизонтали)
 			table.Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
 			for (int i = 1; i <= table.Rows.Count; i++)
 			{
 				table.Rows[i].Cells.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;				
 			}		
 
-			//шапка жирным шрифтом
 			table.Rows[1].Range.Bold = 1;
 
 			//if (headers[0].Contains("№") || headers[0].Contains("Номер"))
@@ -367,7 +365,7 @@ namespace Bonuses.BL.Controller
 
 			for (int i = 0; i < bonuses.Count; i++)
 			{
-				if (CheckCancel.Invoke())
+				if ((bool)(CheckCancel?.Invoke()))
 				{
 					CancelCalculate();
 					return false;

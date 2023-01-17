@@ -29,8 +29,8 @@ namespace Bonuses.BL.Model
 				new Month(12, "Декабрь", "Декабря")
 			};
 
-			TodayMonth = GetTodayMonth();
-			Year = DateTime.Today.Year;
+			SelectedMonth = GetTodayMonth();
+			SelectedYear = DateTime.Today.Year;
 		}
 
 		/// <summary>
@@ -39,14 +39,14 @@ namespace Bonuses.BL.Model
 		public Month[] Months { get; }
 
 		/// <summary>
-		/// Текущий месяц.
+		/// Выбранный месяц.
 		/// </summary>
-		public Month TodayMonth { get; set; }
+		public Month SelectedMonth { get; set; }
 
 		/// <summary>
-		/// Год.
+		/// Выбранный год.
 		/// </summary>
-		public int Year { get; set; }
+		public int SelectedYear { get; set; }
 
 		/// <summary>
 		/// Возвращает текущий месяц.

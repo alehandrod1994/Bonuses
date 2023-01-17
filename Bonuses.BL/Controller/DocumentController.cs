@@ -5,8 +5,20 @@ using System.IO;
 
 namespace Bonuses.BL.Controller
 {
+	/// <summary>
+	/// Базовый контроллер документа.
+	/// </summary>
 	public abstract class DocumentController : ControllerBase
 	{
+		/// <summary>
+		/// Автоматически импортирует файл.
+		/// </summary>
+		/// <param name="sourceFolder"> Исходная папка. </param>
+		/// <param name="keyFolder"> Ключевая фраза для поиска папки. </param>
+		/// <param name="month"> Месяц. </param>
+		/// <param name="keyFile"> Ключевая фраза для поиска файла. </param>
+		/// <param name="extention"> Расширение. </param>
+		/// <returns> Путь к файлу. </returns>
 		protected string AutoImport(string sourceFolder, string keyFolder, string month, string keyFile, string extention)
 		{
 			string path;
@@ -23,6 +35,13 @@ namespace Bonuses.BL.Controller
 			return path;
 		}
 
+		/// <summary>
+		/// Ищет папку.
+		/// </summary>
+		/// <param name="sourceFolder"> Исходная папка. </param>
+		/// <param name="keyFolder"> Ключевая фраза для поиска папки. </param>
+		/// <param name="month"> Месяц. </param>
+		/// <returns> Путь к папке. </returns>
 		private string FindDirectories(string sourceFolder, string keyFolder, string month)
 		{
 			string nextFolder = "";
@@ -40,6 +59,13 @@ namespace Bonuses.BL.Controller
 			return nextFolder;
 		}
 
+		/// <summary>
+		/// Ищет файл.
+		/// </summary>
+		/// <param name="sourceFolder"> Исходная папка. </param>
+		/// <param name="keyFile"> Ключевая фраза для поиска файла. </param>
+		/// <param name="extention"> Расширение. </param>
+		/// <returns> Путь к файлу. </returns>
 		private string FindFiles(string sourceFolder, string keyFile, string extention)
 		{
 			string path = "";

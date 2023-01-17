@@ -93,6 +93,26 @@ namespace Bonuses.View.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_graph_512 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-graph-512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_graph_64 {
+            get {
+                object obj = ResourceManager.GetObject("icons8-graph-64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NewEmployee {
             get {
                 object obj = ResourceManager.GetObject("NewEmployee", resourceCulture);

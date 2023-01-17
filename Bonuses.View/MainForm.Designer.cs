@@ -62,21 +62,18 @@ namespace Bonuses.View
             this.labelKpi = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.label1 = new System.Windows.Forms.Label();
             this.panelDetections = new System.Windows.Forms.Panel();
             this.btnCancelDetections = new System.Windows.Forms.Button();
             this.btnSaveDetections = new System.Windows.Forms.Button();
             this.tableDetections = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelDetections = new System.Windows.Forms.Label();
             this.panelEmployees = new System.Windows.Forms.Panel();
             this.btnCancelEmployees = new System.Windows.Forms.Button();
             this.btnSaveEmployees = new System.Windows.Forms.Button();
             this.tableEmployees = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.labelEmployees = new System.Windows.Forms.Label();
             this.panelSettings = new System.Windows.Forms.Panel();
             this.btnChooseDirectoryReport = new System.Windows.Forms.Button();
             this.btnChooseDirectoryKpi = new System.Windows.Forms.Button();
@@ -111,7 +108,7 @@ namespace Bonuses.View
             // 
             this.btnCalculate.BackColor = System.Drawing.Color.Navy;
             this.btnCalculate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCalculate.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCalculate.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCalculate.ForeColor = System.Drawing.Color.White;
             this.btnCalculate.Location = new System.Drawing.Point(445, 500);
             this.btnCalculate.Name = "btnCalculate";
@@ -159,7 +156,7 @@ namespace Bonuses.View
             // 
             this.btnSettings.FlatAppearance.BorderSize = 0;
             this.btnSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSettings.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSettings.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSettings.ForeColor = System.Drawing.SystemColors.Window;
             this.btnSettings.Location = new System.Drawing.Point(0, 203);
             this.btnSettings.Name = "btnSettings";
@@ -238,7 +235,7 @@ namespace Bonuses.View
             // 
             this.btnDetections.FlatAppearance.BorderSize = 0;
             this.btnDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDetections.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDetections.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnDetections.ForeColor = System.Drawing.SystemColors.Window;
             this.btnDetections.Location = new System.Drawing.Point(0, 161);
             this.btnDetections.Name = "btnDetections";
@@ -252,7 +249,7 @@ namespace Bonuses.View
             // 
             this.btnEmployees.FlatAppearance.BorderSize = 0;
             this.btnEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEmployees.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnEmployees.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnEmployees.ForeColor = System.Drawing.SystemColors.Window;
             this.btnEmployees.Location = new System.Drawing.Point(0, 119);
             this.btnEmployees.Name = "btnEmployees";
@@ -266,7 +263,7 @@ namespace Bonuses.View
             // 
             this.btnMain.FlatAppearance.BorderSize = 0;
             this.btnMain.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMain.Font = new System.Drawing.Font("Bahnschrift Light", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnMain.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnMain.ForeColor = System.Drawing.SystemColors.Window;
             this.btnMain.Location = new System.Drawing.Point(0, 77);
             this.btnMain.Name = "btnMain";
@@ -295,7 +292,6 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.progressBar1);
-            this.panelMain.Controls.Add(this.label1);
             this.panelMain.Location = new System.Drawing.Point(200, 23);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1046, 669);
@@ -438,8 +434,8 @@ namespace Bonuses.View
             this.btnReport.TabIndex = 10;
             this.btnReport.UseVisualStyleBackColor = true;
             this.btnReport.Click += new System.EventHandler(this.BtnReport_Click);
-            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.btnReport_DragDrop);
-            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.btnReport_DragEnter);
+            this.btnReport.DragDrop += new System.Windows.Forms.DragEventHandler(this.BtnReport_DragDrop);
+            this.btnReport.DragEnter += new System.Windows.Forms.DragEventHandler(this.BtnReport_DragEnter);
             // 
             // btnKpi
             // 
@@ -497,22 +493,11 @@ namespace Bonuses.View
             this.progressBar1.TabIndex = 5;
             this.progressBar1.Visible = false;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(517, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(94, 25);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Главная";
-            // 
             // panelDetections
             // 
             this.panelDetections.Controls.Add(this.btnCancelDetections);
             this.panelDetections.Controls.Add(this.btnSaveDetections);
             this.panelDetections.Controls.Add(this.tableDetections);
-            this.panelDetections.Controls.Add(this.labelDetections);
             this.panelDetections.Location = new System.Drawing.Point(200, 23);
             this.panelDetections.Name = "panelDetections";
             this.panelDetections.Size = new System.Drawing.Size(1046, 669);
@@ -522,7 +507,7 @@ namespace Bonuses.View
             // btnCancelDetections
             // 
             this.btnCancelDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancelDetections.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelDetections.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCancelDetections.ForeColor = System.Drawing.Color.Navy;
             this.btnCancelDetections.Location = new System.Drawing.Point(505, 500);
             this.btnCancelDetections.Name = "btnCancelDetections";
@@ -536,7 +521,7 @@ namespace Bonuses.View
             // 
             this.btnSaveDetections.BackColor = System.Drawing.Color.Navy;
             this.btnSaveDetections.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveDetections.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveDetections.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSaveDetections.ForeColor = System.Drawing.SystemColors.Window;
             this.btnSaveDetections.Location = new System.Drawing.Point(346, 500);
             this.btnSaveDetections.Name = "btnSaveDetections";
@@ -586,22 +571,11 @@ namespace Bonuses.View
             this.dataGridViewTextBoxColumn2.HeaderText = "Описание";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             // 
-            // labelDetections
-            // 
-            this.labelDetections.AutoSize = true;
-            this.labelDetections.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelDetections.Location = new System.Drawing.Point(485, 0);
-            this.labelDetections.Name = "labelDetections";
-            this.labelDetections.Size = new System.Drawing.Size(126, 25);
-            this.labelDetections.TabIndex = 0;
-            this.labelDetections.Text = "Нарушения";
-            // 
             // panelEmployees
             // 
             this.panelEmployees.Controls.Add(this.btnCancelEmployees);
             this.panelEmployees.Controls.Add(this.btnSaveEmployees);
             this.panelEmployees.Controls.Add(this.tableEmployees);
-            this.panelEmployees.Controls.Add(this.labelEmployees);
             this.panelEmployees.Location = new System.Drawing.Point(200, 23);
             this.panelEmployees.Name = "panelEmployees";
             this.panelEmployees.Size = new System.Drawing.Size(1046, 669);
@@ -611,7 +585,7 @@ namespace Bonuses.View
             // btnCancelEmployees
             // 
             this.btnCancelEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancelEmployees.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelEmployees.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCancelEmployees.ForeColor = System.Drawing.Color.Navy;
             this.btnCancelEmployees.Location = new System.Drawing.Point(505, 500);
             this.btnCancelEmployees.Name = "btnCancelEmployees";
@@ -625,7 +599,7 @@ namespace Bonuses.View
             // 
             this.btnSaveEmployees.BackColor = System.Drawing.Color.Navy;
             this.btnSaveEmployees.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveEmployees.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveEmployees.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSaveEmployees.ForeColor = System.Drawing.SystemColors.Window;
             this.btnSaveEmployees.Location = new System.Drawing.Point(346, 500);
             this.btnSaveEmployees.Name = "btnSaveEmployees";
@@ -676,16 +650,6 @@ namespace Bonuses.View
             this.Column2.HeaderText = "Должность";
             this.Column2.Name = "Column2";
             // 
-            // labelEmployees
-            // 
-            this.labelEmployees.AutoSize = true;
-            this.labelEmployees.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelEmployees.Location = new System.Drawing.Point(480, 0);
-            this.labelEmployees.Name = "labelEmployees";
-            this.labelEmployees.Size = new System.Drawing.Size(131, 25);
-            this.labelEmployees.TabIndex = 1;
-            this.labelEmployees.Text = "Сотрудники";
-            // 
             // panelSettings
             // 
             this.panelSettings.Controls.Add(this.btnChooseDirectoryReport);
@@ -726,7 +690,7 @@ namespace Bonuses.View
             // btnCancelSettings
             // 
             this.btnCancelSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCancelSettings.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCancelSettings.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnCancelSettings.ForeColor = System.Drawing.Color.Navy;
             this.btnCancelSettings.Location = new System.Drawing.Point(505, 500);
             this.btnCancelSettings.Name = "btnCancelSettings";
@@ -740,7 +704,7 @@ namespace Bonuses.View
             // 
             this.btnSaveSettings.BackColor = System.Drawing.Color.Navy;
             this.btnSaveSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaveSettings.Font = new System.Drawing.Font("Bahnschrift", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSaveSettings.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSaveSettings.ForeColor = System.Drawing.SystemColors.Window;
             this.btnSaveSettings.Location = new System.Drawing.Point(346, 500);
             this.btnSaveSettings.Name = "btnSaveSettings";
@@ -886,10 +850,8 @@ namespace Bonuses.View
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.panelDetections.ResumeLayout(false);
-            this.panelDetections.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableDetections)).EndInit();
             this.panelEmployees.ResumeLayout(false);
-            this.panelEmployees.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tableEmployees)).EndInit();
             this.panelSettings.ResumeLayout(false);
             this.panelSettings.PerformLayout();
@@ -909,8 +871,6 @@ namespace Bonuses.View
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Panel panelDetections;
         private System.Windows.Forms.Button btnTest;
-        private System.Windows.Forms.Label labelDetections;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCancelDetections;
         private System.Windows.Forms.Button btnSaveDetections;
         private System.Windows.Forms.DataGridView tableDetections;
@@ -923,7 +883,6 @@ namespace Bonuses.View
         private System.Windows.Forms.Button btnCancelEmployees;
         private System.Windows.Forms.Button btnSaveEmployees;
         private System.Windows.Forms.DataGridView tableEmployees;
-        private System.Windows.Forms.Label labelEmployees;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Panel panelGroup;

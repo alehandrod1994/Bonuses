@@ -28,7 +28,7 @@ namespace Bonuses.BL.Controller
 		private int _employeeIndex;
 		private Dictionary<int, Detection> _detectionColumnIndexes;
 
-		// <summary>
+		/// <summary>
 		/// Создаёт новый контроллер документа "KPI".
 		/// </summary>
 		public KpiController()
@@ -108,7 +108,7 @@ namespace Bonuses.BL.Controller
 		}
 
 		/// <summary>
-		/// Проверяет расширение файла на соответствие документу Excel, чтобы импортирует файл "KPI" с помощью функции Drag&Drop.
+		/// Проверяет расширение файла на соответствие документу Excel, чтобы импортировать файл "KPI" с помощью функции Drag&Drop.
 		/// </summary>
 		/// <param name="path"> Полный путь файла. </param>
 		/// <returns> Название файла. </returns>
@@ -139,10 +139,7 @@ namespace Bonuses.BL.Controller
 			}
 			catch
 			{
-				//var message = new KeyValuePair<Status, string>(_status, _messages[_status]);
-
 				_status = Status.Failed;
-				//ShutdownCalculate?.Invoke(_messages[_status], null);
 				return false;
 			}
 			_sheet = null;
@@ -184,10 +181,10 @@ namespace Bonuses.BL.Controller
 			}
 
 			if (_status != Status.NewEmployeeFound && !SetBonusesSourceData(detections))
-			{
+			{								
 				_status = Status.UnknownData;
 				CloseConnection();
-				return _status;
+				return _status;				
 			}
 
 			if (!CalculateBonuses(employeeController, progress))
@@ -214,7 +211,7 @@ namespace Bonuses.BL.Controller
 
 			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
 			{
-				if (CheckCancel.Invoke())
+				if ((bool)(CheckCancel?.Invoke()))
 				{
 					CancelCalculate();
 					return false;
@@ -241,11 +238,8 @@ namespace Bonuses.BL.Controller
 						}
 						else
 						{
-							employeeController.NewEmployee = employeeName;
-							
+							employeeController.NewEmployee = employeeName;							
 							_status = Status.NewEmployeeFound;
-							//OnNewEmployeeFinded?.Invoke(employeeName, null);
-
 							return false;
 						}						
 					}
@@ -275,7 +269,6 @@ namespace Bonuses.BL.Controller
 		public void CancelCalculate()
 		{
 			_status = Status.Cancel;
-			//ShutdownCalculate?.Invoke(_messages[_status], null);
 		}
 
 		/// <summary>

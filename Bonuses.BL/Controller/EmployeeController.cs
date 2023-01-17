@@ -74,22 +74,6 @@ namespace Bonuses.BL.Controller
 		/// <returns> Список сотрудников. </returns>
 		private List<Employee> GetEmployees()
 		{
-			//var employees = new List<Employee>();
-			//using (var sr = new StreamReader("Employees.txt", Encoding.UTF8))
-			//{
-			//    while (!sr.EndOfStream)
-			//    {
-			//        string item = sr.ReadLine();
-			//        int index = item.IndexOf("=");
-			//        string name = item.Substring(0, index);
-			//        string position = item.Substring(index + 1);
-			//        var employee = new Employee(name, position);
-			//        employees.Add(employee);
-			//    }
-
-			//    return employees;
-			//}
-
 			return Load<Employee>() ?? new List<Employee>();
 		}
 
@@ -98,14 +82,8 @@ namespace Bonuses.BL.Controller
 		/// </summary>
 		private void Save()
 		{
-			//using (var sw = new StreamWriter("Employees.txt", true, Encoding.UTF8))
-			//{
-			//    sw.WriteLine("Бизюр Ольга Викторовна=Диспетчер ГПУ ОТБ отдела ИТСБ СТАБ");
-			//}
 
 			Save(Employees);
-		}
-
-	   
+		}	   
 	}
 }
