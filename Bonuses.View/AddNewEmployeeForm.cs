@@ -50,7 +50,7 @@ namespace Bonuses.View
 
         private void AddNewEmployeeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _kpiController.CancelCalculate();
+            //_kpiController.CancelCalculate();
         }
 
         private void labelHelp_Click(object sender, EventArgs e)

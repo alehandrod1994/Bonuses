@@ -314,12 +314,11 @@ namespace Bonuses.BL.Controller
 		{
 			Word.Table table = _doc.Tables[1];
 
-			//размеры столбцов: 36, 124, 143, 204, 157.
-			table.Columns[1].PreferredWidth = 27;
-			table.Columns[2].PreferredWidth = 92;
-			table.Columns[3].PreferredWidth = 106;
-			table.Columns[4].PreferredWidth = 151;
-			table.Columns[5].PreferredWidth = 117;
+			int[] columnsWidth = new int[] { 27, 92, 106, 151, 117 };
+			for (int i = 1; i <= table.Columns.Count; i++)
+			{
+				table.Columns[i].PreferredWidth = columnsWidth[i - 1];
+			}			
 
 			table.Rows.Height = 60;
 			table.Rows[1].Height = 45;

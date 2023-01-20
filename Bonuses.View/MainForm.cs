@@ -97,8 +97,8 @@ namespace Bonuses.View
 
 			if (_groupController.Group.Name == null)
 			{
-				AddGroupForm addGroupForm = new AddGroupForm(_groupController);
-				addGroupForm.ShowDialog();
+				var form = new AddGroupForm(_groupController);
+				form.ShowDialog();
 			}
 			else
 			{
@@ -216,22 +216,21 @@ namespace Bonuses.View
 
 		private bool CheckErrors()
 		{
-			string errorDescription = "";
+			string warningDescription = "";
 
 			if (ParseInt(tbYear.Text) < 2000)
 			{
-				ShowNoticeForm("Неверно задана дата");
+				ShowWarningForm("Неверно задана дата");
 				//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
 				return false;
 			}
 
-			if (_kpiController.Kpi.Path == "") errorDescription += "KPI\n";
-			if (_reportController.Report.Path == "") errorDescription += "О показателях\n";
+			if (_kpiController.Kpi.Path == "") warningDescription += "KPI\n";
+			if (_reportController.Report.Path == "") warningDescription += "О показателях\n";
 
-			if (errorDescription != "")
+			if (warningDescription != "")
 			{
-				ShowNoticeForm("Не загружены файлы:\n" + errorDescription);
-				//ShowNoticeForm("Не загружены файлы:", 27, errorDescription);
+				ShowWarningForm("Не загружены файлы:\n" + warningDescription);
 				return false;
 			}
 
@@ -281,23 +280,22 @@ namespace Bonuses.View
 		{
 			if (CheckErrors())
 			{
-				await CalculateAsync();
+				await CalculateAsync(Status.Start);
 			}
 		}
 
-		private async Task CalculateAsync()
+		private async Task CalculateAsync(Status status)
 		{
 			SetUIForStartCalculate();
 
 			_cancel = false;
-			Status status;
 
 			_date.SelectedMonth = _date.Months[cbMonth.SelectedIndex];
 			_date.SelectedYear = Convert.ToInt32(tbYear.Text);
 
 			var progress = new Progress<int>(value => progressBar1.Value = value);
 			status = await Task.Run(() => 
-			_kpiController.StartCalculateBonuses(_employeeController, _detectionController.Detections, progress));
+			_kpiController.StartCalculateBonuses(_employeeController, _detectionController.Detections, status, progress));
 			if (status != Status.Success)
 			{
 				ShutdownCalculate(status, _kpiController.Kpi.Name);
@@ -346,7 +344,7 @@ namespace Bonuses.View
 					break;
 
 				case Status.Failed:
-					ShowNoticeForm($"{_messages[status]} \"{name}\"");
+					ShowWarningForm($"{_messages[status]} \"{name}\"");
 					//ShowNoticeForm($"{_messages[status]} \"{name}\"", 67, "");
 					break;
 
@@ -354,7 +352,7 @@ namespace Bonuses.View
 					break;
 
 				default:
-					ShowNoticeForm(_messages[status]);
+					ShowWarningForm(_messages[status]);
 					//ShowNoticeForm(_messages[status], 67, "");
 					break;
 			}
@@ -375,28 +373,34 @@ namespace Bonuses.View
 
 		private void ShowNoticeForm(string noticeDescription)
 		{
-			NoticeForm noticeForm = new NoticeForm(noticeDescription);
-			noticeForm.Show();
+			var form = new NoticeForm(noticeDescription);
+			form.Show();
 		}
 
-		private void ShowNoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
+		private void ShowWarningForm(string warningDescription)
 		{
-			NoticeForm noticeForm = new NoticeForm(noticeTitle, noticeTitleHeight, noticeDescription);
-			noticeForm.Show();
+			var form = new WarningForm(warningDescription);
+			form.Show();
+		}
+
+		private void ShowWarningForm(string warningTitle, int warningTitleHeight, string warningDescription)
+		{
+			var form = new WarningForm(warningTitle, warningTitleHeight, warningDescription);
+			form.Show();
 		}
 
 		private void ShowSuccessfullyForm(string newPath)
 		{
-			SuccessfullyForm successfullyForm = new SuccessfullyForm(newPath);
-			successfullyForm.Show();
+			var form = new SuccessfullyForm(newPath);
+			form.Show();
 		}
 
 		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController, KpiController _kpiController)
 		{
 			if (_employeeController.NewEmployee != "")
 			{
-				AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm(_employeeController, _positionController, _kpiController);
-				addNewEmployeeForm.ShowDialog();
+				var form = new AddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+				form.ShowDialog();
 			}
 		}
 
@@ -410,7 +414,7 @@ namespace Bonuses.View
 
 		private async void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
 		{
-			await CalculateAsync();
+			await CalculateAsync(Status.NewEmployeeFound);
 		}
 
 		private void BtnApplyGroup_Click(object sender, EventArgs e)
@@ -448,7 +452,7 @@ namespace Bonuses.View
 				}
 				else if (string.IsNullOrWhiteSpace(column1) || string.IsNullOrWhiteSpace(column2))
 				{
-					ShowNoticeForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}");
+					ShowWarningForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}");
 					return false;
 				}
 
@@ -476,15 +480,8 @@ namespace Bonuses.View
 			}
 
 			_employeeController.ReWrite(employees);
-			_positionController.ReWrite(employees);
-
-			//bool result = _employeeController.ReWrite(employees);
-			//if (result == true)
-			//{
-			//	_positionController.ReWrite(employees);
-			//	ShowNoticeForm("Сохранено!", 67, "");
-			//}
-
+			_positionController.ReWrite(employees);				
+			ShowNoticeForm("Данные успешно сохранены.");           
 		}
 
 		private void BtnCancelEmployees_Click(object sender, EventArgs e)
@@ -494,7 +491,10 @@ namespace Bonuses.View
 
 		private void BtnSaveDetections_Click(object sender, EventArgs e)
 		{
-			FormatTable(tableDetections);
+			if (!FormatTable(tableDetections))
+			{
+				return;
+			}
 
 			var detections = new List<Detection>();
 			for (int i = 0; i < tableDetections.RowCount - 1; i++)
@@ -505,12 +505,7 @@ namespace Bonuses.View
 			}
 
 			_detectionController.ReWrite(detections);
-
-			//bool result = _detectionController.ReWrite(detections);
-			//if (result == true)
-			//{
-			//	ShowNoticeForm("Сохранено!", 67, "");
-			//}
+			ShowNoticeForm("Данные успешно сохранены.");
 		}
 
 		private void BtnCancelDetections_Click(object sender, EventArgs e)
@@ -640,6 +635,8 @@ namespace Bonuses.View
 			var report = new Report() { SourceDirectory = tbReportSourceDirectory.Text };
 			_reportController.Save(report);
 			_reportController.Report.SourceDirectory = report.SourceDirectory;
+
+			ShowNoticeForm("Данные успешно сохранены.");
 		}
 
 		private void btnCancelSettings_Click(object sender, EventArgs e)

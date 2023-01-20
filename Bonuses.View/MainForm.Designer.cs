@@ -292,7 +292,7 @@ namespace Bonuses.View
             this.panelMain.Controls.Add(this.btnCalculate);
             this.panelMain.Controls.Add(this.btnCancel);
             this.panelMain.Controls.Add(this.progressBar1);
-            this.panelMain.Location = new System.Drawing.Point(200, 23);
+            this.panelMain.Location = new System.Drawing.Point(200, 24);
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1046, 669);
             this.panelMain.TabIndex = 3;
@@ -498,7 +498,7 @@ namespace Bonuses.View
             this.panelDetections.Controls.Add(this.btnCancelDetections);
             this.panelDetections.Controls.Add(this.btnSaveDetections);
             this.panelDetections.Controls.Add(this.tableDetections);
-            this.panelDetections.Location = new System.Drawing.Point(200, 23);
+            this.panelDetections.Location = new System.Drawing.Point(200, 24);
             this.panelDetections.Name = "panelDetections";
             this.panelDetections.Size = new System.Drawing.Size(1046, 669);
             this.panelDetections.TabIndex = 5;
@@ -576,7 +576,7 @@ namespace Bonuses.View
             this.panelEmployees.Controls.Add(this.btnCancelEmployees);
             this.panelEmployees.Controls.Add(this.btnSaveEmployees);
             this.panelEmployees.Controls.Add(this.tableEmployees);
-            this.panelEmployees.Location = new System.Drawing.Point(200, 23);
+            this.panelEmployees.Location = new System.Drawing.Point(200, 24);
             this.panelEmployees.Name = "panelEmployees";
             this.panelEmployees.Size = new System.Drawing.Size(1046, 669);
             this.panelEmployees.TabIndex = 7;
@@ -660,7 +660,7 @@ namespace Bonuses.View
             this.panelSettings.Controls.Add(this.tbKpiSouceDirectory);
             this.panelSettings.Controls.Add(this.labelReportSourceDirectory);
             this.panelSettings.Controls.Add(this.labelKpiSouceDirectory);
-            this.panelSettings.Location = new System.Drawing.Point(200, 23);
+            this.panelSettings.Location = new System.Drawing.Point(200, 24);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(1046, 669);
             this.panelSettings.TabIndex = 8;

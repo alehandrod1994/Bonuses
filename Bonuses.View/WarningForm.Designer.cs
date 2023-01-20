@@ -1,7 +1,7 @@
 ﻿
 namespace Bonuses.View
 {
-    partial class NoticeForm
+    partial class WarningForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,34 +29,34 @@ namespace Bonuses.View
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoticeForm));
-            this.labelNoticeTitle = new System.Windows.Forms.Label();
-            this.labelNoticeDescription = new System.Windows.Forms.Label();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WarningForm));
+            this.labelWarningTitle = new System.Windows.Forms.Label();
+            this.labelWarningDescription = new System.Windows.Forms.Label();
             this.btnOK = new System.Windows.Forms.Button();
             this.labelHelp = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // labelNoticeTitle
+            // labelWarningTitle
             // 
-            this.labelNoticeTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelNoticeTitle.Location = new System.Drawing.Point(80, 10);
-            this.labelNoticeTitle.Name = "labelNoticeTitle";
-            this.labelNoticeTitle.Size = new System.Drawing.Size(431, 27);
-            this.labelNoticeTitle.TabIndex = 20;
-            this.labelNoticeTitle.Text = "Уведомление";
-            this.labelNoticeTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.labelWarningTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelWarningTitle.Location = new System.Drawing.Point(80, 10);
+            this.labelWarningTitle.Name = "labelWarningTitle";
+            this.labelWarningTitle.Size = new System.Drawing.Size(431, 27);
+            this.labelWarningTitle.TabIndex = 20;
+            this.labelWarningTitle.Text = "Ошибка!";
+            this.labelWarningTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // labelNoticeDescription
+            // labelWarningDescription
             // 
-            this.labelNoticeDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelNoticeDescription.Location = new System.Drawing.Point(80, 85);
-            this.labelNoticeDescription.Name = "labelNoticeDescription";
-            this.labelNoticeDescription.Size = new System.Drawing.Size(430, 123);
-            this.labelNoticeDescription.TabIndex = 21;
-            this.labelNoticeDescription.Text = "Информация";
-            this.labelNoticeDescription.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.labelWarningDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelWarningDescription.Location = new System.Drawing.Point(80, 85);
+            this.labelWarningDescription.Name = "labelWarningDescription";
+            this.labelWarningDescription.Size = new System.Drawing.Size(430, 123);
+            this.labelWarningDescription.TabIndex = 21;
+            this.labelWarningDescription.Text = "Информация";
+            this.labelWarningDescription.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnOK
             // 
@@ -87,7 +87,7 @@ namespace Bonuses.View
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.icons8_save_96;
+            this.pictureBox1.Image = global::Bonuses.View.Properties.Resources.notice2;
             this.pictureBox1.Location = new System.Drawing.Point(10, 10);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(64, 64);
@@ -95,7 +95,7 @@ namespace Bonuses.View
             this.pictureBox1.TabIndex = 22;
             this.pictureBox1.TabStop = false;
             // 
-            // NoticeForm
+            // WarningForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -104,13 +104,13 @@ namespace Bonuses.View
             this.ClientSize = new System.Drawing.Size(584, 361);
             this.Controls.Add(this.labelHelp);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.labelNoticeTitle);
+            this.Controls.Add(this.labelWarningTitle);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.labelNoticeDescription);
+            this.Controls.Add(this.labelWarningDescription);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "NoticeForm";
+            this.Name = "WarningForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Уведомление";
+            this.Text = "Ошибка";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -119,9 +119,9 @@ namespace Bonuses.View
 
         #endregion
 
-        private System.Windows.Forms.Label labelNoticeTitle;
+        private System.Windows.Forms.Label labelWarningTitle;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label labelNoticeDescription;
+        private System.Windows.Forms.Label labelWarningDescription;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label labelHelp;
     }

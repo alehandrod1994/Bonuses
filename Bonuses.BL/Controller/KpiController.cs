@@ -173,8 +173,10 @@ namespace Bonuses.BL.Controller
 		/// <param name="detections"> Список нарушений. </param>
 		/// <param name="progress"> Прогресс выполнения подсчёта. </param>
 		/// <returns> Статус выполнения подсчёта. </returns>
-		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, IProgress<int> progress)
+		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, Status status, IProgress<int> progress)
 		{
+			_status = status;
+
 			if (!OpenConnection())
 			{
 				return _status;

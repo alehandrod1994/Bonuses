@@ -9,16 +9,7 @@ namespace Bonuses.View
         {
             InitializeComponent();
 
-            labelNoticeTitle.Text = "Ошибка!";
-            labelNoticeDescription.Text = noticeDescription;
-        }
-
-        public NoticeForm(string noticeTitle, int noticeTitleHeight, string noticeDescription)
-        {
-            InitializeComponent();
-
-            labelNoticeTitle.Text = noticeTitle;
-            labelNoticeTitle.Height = noticeTitleHeight;
+            labelNoticeTitle.Text = "Уведомление";
             labelNoticeDescription.Text = noticeDescription;
         }
 
