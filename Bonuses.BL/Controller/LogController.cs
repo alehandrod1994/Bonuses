@@ -12,7 +12,7 @@ namespace Bonuses.BL.Controller
 
 		public LogController(string documentName)
 		{
-			_messages.Add(Status.Cancel, "Отмена.");
+			_messages.Add(Status.Stop, "Отмена.");
 			_messages.Add(Status.Failed, $"Не удалось открыть файл \"{documentName}\". Возможно, он сейчас используется.");
 			_messages.Add(Status.NewEmployeeFound, "Найден новый сотрудник.");
 			_messages.Add(Status.Success, "Успешно.");	

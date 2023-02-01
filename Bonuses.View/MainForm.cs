@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,12 +19,9 @@ namespace Bonuses.View
 {
 	public partial class MainForm : Form
 	{
-		private bool _cancel = false;
 		private Dictionary<Status, string> _messages;
 
 		private Date _date;
-
-		private Logger _logger;
 
 		private EmployeeController _employeeController;
 		private DetectionController _detectionController;
@@ -40,12 +38,10 @@ namespace Bonuses.View
 		public MainForm()
 		{
 			InitializeComponent();
-
-			_logger = LogManager.GetCurrentClassLogger();
 				
 			_messages = new Dictionary<Status, string>()
 			{
-				{ Status.Cancel, "Отмена."},
+				{ Status.Stop, "Подсчёт остановлен."},
 				{ Status.Failed, "Не удалось открыть файл"},
 				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
 				{ Status.NotSave, "Не удалось сохранить."},
@@ -76,7 +72,16 @@ namespace Bonuses.View
 
 		private void ManualItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("В разработке.");
+			string path = "manual\\Подсчёт премирования. Инструкция по эксплуатации.docx";
+
+			try
+			{				
+				Process.Start(path);
+			}
+			catch
+			{
+				ShowWarningForm("Не удалось открыть инструкцию.", null);
+			}
 		}
 
 		private void CreateSourceData()
@@ -92,8 +97,6 @@ namespace Bonuses.View
 
 			_groupController.OnNameChanged += Group_OnNameChanged;
 			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
-			_kpiController.CheckCancel += CheckCancel;
-			_reportController.CheckCancel += CheckCancel;
 
 			if (_groupController.Group.Name == null)
 			{
@@ -141,11 +144,6 @@ namespace Bonuses.View
 		private void ExitItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private bool CheckCancel()
-		{
-			return _cancel;
 		}
 
 		private void AutoImportDate()
@@ -220,7 +218,7 @@ namespace Bonuses.View
 
 			if (ParseInt(tbYear.Text) < 2000)
 			{
-				ShowWarningForm("Неверно задана дата");
+				ShowWarningForm("Неверно задана дата", "SetDate");
 				//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
 				return false;
 			}
@@ -230,7 +228,7 @@ namespace Bonuses.View
 
 			if (warningDescription != "")
 			{
-				ShowWarningForm("Не загружены файлы:\n" + warningDescription);
+				ShowWarningForm("Не загружены файлы:\n" + warningDescription, "ImportFiles");
 				return false;
 			}
 
@@ -286,9 +284,7 @@ namespace Bonuses.View
 
 		private async Task CalculateAsync(Status status)
 		{
-			SetUIForStartCalculate();
-
-			_cancel = false;
+			SetUiForStartCalculate();
 
 			_date.SelectedMonth = _date.Months[cbMonth.SelectedIndex];
 			_date.SelectedYear = Convert.ToInt32(tbYear.Text);
@@ -313,11 +309,11 @@ namespace Bonuses.View
 				return;
 			}
 
-			SetUIForEndCalculate();
+			SetUiForEndCalculate();
 			ShowSuccessfullyForm(_reportController.NewFilePath);
 		}
 
-		private void SetUIForStartCalculate()
+		private void SetUiForStartCalculate()
 		{
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
@@ -326,7 +322,7 @@ namespace Bonuses.View
 			progressBar1.Visible = true;
 		}
 
-		private void SetUIForEndCalculate()
+		private void SetUiForEndCalculate()
 		{		
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
@@ -335,24 +331,24 @@ namespace Bonuses.View
 
 		private void ShutdownCalculate(Status status, string name)
 		{
-			SetUIForEndCalculate();
+			SetUiForEndCalculate();
 
 			switch(status)
 			{
 				case Status.NewEmployeeFound:
-					ShowAddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+					ShowAddNewEmployeeForm(_employeeController, _positionController);
 					break;
 
 				case Status.Failed:
-					ShowWarningForm($"{_messages[status]} \"{name}\"");
+					ShowWarningForm($"{_messages[status]} \"{name}\"", "ConnectFile");
 					//ShowNoticeForm($"{_messages[status]} \"{name}\"", 67, "");
 					break;
 
-				case Status.Cancel:
+				case Status.Stop:
 					break;
 
 				default:
-					ShowWarningForm(_messages[status]);
+					ShowWarningForm(_messages[status], "FailedCalculate");
 					//ShowNoticeForm(_messages[status], 67, "");
 					break;
 			}
@@ -377,15 +373,15 @@ namespace Bonuses.View
 			form.Show();
 		}
 
-		private void ShowWarningForm(string warningDescription)
+		private void ShowWarningForm(string warningDescription, string help)
 		{
-			var form = new WarningForm(warningDescription);
+			var form = new WarningForm(warningDescription, help);
 			form.Show();
 		}
 
-		private void ShowWarningForm(string warningTitle, int warningTitleHeight, string warningDescription)
+		private void ShowWarningForm(string warningTitle, int warningTitleHeight, string warningDescription, string help)
 		{
-			var form = new WarningForm(warningTitle, warningTitleHeight, warningDescription);
+			var form = new WarningForm(warningTitle, warningTitleHeight, warningDescription, help);
 			form.Show();
 		}
 
@@ -395,11 +391,11 @@ namespace Bonuses.View
 			form.Show();
 		}
 
-		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController, KpiController _kpiController)
+		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController)
 		{
 			if (_employeeController.NewEmployee != "")
 			{
-				var form = new AddNewEmployeeForm(_employeeController, _positionController, _kpiController);
+				var form = new AddNewEmployeeForm(_employeeController, _positionController);
 				form.ShowDialog();
 			}
 		}
@@ -452,7 +448,7 @@ namespace Bonuses.View
 				}
 				else if (string.IsNullOrWhiteSpace(column1) || string.IsNullOrWhiteSpace(column2))
 				{
-					ShowWarningForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}");
+					ShowWarningForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}", "SaveData");
 					return false;
 				}
 
@@ -537,7 +533,8 @@ namespace Bonuses.View
 
 		private void BtnCancel_Click(object sender, EventArgs e)
 		{
-			_cancel = true;
+			_kpiController.StopCalculate();
+			_reportController.StopCalculate();
 		}
 
 		private void BtnKpi_DragEnter(object sender, DragEventArgs e)

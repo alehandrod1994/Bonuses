@@ -1,5 +1,4 @@
 ﻿using Bonuses.BL.Model;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,12 +26,13 @@ namespace Bonuses.BL.Controller
 		private int _currentRow = 2;
 		private int _employeeIndex;
 		private Dictionary<int, Detection> _detectionColumnIndexes;
+		private bool _isWorking = false;
 
 		/// <summary>
 		/// Создаёт новый контроллер документа "KPI".
 		/// </summary>
 		public KpiController()
-		{		
+		{
 			Kpi = GetKpi();
 		}
 
@@ -47,15 +47,10 @@ namespace Bonuses.BL.Controller
 		public List<Bonus> Bonuses { get; private set; }
 
 		/// <summary>
-		/// Проверяет, не поступал ли запрос на отмену подсчёта.
-		/// </summary>
-		public event Func<bool> CheckCancel;
-
-		/// <summary>
 		/// Возвращает документ "KPI".
 		/// </summary>
 		/// <returns> Документ "KPI". </returns>
-		public Kpi GetKpi()
+		private Kpi GetKpi()
 		{
 			List<Kpi> kpis = Load<Kpi>();
 			return kpis.Count > 0 ? kpis.First() : new Kpi();
@@ -73,7 +68,7 @@ namespace Bonuses.BL.Controller
 			try
 			{
 				string path = AutoImport(Kpi.SourceDirectory, keyFolder, month, keyFile, Kpi.Extention);
-				Kpi = new Kpi(path, Kpi.SourceDirectory);				
+				Kpi = new Kpi(path, Kpi.SourceDirectory);
 			}
 			catch { }
 
@@ -100,11 +95,11 @@ namespace Bonuses.BL.Controller
 				}
 				catch
 				{
-					MessageBox.Show("Недопустимый формат файла");					 
+					MessageBox.Show("Недопустимый формат файла");
 				}
 			}
-	
-			return Kpi.FileName;		
+
+			return Kpi.FileName;
 		}
 
 		/// <summary>
@@ -131,6 +126,8 @@ namespace Bonuses.BL.Controller
 		/// <returns> True, если подключение прошло успешно; в противном случае - false. </returns>
 		private bool OpenConnection()
 		{
+			_isWorking = true;
+
 			_app = new Excel.Application();
 			_book = null;
 			try
@@ -154,6 +151,8 @@ namespace Bonuses.BL.Controller
 		/// <returns> True, если закрытие подключения прошло успешно; в противном случае - false. </returns>
 		private bool CloseConnection()
 		{
+			_isWorking = false;
+
 			try
 			{
 				_book.Close();
@@ -171,34 +170,43 @@ namespace Bonuses.BL.Controller
 		/// </summary>
 		/// <param name="employeeController"> Контроллер сотрудника. </param>
 		/// <param name="detections"> Список нарушений. </param>
+		/// <param name="status"> Статус подсчёта. </param>
 		/// <param name="progress"> Прогресс выполнения подсчёта. </param>
 		/// <returns> Статус выполнения подсчёта. </returns>
 		public Status StartCalculateBonuses(EmployeeController employeeController, List<Detection> detections, Status status, IProgress<int> progress)
 		{
-			_status = status;
+			_status = status;			
 
 			if (!OpenConnection())
 			{
+				_isWorking = false;
 				return _status;
 			}
 
 			if (_status != Status.NewEmployeeFound && !SetBonusesSourceData(detections))
-			{								
+			{				
 				_status = Status.UnknownData;
-				CloseConnection();
-				return _status;				
-			}
-
-			if (!CalculateBonuses(employeeController, progress))
-			{
 				CloseConnection();
 				return _status;
 			}
 
-			CloseConnection();
-
+			if (!CalculateBonuses(employeeController, progress))
+			{				
+				CloseConnection();
+				return _status;
+			}
+			
+			CloseConnection();			
 			_status = Status.Success;
 			return _status;
+		}
+
+		/// <summary>
+		/// Останавливает подсчёт.
+		/// </summary>
+		public void StopCalculate()
+		{
+			_isWorking = false;
 		}
 
 		/// <summary>
@@ -213,9 +221,9 @@ namespace Bonuses.BL.Controller
 
 			while (!Contains(_currentRow, _employeeIndex, "ИТОГО"))
 			{
-				if ((bool)(CheckCancel?.Invoke()))
+				if (!_isWorking)
 				{
-					CancelCalculate();
+					_status = Status.Stop;
 					return false;
 				}
 
@@ -224,7 +232,6 @@ namespace Bonuses.BL.Controller
 					int columnIndex = detectionColumnIndex.Key;
 					if (ParseInt(ToString(_currentRow, columnIndex)) > 0)
 					{
-						//string employeeName = Regex.Replace(ToString(sheet, _currentRow, _employeeIndex), @"\s+", " ");
 						string employeeName = ToString(_currentRow, _employeeIndex);
 						if (string.IsNullOrWhiteSpace(employeeName))
 						{
@@ -263,14 +270,6 @@ namespace Bonuses.BL.Controller
 		private int CalculateProgress(int currentIndex, int maxCount)
 		{
 			return currentIndex * 100 / maxCount;
-		}
-
-		/// <summary>
-		/// Отменяет подсчёт.
-		/// </summary>
-		public void CancelCalculate()
-		{
-			_status = Status.Cancel;
 		}
 
 		/// <summary>

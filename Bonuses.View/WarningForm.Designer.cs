@@ -70,7 +70,7 @@ namespace Bonuses.View
             this.btnOK.TabIndex = 24;
             this.btnOK.Text = "ОК";
             this.btnOK.UseVisualStyleBackColor = false;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOK_Click);
             // 
             // labelHelp
             // 
@@ -83,7 +83,7 @@ namespace Bonuses.View
             this.labelHelp.Size = new System.Drawing.Size(110, 16);
             this.labelHelp.TabIndex = 25;
             this.labelHelp.Text = "Нужна помощь?";
-            this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
+            this.labelHelp.Click += new System.EventHandler(this.LabelHelp_Click);
             // 
             // pictureBox1
             // 

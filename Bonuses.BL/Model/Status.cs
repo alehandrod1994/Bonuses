@@ -8,9 +8,9 @@ namespace Bonuses.BL.Model
     public enum Status
     {
         /// <summary>
-        /// Отмена.
+        /// Стоп.
         /// </summary>
-        Cancel,
+        Stop,
 
         /// <summary>
         /// Не удалось подключиться к файлу.

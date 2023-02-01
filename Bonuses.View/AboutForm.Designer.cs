@@ -58,26 +58,26 @@ namespace Bonuses.View
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label5.Location = new System.Drawing.Point(11, 233);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(276, 16);
+            this.label5.Size = new System.Drawing.Size(297, 17);
             this.label5.TabIndex = 13;
             this.label5.Text = "СТАБ, ООО \"Аэропорт Емельяново\". 2023";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label4.Location = new System.Drawing.Point(11, 203);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(155, 16);
+            this.label4.Size = new System.Drawing.Size(164, 17);
             this.label4.TabIndex = 12;
             this.label4.Text = "Автор: Колыванов А.И.";
             // 
             // label3
             // 
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label3.Location = new System.Drawing.Point(11, 124);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(351, 43);
@@ -87,11 +87,11 @@ namespace Bonuses.View
             // labelName
             // 
             this.labelName.AutoSize = true;
-            this.labelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelName.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelName.ForeColor = System.Drawing.SystemColors.WindowText;
             this.labelName.Location = new System.Drawing.Point(93, 15);
             this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(303, 20);
+            this.labelName.Size = new System.Drawing.Size(284, 19);
             this.labelName.TabIndex = 9;
             this.labelName.Text = "Подсчёт точечного премирования";
             // 

@@ -9,16 +9,13 @@ namespace Bonuses.View
     {
         private EmployeeController _employeeController;
         private PositionController _positionController;
-        private KpiController _kpiController;
 
-        public AddNewEmployeeForm(EmployeeController employeeController, PositionController positionController, KpiController kpiController)
+        public AddNewEmployeeForm(EmployeeController employeeController, PositionController positionController)
         {
             InitializeComponent();
          
             _employeeController = employeeController;
             _positionController = positionController;
-            _kpiController = kpiController;
-
             labelEmployee.Text = employeeController.NewEmployee;
 
             // if (_positionController.Positions.Count > 0)
@@ -50,7 +47,7 @@ namespace Bonuses.View
 
         private void AddNewEmployeeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //_kpiController.CancelCalculate();
+            
         }
 
         private void labelHelp_Click(object sender, EventArgs e)

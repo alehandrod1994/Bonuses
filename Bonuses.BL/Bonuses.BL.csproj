@@ -58,6 +58,7 @@
     <Compile Include="Controller\GroupController.cs" />
     <Compile Include="Controller\KpiController.cs" />
     <Compile Include="Controller\LogController.cs" />
+    <Compile Include="Controller\ManualController.cs" />
     <Compile Include="Controller\PositionController.cs" />
     <Compile Include="Controller\ReportController.cs" />
     <Compile Include="Model\Bonus.cs" />

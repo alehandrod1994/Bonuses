@@ -19,7 +19,8 @@ namespace Bonuses.BL.Controller
 		private Word.Range _position;
 
 		private Status _status = Status.Start;
-		//private Logger _logger = LogManager.GetCurrentClassLogger();
+
+		private bool _isWorking = false;
 
 		/// <summary>
 		/// Создаёт новый контроллер документа "О показателях".
@@ -38,11 +39,6 @@ namespace Bonuses.BL.Controller
 		/// Путь нового файла для сохранения.
 		/// </summary>
 		public string NewFilePath { get; private set; }
-
-		/// <summary>
-		/// Проверяет, не поступал ли запрос на отмену подсчёта.
-		/// </summary>
-		public event Func<bool> CheckCancel;
 
 		/// <summary>
 		/// Возвращает документ "О показателях".
@@ -124,6 +120,8 @@ namespace Bonuses.BL.Controller
 		/// <returns> True, если подключение прошло успешно; в противном случае - false. </returns>
 		private bool OpenConnection()
 		{
+			_isWorking = true;
+
 			try
 			{
 				_app = new Word.Application() { Visible = false };
@@ -146,6 +144,8 @@ namespace Bonuses.BL.Controller
 		/// <returns> True, если закрытие подключения прошло успешно; в противном случае - false. </returns>
 		private bool CloseConnection()
 		{
+			_isWorking = false;
+
 			try
 			{
 				object saveOption = Word.WdSaveOptions.wdDoNotSaveChanges;
@@ -165,14 +165,6 @@ namespace Bonuses.BL.Controller
 		}
 
 		/// <summary>
-		/// Отменяет подсчёт.
-		/// </summary>
-		private void CancelCalculate()
-		{
-			_status = Status.Cancel;
-		}
-
-		/// <summary>
 		/// Начинает оформление отчёта по премированию.
 		/// </summary>
 		/// <param name="bonuses"> Список премий. </param>
@@ -181,9 +173,10 @@ namespace Bonuses.BL.Controller
 		/// <param name="progress"> Прогресс выполнения. </param>
 		/// <returns> Статус выполнения. </returns>
 		public Status StartBonusesReport(List<Bonus> bonuses, Group group, Date date, IProgress<int> progress)
-		{
+		{			
 			if (!OpenConnection())
 			{
+				_isWorking = false;
 				return _status;
 			}
 
@@ -227,6 +220,15 @@ namespace Bonuses.BL.Controller
 			CloseConnection();
 			_status = Status.Success;
 			return _status;
+		}
+
+
+		/// <summary>
+		/// Останавливает подсчёт.
+		/// </summary>
+		public void StopCalculate()
+		{
+			_isWorking = false;
 		}
 
 		/// <summary>
@@ -364,9 +366,9 @@ namespace Bonuses.BL.Controller
 
 			for (int i = 0; i < bonuses.Count; i++)
 			{
-				if ((bool)(CheckCancel?.Invoke()))
+				if (!_isWorking)
 				{
-					CancelCalculate();
+					_status = Status.Stop;
 					return false;
 				}
 
