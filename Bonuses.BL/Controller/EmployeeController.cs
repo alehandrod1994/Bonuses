@@ -1,16 +1,14 @@
 ﻿using Bonuses.BL.Model;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Bonuses.BL.Controller
 {
-	/// <summary>
-	/// Контроллер сотрудника.
-	/// </summary>
-	public class EmployeeController : ControllerBase
+    /// <summary>
+    /// Контроллер сотрудника.
+    /// </summary>
+    public class EmployeeController : ControllerBase
 	{
 		/// <summary>
 		/// Создаёт новый контроллер сотрудника.
@@ -33,7 +31,7 @@ namespace Bonuses.BL.Controller
 		/// <summary>
 		/// Событие, которое происходит при добавлении нового сотрудника.
 		/// </summary>
-		public event EventHandler OnNewEmployeeAdded;
+		public event EventHandler<Employee> NewEmployeeAdded;
 
 		/// <summary>
 		/// Добавляет нового сотрудника.
@@ -43,7 +41,7 @@ namespace Bonuses.BL.Controller
 			Employees.Add(employee);
 			NewEmployee = "";
 			Save();          
-			OnNewEmployeeAdded?.Invoke(employee, null);
+			NewEmployeeAdded?.Invoke(this, employee);
 		}
 
 		/// <summary>

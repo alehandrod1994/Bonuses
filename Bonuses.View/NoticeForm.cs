@@ -1,28 +1,37 @@
-﻿using System;
+﻿using Bonuses.BL.Controller;
+using Bonuses.BL.Model;
+using System;
 using System.Windows.Forms;
 
 namespace Bonuses.View
 {
     public partial class NoticeForm : Form
     {
-        public NoticeForm(string noticeDescription)
+        private readonly string _help;
+
+        public NoticeForm(string noticeDescription, string help)
         {
             InitializeComponent();
 
+            _help = help;
             labelNoticeTitle.Text = "Уведомление";
-            labelNoticeDescription.Text = noticeDescription;
+            labelNoticeDescription.Text = noticeDescription;            
         }
 
-        private void btnOK_Click(object sender, EventArgs e)
+        private void BtnOK_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void labelHelp_Click(object sender, EventArgs e)
+        private void LabelHelp_Click(object sender, EventArgs e)
         {
-            string key = labelNoticeTitle.Text;
-            // TODO: открытие инструкции.
-            // TODO: поиск в инструкции key или по ссылке.
+            var manualController = new ManualController();
+
+            if (manualController.OpenManual(_help) == Status.Failed)
+            {
+                var form = new WarningForm("Не удалось открыть инструкцию.", null);
+                form.Show();
+            }
         }
     }
 }

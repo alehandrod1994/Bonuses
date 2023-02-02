@@ -33,8 +33,13 @@ namespace Bonuses.BL.Controller
 		/// <returns> Список элементов. </returns>
 		protected List<T> Load<T>() where T : class
 		{
+			if (!Directory.Exists("data"))
+			{
+				Directory.CreateDirectory("data");
+			}
+
 			var formatter = new DataContractJsonSerializer(typeof(List<T>));
-			var fileName = $"data\\{typeof(T).Name}s.json";
+			var fileName = $"data\\{typeof(T).Name}s.json";		
 
 			using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
 			{

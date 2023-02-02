@@ -1,17 +1,10 @@
-﻿using System;
-
-namespace Bonuses.BL.Model
+﻿namespace Bonuses.BL.Model
 {
     /// <summary>
     /// Статус выполнения подсчёта.
     /// </summary>
     public enum Status
     {
-        /// <summary>
-        /// Стоп.
-        /// </summary>
-        Stop,
-
         /// <summary>
         /// Не удалось подключиться к файлу.
         /// </summary>
@@ -31,6 +24,11 @@ namespace Bonuses.BL.Model
         /// Готов к выполнению подсчёта.
         /// </summary>
         Start,
+
+        /// <summary>
+        /// Стоп.
+        /// </summary>
+        Stop,
 
         /// <summary>
         /// Успешное завершение подсчёта.

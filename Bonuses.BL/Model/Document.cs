@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
 namespace Bonuses.BL.Model
 {
-	/// <summary>
-	/// Документ.
-	/// </summary>
-	[DataContract]
+    /// <summary>
+    /// Документ.
+    /// </summary>
+    [DataContract]
 	public abstract class Document
 	{
 		/// <summary>
@@ -88,12 +87,7 @@ namespace Bonuses.BL.Model
 		/// <returns></returns>
 		protected string GetFileName()
 		{
-			//if (Path != "")
-			//{
-				return new FileInfo(Path).Name;
-			//}
-
-			//return "";
+			return new FileInfo(Path).Name;
 		}
 
 		public override string ToString()

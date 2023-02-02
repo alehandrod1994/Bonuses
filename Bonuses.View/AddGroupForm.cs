@@ -7,34 +7,35 @@ namespace Bonuses.View
 {
     public partial class AddGroupForm : Form
     {
-        private GroupController _groupController;
+        private readonly string _help;
 
-        public AddGroupForm(GroupController groupController)
+        public AddGroupForm(string help)
         {
             InitializeComponent();
 
-            _groupController = groupController;
+            _help = help;
         }
+
+        public Group Group { get; private set; }
 
         private void BtnSaveGroup_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(tbGroup.Text))
-            {
-                _groupController.Change(new Group(tbGroup.Text));
-                Close();
+            {               
+                Group = new Group(tbGroup.Text);
+                DialogResult = DialogResult.OK;
             }
         }
 
-        private void AddGroupForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void LabelHelp_Click(object sender, EventArgs e)
         {
-            Application.Exit();
-        }
+            var manualController = new ManualController();
 
-        private void labelHelp_Click(object sender, EventArgs e)
-        {
-            string key = "Добавление отдела";
-            // TODO: открытие инструкции.
-            // TODO: поиск в инструкции key или по ссылке.
+            if (manualController.OpenManual(_help) == Status.Failed)
+            {
+                var form = new WarningForm("Не удалось открыть инструкцию.", null);
+                form.Show();
+            }
         }
     }
 }

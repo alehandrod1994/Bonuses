@@ -1,5 +1,4 @@
 ﻿using Bonuses.BL.Model;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -125,8 +124,6 @@ namespace Bonuses.BL.Controller
 			try
 			{
 				_app = new Word.Application() { Visible = false };
-				//_app = new Word.Application();
-				//_doc = _app.Documents.Open(Report.Path, Visible: true);
 				_doc = _app.Documents.Open(Report.Path, ReadOnly: false, Visible: true);
 				_doc.Activate();
 				return true;
@@ -261,7 +258,6 @@ namespace Bonuses.BL.Controller
 		/// <returns> Расположение найденного текста в документе. </returns>
 		private Word.Range SearchReplace(object findText, object replacementText, Word.WdReplace replace)
 		{
-			//Word.Range range = _app.ActiveDocument.Content;
 			Word.Range range = _doc.Content;
 			range.Find.ClearFormatting(); 
 			range.Find.Execute(FindText: findText, ReplaceWith: replacementText, Replace: replace);
@@ -275,24 +271,6 @@ namespace Bonuses.BL.Controller
 		/// <param name="headers"> Заголовки. </param>
 		private void CreateTable(string[] headers)
 		{
-			//object findText = "<!Table>";
-			//object replacementText = "";
-			//Word.Range tableLocation = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
-
-			//int columnCount = tableData.Headers.Length;
-			//int rowCount = tableData.Rows.Count + 1;
-
-			//_doc.Tables.Add(tableLocation, rowCount, columnCount);
-			//Word.Table table = _doc.Tables[1];
-			//table.Borders.Enable = 1;
-			//table.Columns.DistributeWidth();
-			//table.Rows.Height = 60;
-
-
-
-			//table.Range.Font.Size = 10.5f;
-			//table.Range.Bold = 0;
-
 			_position.InsertParagraphAfter();
 			_position.InsertParagraphAfter();
 			_position.SetRange(_position.End, _position.End);
@@ -331,25 +309,7 @@ namespace Bonuses.BL.Controller
 				table.Rows[i].Cells.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;				
 			}		
 
-			table.Rows[1].Range.Bold = 1;
-
-			//if (headers[0].Contains("№") || headers[0].Contains("Номер"))
-			//{
-			//	int columnCount = headers.Length;
-			//	float firstColumnWidth = 30;
-			//	float tableWidth = 488;
-			//	table.Columns[1].PreferredWidth = firstColumnWidth;
-			//	float columnWidth = (tableWidth - firstColumnWidth) / (columnCount - 1);
-
-			//	for (int i = 2; i <= table.Columns.Count; i++)
-			//	{
-			//		table.Columns[i].PreferredWidth = columnWidth;
-			//	}
-			//}
-			//else
-			//{
-			//	table.Columns.DistributeWidth();
-			//}
+			table.Rows[1].Range.Bold = 1;		
 		}
 
 		/// <summary>

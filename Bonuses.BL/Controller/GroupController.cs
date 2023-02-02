@@ -23,10 +23,6 @@ namespace Bonuses.BL.Controller
 		/// </summary>
 		public Group Group { get; set; }
 
-		/// <summary>
-		/// Событие, которое происходит при изменении названия отдела.
-		/// </summary>
-		public event EventHandler OnNameChanged;
 
 		/// <summary>
 		/// Изменяет название отдела.
@@ -36,7 +32,6 @@ namespace Bonuses.BL.Controller
 		{
 			Group = group;
 			Save();
-			OnNameChanged?.Invoke(Group, null);
 		}
 
 		/// <summary>

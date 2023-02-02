@@ -1,15 +1,9 @@
 ﻿using Bonuses.BL.Controller;
 using Bonuses.BL.Model;
-using NLog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,9 +11,9 @@ using Group = Bonuses.BL.Model.Group;
 
 namespace Bonuses.View
 {
-	public partial class MainForm : Form
+    public partial class MainForm : Form
 	{
-		private Dictionary<Status, string> _messages;
+		private readonly Dictionary<Status, string> _messages;
 
 		private Date _date;
 
@@ -40,12 +34,12 @@ namespace Bonuses.View
 			InitializeComponent();
 				
 			_messages = new Dictionary<Status, string>()
-			{
-				{ Status.Stop, "Подсчёт остановлен."},
+			{				
 				{ Status.Failed, "Не удалось открыть файл"},
 				{ Status.NewEmployeeFound, "Найден новый сотрудник."},
-				{ Status.NotSave, "Не удалось сохранить."},
+				{ Status.NotSave, "Не удалось сохранить файл."},
 				{ Status.Start, "Начало подсчёта."},
+				{ Status.Stop, "Подсчёт остановлен."},
 				{ Status.Success, "Успешно."},
 				{ Status.UnknownData, "Не удалось распознать файл \"KPI\". Операция отменена."}
 			};
@@ -95,13 +89,11 @@ namespace Bonuses.View
 			_groupController = new GroupController();
 			_positionController = new PositionController(_employeeController.Employees);
 
-			_groupController.OnNameChanged += Group_OnNameChanged;
-			_employeeController.OnNewEmployeeAdded += Employee_OnNewEmployeeAdded;
+			_employeeController.NewEmployeeAdded += EmployeeController_NewEmployeeAdded;
 
 			if (_groupController.Group.Name == null)
 			{
-				var form = new AddGroupForm(_groupController);
-				form.ShowDialog();
+				ShowAddGroupForm("AddGroup");
 			}
 			else
 			{
@@ -110,7 +102,7 @@ namespace Bonuses.View
 
 			_selectedButton = btnMain;
 			OpenTab(btnMain, panelMain);
-			PutOnButtonSelect(btnMain);
+			TurnOnSelectedButton(btnMain);
 		}
 
 		private void UpdateItem_Click(object sender, EventArgs e)
@@ -154,53 +146,32 @@ namespace Bonuses.View
 
 		private void AutoImportDocuments()
 		{
-			//string currentDisk = Directory.Exists(@"Z:\PUBLIC_VS3\") ? @"Z:\PUBLIC_VS3\" : @"U:\PUBLIC_VS3\";
-
 			string kpiFileName = _kpiController.AutoImportKpi("KPI", _date.SelectedMonth.Name, _date.SelectedMonth.Name);
 			if (kpiFileName != "")
 			{
-				labelKpiFileName.Text = kpiFileName;
-				labelKpiFileName.ForeColor = Color.Black;
-				btnKpi.Image = Properties.Resources.ExcelLogo;
+				SetKpiData(kpiFileName);
 			}
-			
+
 			string reportFileName = _reportController.AutoImportReport("KPI", _date.SelectedMonth.Name, "О ПОКАЗАТЕЛЯХ (ШАБЛОН)");
 			if (reportFileName != "")
 			{
-				labelReportFileName.Text = reportFileName;
-				labelReportFileName.ForeColor = Color.Black;
-				btnReport.Image = Properties.Resources.WordLogo;
-			}		
+				SetReportData(reportFileName);
+			}
+		}		
+
+		private void SetKpiData(string kpiFileName)
+		{
+			labelKpiFileName.Text = kpiFileName;
+			labelKpiFileName.ForeColor = Color.Black;
+			btnKpi.Image = Properties.Resources.ExcelLogo;
 		}
 
-		//private string ImportFile(Document document)
-		//{
-		//	string name = document.Name;
-		//	string type = document.Type;
-		//	string extention = document.Extention;
-
-		//	OpenFileDialog ofd = new OpenFileDialog();
-		//	ofd.FileName = "";
-		//	ofd.Filter = $"Документ {type} (*{extention}; *{extention}x) | *{extention}; *{extention}x";
-		//	ofd.Title = $"Выберите файл {name}";
-
-		//	if (ofd.ShowDialog() != DialogResult.Cancel)
-		//	{
-		//		try
-		//		{
-		//			document = new Document(ofd.FileName);
-
-		//			//document.Path = ofd.FileName;
-		//			//document.FileName = ofd.SafeFileName;
-		//		}
-		//		catch
-		//		{
-		//			ShowNoticeForm("Недопустимый формат файла", 27, "");
-		//		}
-		//	}
-
-		//	return document.FileName;
-		//}
+		private void SetReportData(string reportFileName)
+		{
+			labelReportFileName.Text = reportFileName;
+			labelReportFileName.ForeColor = Color.Black;
+			btnReport.Image = Properties.Resources.WordLogo;
+		}
 
 		private int ParseInt(string value)
 		{
@@ -219,7 +190,6 @@ namespace Bonuses.View
 			if (ParseInt(tbYear.Text) < 2000)
 			{
 				ShowWarningForm("Неверно задана дата", "SetDate");
-				//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
 				return false;
 			}
 
@@ -240,18 +210,18 @@ namespace Bonuses.View
 			tab.BringToFront();
 			tab.Show();
 				 
-			PutOffButtonSelect(_selectedButton);
-			PutOnButtonSelect(button);
+			TurnOffSelectedButton(_selectedButton);
+			TurnOnSelectedButton(button);
 		}
 
-		private void PutOnButtonSelect(Button button)
+		private void TurnOnSelectedButton(Button button)
 		{
 			button.BackColor = Color.White;
 			button.ForeColor = Color.Navy;
 			_selectedButton = button;
 		}
 
-		private void PutOffButtonSelect(Button button)
+		private void TurnOffSelectedButton(Button button)
 		{
 			button.BackColor = Color.Navy;
 			button.ForeColor = Color.White;
@@ -310,7 +280,7 @@ namespace Bonuses.View
 			}
 
 			SetUiForEndCalculate();
-			ShowSuccessfullyForm(_reportController.NewFilePath);
+			ShowSuccessfullyForm(_reportController.NewFilePath, "Successfully");
 		}
 
 		private void SetUiForStartCalculate()
@@ -336,40 +306,42 @@ namespace Bonuses.View
 			switch(status)
 			{
 				case Status.NewEmployeeFound:
-					ShowAddNewEmployeeForm(_employeeController, _positionController);
+					ShowAddNewEmployeeForm(_employeeController, _positionController, "AddNewEmployee");
 					break;
 
 				case Status.Failed:
 					ShowWarningForm($"{_messages[status]} \"{name}\"", "ConnectFile");
-					//ShowNoticeForm($"{_messages[status]} \"{name}\"", 67, "");
 					break;
 
-				case Status.Stop:
+				case Status.NotSave:
+					ShowWarningForm(_messages[status], "SaveFile");
+					break;
+
+				case Status.UnknownData:
+					ShowWarningForm(_messages[status], "UnknownData");
 					break;
 
 				default:
-					ShowWarningForm(_messages[status], "FailedCalculate");
-					//ShowNoticeForm(_messages[status], 67, "");
 					break;
 			}
-
-			//if (status == Status.NewEmployeeFound)
-			//{
-			//	ShowAddNewEmployeeForm(_employeeController, _positionController, _kpiController);
-			//}
-			//else if (status == Status.Failed)
-			//{
-			//	ShowNoticeForm(_messages[status] + name, 67, "");
-			//}
-			//else
-			//{
-			//	ShowNoticeForm(_messages[status], 67, "");
-			//}
 		}
 
-		private void ShowNoticeForm(string noticeDescription)
+		private void ShowAddGroupForm(string help)
 		{
-			var form = new NoticeForm(noticeDescription);
+			var form = new AddGroupForm(help);
+			if (form.ShowDialog() == DialogResult.OK)
+			{
+				_groupController.Change(form.Group);
+			}
+			else
+			{
+				Application.Exit();
+			}
+		}
+
+		private void ShowNoticeForm(string noticeDescription, string help)
+		{
+			var form = new NoticeForm(noticeDescription, help);
 			form.Show();
 		}
 
@@ -379,36 +351,28 @@ namespace Bonuses.View
 			form.Show();
 		}
 
-		private void ShowWarningForm(string warningTitle, int warningTitleHeight, string warningDescription, string help)
+		private void ShowWarningForm(string warningTitle, string warningDescription, string help)
 		{
-			var form = new WarningForm(warningTitle, warningTitleHeight, warningDescription, help);
+			var form = new WarningForm(warningTitle, warningDescription, help);
 			form.Show();
 		}
 
-		private void ShowSuccessfullyForm(string newPath)
+		private void ShowSuccessfullyForm(string newPath, string help)
 		{
-			var form = new SuccessfullyForm(newPath);
+			var form = new SuccessfullyForm(newPath, help);
 			form.Show();
 		}
 
-		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController)
+		private void ShowAddNewEmployeeForm(EmployeeController _employeeController, PositionController _positionController, string help)
 		{
 			if (_employeeController.NewEmployee != "")
 			{
-				var form = new AddNewEmployeeForm(_employeeController, _positionController);
+				var form = new AddNewEmployeeForm(_employeeController, _positionController, help);
 				form.ShowDialog();
 			}
-		}
+		}		
 
-		private void Group_OnNameChanged(object sender, EventArgs e)
-		{
-			if (sender is Group group)
-			{
-				labelGroup.Text = group.Name;
-			}
-		}
-
-		private async void Employee_OnNewEmployeeAdded(object sender, EventArgs e)
+		private async void EmployeeController_NewEmployeeAdded(object sender, Employee e)
 		{
 			await CalculateAsync(Status.NewEmployeeFound);
 		}
@@ -418,7 +382,7 @@ namespace Bonuses.View
 			if (!string.IsNullOrWhiteSpace(tbGroup.Text))
 			{
 				_groupController.Change(new Group(tbGroup.Text));
-				panelGroup.Visible = false;
+				labelGroup.Text = _groupController.Group.Name;
 				tbGroup.Visible = false;
 				btnApplyGroup.Visible = false;
 				btnCancelGroup.Visible = false;
@@ -427,7 +391,6 @@ namespace Bonuses.View
 
 		private void BtnCancelGroup_Click(object sender, EventArgs e)
 		{
-			panelGroup.Visible = false;
 			tbGroup.Visible = false;
 			btnApplyGroup.Visible = false;
 			btnCancelGroup.Visible = false;
@@ -448,7 +411,7 @@ namespace Bonuses.View
 				}
 				else if (string.IsNullOrWhiteSpace(column1) || string.IsNullOrWhiteSpace(column2))
 				{
-					ShowWarningForm("Не удалось сохранить", 27, $"Одно из полей не заполнено:\n Строчка: {i + 1}", "SaveData");
+					ShowWarningForm("Не удалось сохранить", $"Одно из полей не заполнено:\n Строка: {i + 1}", "SaveData");
 					return false;
 				}
 
@@ -477,7 +440,7 @@ namespace Bonuses.View
 
 			_employeeController.ReWrite(employees);
 			_positionController.ReWrite(employees);				
-			ShowNoticeForm("Данные успешно сохранены.");           
+			ShowNoticeForm("Данные успешно сохранены.", "SaveData");           
 		}
 
 		private void BtnCancelEmployees_Click(object sender, EventArgs e)
@@ -501,7 +464,7 @@ namespace Bonuses.View
 			}
 
 			_detectionController.ReWrite(detections);
-			ShowNoticeForm("Данные успешно сохранены.");
+			ShowNoticeForm("Данные успешно сохранены.", "SaveData");
 		}
 
 		private void BtnCancelDetections_Click(object sender, EventArgs e)
@@ -554,9 +517,7 @@ namespace Bonuses.View
 				string kpiFileName = _kpiController.DragDrop(file);
 				if (kpiFileName != "")
 				{
-					labelKpiFileName.Text = kpiFileName;
-					labelKpiFileName.ForeColor = Color.Black;
-					btnKpi.Image = Properties.Resources.ExcelLogo;
+					SetKpiData(kpiFileName);
 				}
 			}
 		}
@@ -578,9 +539,7 @@ namespace Bonuses.View
 				string reportFileName = _reportController.DragDrop(file);
 				if (reportFileName != "")
 				{
-					labelReportFileName.Text = reportFileName;
-					labelReportFileName.ForeColor = Color.Black;
-					btnReport.Image = Properties.Resources.WordLogo;
+					SetReportData(reportFileName);
 				}
 			}
 		}
@@ -595,9 +554,7 @@ namespace Bonuses.View
 			string kpiFileName = _kpiController.Import();
 			if (kpiFileName != "")
 			{
-				labelKpiFileName.Text = kpiFileName;
-				labelKpiFileName.ForeColor = Color.Black;
-				btnKpi.Image = Properties.Resources.ExcelLogo;
+				SetKpiData(kpiFileName);
 			}
 		}
 
@@ -611,9 +568,7 @@ namespace Bonuses.View
 			string reportFileName = _reportController.Import();
 			if (reportFileName != "")
 			{
-				labelReportFileName.Text = reportFileName;
-				labelReportFileName.ForeColor = Color.Black;
-				btnReport.Image = Properties.Resources.WordLogo;
+				SetReportData(reportFileName);
 			}
 		}
 
@@ -623,7 +578,7 @@ namespace Bonuses.View
 			OpenTab(btnSettings, panelSettings);
 		}
 
-		private void btnSaveSettings_Click(object sender, EventArgs e)
+		private void BtnSaveSettings_Click(object sender, EventArgs e)
 		{
 			var kpi = new Kpi() { SourceDirectory = tbKpiSouceDirectory.Text };
 			_kpiController.Save(kpi);
@@ -633,10 +588,10 @@ namespace Bonuses.View
 			_reportController.Save(report);
 			_reportController.Report.SourceDirectory = report.SourceDirectory;
 
-			ShowNoticeForm("Данные успешно сохранены.");
+			ShowNoticeForm("Данные успешно сохранены.", "SaveData");
 		}
 
-		private void btnCancelSettings_Click(object sender, EventArgs e)
+		private void BtnCancelSettings_Click(object sender, EventArgs e)
 		{
 			InsertSettingsData();
 		}
@@ -645,47 +600,7 @@ namespace Bonuses.View
 		{
 			tbKpiSouceDirectory.Text = _kpiController.Kpi.SourceDirectory;
 			tbReportSourceDirectory.Text = _reportController.Report.SourceDirectory;
-		}
-
-		private void panelKpi_MouseEnter(object sender, EventArgs e)
-		{
-			panelKpi.BackColor = Color.Gainsboro;
-		}
-
-		private void panelKpi_MouseLeave(object sender, EventArgs e)
-		{
-			panelKpi.BackColor = Color.White;
-		}
-
-		private void panelKpi_MouseDown(object sender, MouseEventArgs e)
-		{
-			panelKpi.BackColor = Color.LightGray;
-		}
-
-		private void panelKpi_MouseUp(object sender, MouseEventArgs e)
-		{
-			panelKpi.BackColor = Color.Gainsboro;
-		}
-
-		private void panelReport_MouseEnter(object sender, EventArgs e)
-		{
-			panelReport.BackColor = Color.Gainsboro;
-		}
-
-		private void panelReport_MouseLeave(object sender, EventArgs e)
-		{
-			panelReport.BackColor = Color.White;
-		}
-
-		private void panelReport_MouseDown(object sender, MouseEventArgs e)
-		{
-			panelReport.BackColor = Color.LightGray;
 		}		
-
-		private void panelReport_MouseUp(object sender, MouseEventArgs e)
-		{
-			panelReport.BackColor = Color.Gainsboro;
-		}
 
 		private void BtnChooseKpiDirectory_Click(object sender, EventArgs e)
 		{
@@ -714,7 +629,6 @@ namespace Bonuses.View
 			tbGroup.Visible = true;
 			btnApplyGroup.Visible = true;
 			btnCancelGroup.Visible = true;
-			panelGroup.Visible = true;
 		}
 
 		private void BtnTest_Click(object sender, EventArgs e)

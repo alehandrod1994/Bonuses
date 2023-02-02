@@ -95,7 +95,7 @@ namespace Bonuses.View
             this.labelHelp.Size = new System.Drawing.Size(110, 16);
             this.labelHelp.TabIndex = 27;
             this.labelHelp.Text = "Нужна помощь?";
-            this.labelHelp.Click += new System.EventHandler(this.labelHelp_Click);
+            this.labelHelp.Click += new System.EventHandler(this.LabelHelp_Click);
             // 
             // label2
             // 
@@ -134,7 +134,6 @@ namespace Bonuses.View
             this.Name = "AddNewEmployeeForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Добавление нового сотрудника";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AddNewEmployeeForm_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

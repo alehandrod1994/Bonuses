@@ -7,25 +7,17 @@ namespace Bonuses.View
 {
     public partial class WarningForm : Form
     {
-        private string _help;
+        private readonly string _help;
 
-        public WarningForm(string noticeDescription, string help)
+        public WarningForm(string warningDescription, string help) : this("Ошибка!", warningDescription, help) { }
+
+        public WarningForm(string warningTitle, string warningDescription, string help)
         {
             InitializeComponent();
 
             _help = help;
-            labelWarningTitle.Text = "Ошибка!";
-            labelWarningDescription.Text = noticeDescription;
-        }
-
-        public WarningForm(string noticeTitle, int noticeTitleHeight, string noticeDescription, string help)
-        {
-            InitializeComponent();
-
-            _help = help;
-            labelWarningTitle.Text = noticeTitle;
-            labelWarningTitle.Height = noticeTitleHeight;
-            labelWarningDescription.Text = noticeDescription;
+            labelWarningTitle.Text = warningTitle;
+            labelWarningDescription.Text = warningDescription;
         }
 
         private void BtnOK_Click(object sender, EventArgs e)

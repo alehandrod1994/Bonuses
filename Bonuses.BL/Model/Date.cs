@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 
 namespace Bonuses.BL.Model
 {
-	/// <summary>
-	/// Дата.
-	/// </summary>
-	public class Date
+    /// <summary>
+    /// Дата.
+    /// </summary>
+    public class Date
 	{
 		/// <summary>
 		/// Создаёт новый экземпляр класса Date.

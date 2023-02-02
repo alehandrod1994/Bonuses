@@ -1,14 +1,12 @@
 ﻿using Bonuses.BL.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Bonuses.BL.Controller
 {
-	/// <summary>
-	/// Контроллер должности.
-	/// </summary>
-	public class PositionController : ControllerBase
+    /// <summary>
+    /// Контроллер должности.
+    /// </summary>
+    public class PositionController : ControllerBase
 	{
 		/// <summary>
 		/// Создаёт новый контроллер должности.

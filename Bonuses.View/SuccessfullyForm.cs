@@ -1,31 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using Bonuses.BL.Controller;
+using Bonuses.BL.Model;
+using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Bonuses.View
 {
     public partial class SuccessfullyForm : Form
     {
-        public SuccessfullyForm(string newPath)
+        private readonly string _help;
+
+        public SuccessfullyForm(string newPath, string help)
         {
             InitializeComponent();
 
             labelPath.Text = newPath;
-        }
-
-        private void LabelHelp_Click(object sender, EventArgs e)
-        {
-            string key = labelTitle.Text;
-            // TODO: открытие инструкции.
-            // TODO: поиск в инструкции key или по ссылке.
-        }
+            _help = help;
+        }      
 
         private void BtnOpenFolder_Click(object sender, EventArgs e)
         {
@@ -40,6 +31,17 @@ namespace Bonuses.View
             process.Start();
 
             Close();
+        }
+
+        private void LabelHelp_Click(object sender, EventArgs e)
+        {
+            var manualController = new ManualController();
+
+            if (manualController.OpenManual(_help) == Status.Failed)
+            {
+                var form = new WarningForm("Не удалось открыть инструкцию.", null);
+                form.Show();
+            }
         }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using Bonuses.BL.Model;
-using System;
 using System.IO;
-using System.Linq;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace Bonuses.BL.Controller
 {
-	/// <summary>
-	/// Контроллер к инструкции.
-	/// </summary>
-	public class ManualController
+    /// <summary>
+    /// Контроллер к инструкции.
+    /// </summary>
+    public class ManualController
 	{
 		private Word.Application _app;
 		private Word.Document _doc;

@@ -1,14 +1,11 @@
-﻿using Bonuses.BL.Model;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace Bonuses.BL.Controller
 {
-	/// <summary>
-	/// Базовый контроллер документа.
-	/// </summary>
-	public abstract class DocumentController : ControllerBase
+    /// <summary>
+    /// Базовый контроллер документа.
+    /// </summary>
+    public abstract class DocumentController : ControllerBase
 	{
 		/// <summary>
 		/// Автоматически импортирует файл.
