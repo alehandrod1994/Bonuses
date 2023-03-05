@@ -70,6 +70,8 @@ namespace Bonuses.View
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelSettings = new System.Windows.Forms.Panel();
+            this.btnOpenDirectoryReport = new System.Windows.Forms.Button();
+            this.btnOpenDirectoryKpi = new System.Windows.Forms.Button();
             this.btnChooseDirectoryReport = new System.Windows.Forms.Button();
             this.btnChooseDirectoryKpi = new System.Windows.Forms.Button();
             this.btnCancelSettings = new System.Windows.Forms.Button();
@@ -291,7 +293,7 @@ namespace Bonuses.View
             // cbMonth
             // 
             this.cbMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbMonth.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.cbMonth.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.cbMonth.ForeColor = System.Drawing.SystemColors.ControlText;
             this.cbMonth.FormattingEnabled = true;
             this.cbMonth.Items.AddRange(new object[] {
@@ -309,7 +311,7 @@ namespace Bonuses.View
             "Декабрь"});
             this.cbMonth.Location = new System.Drawing.Point(138, 170);
             this.cbMonth.Name = "cbMonth";
-            this.cbMonth.Size = new System.Drawing.Size(100, 26);
+            this.cbMonth.Size = new System.Drawing.Size(100, 25);
             this.cbMonth.TabIndex = 3;
             // 
             // tbYear
@@ -327,6 +329,7 @@ namespace Bonuses.View
             this.labelReportFileName.AutoEllipsis = true;
             this.labelReportFileName.BackColor = System.Drawing.SystemColors.Window;
             this.labelReportFileName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelReportFileName.Enabled = false;
             this.labelReportFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelReportFileName.ForeColor = System.Drawing.Color.DimGray;
             this.labelReportFileName.Location = new System.Drawing.Point(535, 347);
@@ -335,12 +338,14 @@ namespace Bonuses.View
             this.labelReportFileName.TabIndex = 16;
             this.labelReportFileName.Text = "Файл не загружен";
             this.labelReportFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelReportFileName.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LabelReportFileName_MouseDoubleClick);
             // 
             // labelKpiFileName
             // 
             this.labelKpiFileName.AutoEllipsis = true;
             this.labelKpiFileName.BackColor = System.Drawing.SystemColors.Window;
             this.labelKpiFileName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelKpiFileName.Enabled = false;
             this.labelKpiFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelKpiFileName.ForeColor = System.Drawing.Color.DimGray;
             this.labelKpiFileName.Location = new System.Drawing.Point(354, 347);
@@ -349,6 +354,7 @@ namespace Bonuses.View
             this.labelKpiFileName.TabIndex = 15;
             this.labelKpiFileName.Text = "Файл не загружен";
             this.labelKpiFileName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelKpiFileName.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LabelKpiFileName_MouseDoubleClick);
             // 
             // btnReport
             // 
@@ -490,7 +496,7 @@ namespace Bonuses.View
             // 
             // dataGridViewTextBoxColumn1
             // 
-            this.dataGridViewTextBoxColumn1.HeaderText = "Название";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Наименование";
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
             // dataGridViewTextBoxColumn2
@@ -580,6 +586,8 @@ namespace Bonuses.View
             // 
             // panelSettings
             // 
+            this.panelSettings.Controls.Add(this.btnOpenDirectoryReport);
+            this.panelSettings.Controls.Add(this.btnOpenDirectoryKpi);
             this.panelSettings.Controls.Add(this.btnChooseDirectoryReport);
             this.panelSettings.Controls.Add(this.btnChooseDirectoryKpi);
             this.panelSettings.Controls.Add(this.btnCancelSettings);
@@ -593,12 +601,34 @@ namespace Bonuses.View
             this.panelSettings.Size = new System.Drawing.Size(1046, 669);
             this.panelSettings.TabIndex = 8;
             // 
+            // btnOpenDirectoryReport
+            // 
+            this.btnOpenDirectoryReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnOpenDirectoryReport.Location = new System.Drawing.Point(790, 244);
+            this.btnOpenDirectoryReport.Name = "btnOpenDirectoryReport";
+            this.btnOpenDirectoryReport.Size = new System.Drawing.Size(80, 26);
+            this.btnOpenDirectoryReport.TabIndex = 12;
+            this.btnOpenDirectoryReport.Text = "Открыть";
+            this.btnOpenDirectoryReport.UseVisualStyleBackColor = true;
+            this.btnOpenDirectoryReport.Click += new System.EventHandler(this.BtnOpenDirectoryReport_Click);
+            // 
+            // btnOpenDirectoryKpi
+            // 
+            this.btnOpenDirectoryKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnOpenDirectoryKpi.Location = new System.Drawing.Point(790, 122);
+            this.btnOpenDirectoryKpi.Name = "btnOpenDirectoryKpi";
+            this.btnOpenDirectoryKpi.Size = new System.Drawing.Size(80, 26);
+            this.btnOpenDirectoryKpi.TabIndex = 11;
+            this.btnOpenDirectoryKpi.Text = "Открыть";
+            this.btnOpenDirectoryKpi.UseVisualStyleBackColor = true;
+            this.btnOpenDirectoryKpi.Click += new System.EventHandler(this.BtnOpenDirectoryKpi_Click);
+            // 
             // btnChooseDirectoryReport
             // 
             this.btnChooseDirectoryReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnChooseDirectoryReport.Location = new System.Drawing.Point(734, 244);
             this.btnChooseDirectoryReport.Name = "btnChooseDirectoryReport";
-            this.btnChooseDirectoryReport.Size = new System.Drawing.Size(75, 26);
+            this.btnChooseDirectoryReport.Size = new System.Drawing.Size(50, 26);
             this.btnChooseDirectoryReport.TabIndex = 10;
             this.btnChooseDirectoryReport.Text = "...";
             this.btnChooseDirectoryReport.UseVisualStyleBackColor = true;
@@ -609,7 +639,7 @@ namespace Bonuses.View
             this.btnChooseDirectoryKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnChooseDirectoryKpi.Location = new System.Drawing.Point(734, 122);
             this.btnChooseDirectoryKpi.Name = "btnChooseDirectoryKpi";
-            this.btnChooseDirectoryKpi.Size = new System.Drawing.Size(75, 26);
+            this.btnChooseDirectoryKpi.Size = new System.Drawing.Size(50, 26);
             this.btnChooseDirectoryKpi.TabIndex = 9;
             this.btnChooseDirectoryKpi.Text = "...";
             this.btnChooseDirectoryKpi.UseVisualStyleBackColor = true;
@@ -834,8 +864,6 @@ namespace Bonuses.View
         private System.Windows.Forms.Label labelDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuItem;
         private System.Windows.Forms.ToolStripMenuItem updateItem;
@@ -846,6 +874,10 @@ namespace Bonuses.View
         private System.Windows.Forms.ToolStripMenuItem refItem;
         private System.Windows.Forms.ToolStripMenuItem manualItem;
         private System.Windows.Forms.ToolStripMenuItem aboutItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.Button btnOpenDirectoryReport;
+        private System.Windows.Forms.Button btnOpenDirectoryKpi;
     }
 }
 

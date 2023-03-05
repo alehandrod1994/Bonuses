@@ -169,7 +169,7 @@ namespace Bonuses.BL.Controller
 		/// <param name="date"> Дата. </param>
 		/// <param name="progress"> Прогресс выполнения. </param>
 		/// <returns> Статус выполнения. </returns>
-		public Status StartBonusesReport(List<Bonus> bonuses, Group group, Date date, IProgress<int> progress)
+		public Status StartBonusesReport(KpiController kpiController, Group group, Date date, IProgress<int> progress)
 		{			
 			if (!OpenConnection())
 			{
@@ -192,13 +192,16 @@ namespace Bonuses.BL.Controller
 				CreateTable(headers);
 			}
 
+			var bonuses = kpiController.Bonuses;
+			var kpiPath = kpiController.Kpi.Path;
+
 			if (!PasteBonuses(bonuses, progress))
 			{
 				CloseConnection();
 				return _status;
 			}
 
-			string directory = Directory.GetParent(Report.Path).FullName;
+			string directory = Directory.GetParent(kpiPath).FullName;
 			string newFileName = $"О показателях {group.Name} {date.SelectedMonth.Name.ToUpper()} {DateTime.Now.Year}г.docx";
 			string newFilePath = $"{directory}\\{newFileName}";
 
@@ -237,7 +240,7 @@ namespace Bonuses.BL.Controller
 			var todayYear = DateTime.Today.Year;
 
 			object findText = "[!DocDate]";
-			object replacementText = $"от  \"{DateTime.Now.Day}\" {todayMonth.OfName} {todayYear} года";
+			object replacementText = $"от  \"{DateTime.Now.Day}\" {todayMonth.OfName.ToLower()} {todayYear} года";
 			_position = SearchReplace(findText, replacementText, Word.WdReplace.wdReplaceOne);
 
 			findText = "[!DescriptionMonth]";

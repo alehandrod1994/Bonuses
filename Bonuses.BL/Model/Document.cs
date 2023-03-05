@@ -4,10 +4,10 @@ using System.Runtime.Serialization;
 
 namespace Bonuses.BL.Model
 {
-    /// <summary>
-    /// Документ.
-    /// </summary>
-    [DataContract]
+	/// <summary>
+	/// Документ.
+	/// </summary>
+	[DataContract]
 	public abstract class Document
 	{
 		/// <summary>

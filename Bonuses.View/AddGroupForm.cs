@@ -14,6 +14,7 @@ namespace Bonuses.View
             InitializeComponent();
 
             _help = help;
+            tbGroup.Select();
         }
 
         public Group Group { get; private set; }

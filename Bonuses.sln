@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonuses.View", "Bonuses.Vie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonuses.BLTests", "Bonuses.BLTests\Bonuses.BLTests.csproj", "{D8F1C2A8-F29F-4AF1-93AE-DF5D5D0B0E0D}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{B3552A30-9353-453D-A70C-7DF4351AAF0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{D8F1C2A8-F29F-4AF1-93AE-DF5D5D0B0E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8F1C2A8-F29F-4AF1-93AE-DF5D5D0B0E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8F1C2A8-F29F-4AF1-93AE-DF5D5D0B0E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3552A30-9353-453D-A70C-7DF4351AAF0D}.Debug|Any CPU.ActiveCfg = Debug
+		{B3552A30-9353-453D-A70C-7DF4351AAF0D}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

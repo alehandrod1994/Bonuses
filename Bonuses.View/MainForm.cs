@@ -11,7 +11,7 @@ using Group = Bonuses.BL.Model.Group;
 
 namespace Bonuses.View
 {
-    public partial class MainForm : Form
+	public partial class MainForm : Form
 	{
 		private readonly Dictionary<Status, string> _messages;
 
@@ -111,10 +111,13 @@ namespace Bonuses.View
 
 			labelKpiFileName.ForeColor = Color.DimGray;
 			labelKpiFileName.Text = "Файл не загружен";
+			labelKpiFileName.Enabled = false;
 			btnKpi.Image = Properties.Resources.ExcelLogo_BW;
+
 
 			labelReportFileName.ForeColor = Color.DimGray;
 			labelReportFileName.Text = "Файл не загружен";
+			labelReportFileName.Enabled = false;
 			btnReport.Image = Properties.Resources.WordLogo_BW;
 		}
 
@@ -163,6 +166,7 @@ namespace Bonuses.View
 		{
 			labelKpiFileName.Text = kpiFileName;
 			labelKpiFileName.ForeColor = Color.Black;
+			labelKpiFileName.Enabled = true;
 			btnKpi.Image = Properties.Resources.ExcelLogo;
 		}
 
@@ -170,6 +174,7 @@ namespace Bonuses.View
 		{
 			labelReportFileName.Text = reportFileName;
 			labelReportFileName.ForeColor = Color.Black;
+			labelReportFileName.Enabled = true;
 			btnReport.Image = Properties.Resources.WordLogo;
 		}
 
@@ -272,7 +277,7 @@ namespace Bonuses.View
 			progressBar1.Value = 0;
 
 			status = await Task.Run(() => 
-			_reportController.StartBonusesReport(_kpiController.Bonuses, _groupController.Group, _date, progress));
+			_reportController.StartBonusesReport(_kpiController, _groupController.Group, _date, progress));
 			if (status != Status.Success)
 			{
 				ShutdownCalculate(status, _reportController.Report.Name);
@@ -285,6 +290,9 @@ namespace Bonuses.View
 
 		private void SetUiForStartCalculate()
 		{
+			btnEmployees.Enabled = false;
+			btnDetections.Enabled = false;
+			btnSettings.Enabled = false;
 			btnCancel.Visible = true;
 			btnCalculate.Visible = false;
 			progressBar1.Left = _progressBarKpiPosition;
@@ -293,7 +301,10 @@ namespace Bonuses.View
 		}
 
 		private void SetUiForEndCalculate()
-		{		
+		{
+			btnEmployees.Enabled = true;
+			btnDetections.Enabled = true;
+			btnSettings.Enabled = true;
 			btnCalculate.Visible = true;
 			btnCancel.Visible = false;
 			progressBar1.Visible = false;
@@ -310,7 +321,7 @@ namespace Bonuses.View
 					break;
 
 				case Status.Failed:
-					ShowWarningForm($"{_messages[status]} \"{name}\"", "ConnectFile");
+					ShowWarningForm($"{_messages[status]} \"{name}\". Закройте его, если он открыт.", "ConnectFile");
 					break;
 
 				case Status.NotSave:
@@ -335,7 +346,7 @@ namespace Bonuses.View
 			}
 			else
 			{
-				Application.Exit();
+				Environment.Exit(0);
 			}
 		}
 
@@ -627,6 +638,7 @@ namespace Bonuses.View
 		{
 			tbGroup.Text = "";
 			tbGroup.Visible = true;
+			tbGroup.Select();
 			btnApplyGroup.Visible = true;
 			btnCancelGroup.Visible = true;
 		}
@@ -646,6 +658,32 @@ namespace Bonuses.View
 			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
 			//addGroupForm.ShowDialog();
 
+		}
+
+		private void BtnOpenDirectoryKpi_Click(object sender, EventArgs e)
+		{
+			Process.Start(tbKpiSouceDirectory.Text);
+		}
+
+		private void BtnOpenDirectoryReport_Click(object sender, EventArgs e)
+		{
+			Process.Start(tbReportSourceDirectory.Text);
+		}
+
+		private void LabelKpiFileName_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (_kpiController.Kpi.Path != "")
+			{
+				Process.Start(_kpiController.Kpi.Path);
+			}
+		}
+
+		private void LabelReportFileName_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if (_reportController.Report.Path != "")
+			{
+				Process.Start(_reportController.Report.Path);
+			}
 		}
 	}
 }

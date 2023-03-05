@@ -8,10 +8,10 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Bonuses.BL.Controller
 {
-    /// <summary>
-    /// Контроллер документа "KPI".
-    /// </summary>
-    public class KpiController : DocumentController
+	/// <summary>
+	/// Контроллер документа "KPI".
+	/// </summary>
+	public class KpiController : DocumentController
 	{
 		private Excel.Application _app;
 		private Excel.Workbook _book;

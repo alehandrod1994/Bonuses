@@ -1,6 +1,7 @@
 ﻿using Bonuses.BL.Controller;
 using Bonuses.BL.Model;
 using System;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Bonuses.View
@@ -34,7 +35,9 @@ namespace Bonuses.View
         {
             if (!string.IsNullOrWhiteSpace(cbPositions.Text))
             {
-                RemoveWhiteSpace();
+                cbPositions.Text = Regex.Replace(cbPositions.Text, @"\s+", " ");
+                RemoveWhiteSpace(0);
+                RemoveWhiteSpace(cbPositions.Text.Length - 1);
 
                 var position = new Position(cbPositions.Text);
                 var employee = new Employee(_employeeController.NewEmployee, position);
@@ -45,32 +48,12 @@ namespace Bonuses.View
             }
         }
 
-        private void RemoveWhiteSpace()
+        private void RemoveWhiteSpace(int index)
         {
-            for (int i = 0; i < cbPositions.Text.Length; i++)
+            if (cbPositions.Text[index].Equals(' '))
             {
-                if (cbPositions.Text[i].Equals(' '))
-                {
-                    cbPositions.Text = cbPositions.Text.Remove(i, 1);
-                    i--;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            for (int i = cbPositions.Text.Length - 1; i >= 0; i--)
-            {
-                if (cbPositions.Text[i].Equals(' '))
-                {
-                    cbPositions.Text = cbPositions.Text.Remove(i, 1);
-                }
-                else
-                {
-                    break;
-                }
-            }
+                cbPositions.Text = cbPositions.Text.Remove(index, 1);
+            }            
         }
 
         private void LabelHelp_Click(object sender, EventArgs e)
