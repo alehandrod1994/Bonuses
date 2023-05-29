@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -94,12 +95,9 @@ namespace Bonuses.View
 			if (_groupController.Group.Name == null)
 			{
 				ShowAddGroupForm("AddGroup");
-			}
-			else
-			{
-				labelGroup.Text = _groupController.Group.Name;
-			}
-
+			}			
+			labelGroup.Text = _groupController.Group.Name;
+			
 			_selectedButton = btnMain;
 			OpenTab(btnMain, panelMain);
 			TurnOnSelectedButton(btnMain);
@@ -643,31 +641,27 @@ namespace Bonuses.View
 			btnCancelGroup.Visible = true;
 		}
 
-		private void BtnTest_Click(object sender, EventArgs e)
-		{
-			//ShowSuccessfullyForm(@"C:\PUBLIC_VS3\KPI Ноябрь 2022\О показателях ГПУ ОТБ НОЯБРЬ 2022г.docx");
-
-			//AddNewEmployeeForm addNewEmployeeForm = new AddNewEmployeeForm("Бериншвили Александр Константинович", _employeeController, _positionController, _kpiController);
-			//addNewEmployeeForm.ShowDialog();
-
-			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
-			//addGroupForm.ShowDialog();
-
-			//ShowNoticeForm("Ошибка!", 27, "Неверно задана дата");
-
-			//AddGroupForm addGroupForm = new AddGroupForm(_groupController);
-			//addGroupForm.ShowDialog();
-
-		}
-
 		private void BtnOpenDirectoryKpi_Click(object sender, EventArgs e)
 		{
-			Process.Start(tbKpiSouceDirectory.Text);
+			OpenDirectory(tbKpiSouceDirectory.Text);
 		}
 
 		private void BtnOpenDirectoryReport_Click(object sender, EventArgs e)
 		{
-			Process.Start(tbReportSourceDirectory.Text);
+			OpenDirectory(tbReportSourceDirectory.Text);
+		}
+
+		private void OpenDirectory(string directory)
+		{
+			if (Directory.Exists(directory))
+			{
+				Process.Start(directory);
+			}
+			else
+			{
+				Process.Start(Directory.GetCurrentDirectory());
+
+			}
 		}
 
 		private void LabelKpiFileName_MouseDoubleClick(object sender, MouseEventArgs e)

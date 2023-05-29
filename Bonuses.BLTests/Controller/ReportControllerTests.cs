@@ -38,7 +38,7 @@ namespace Bonuses.BL.Controller.Tests
             // Act	
             status = kpiController.StartCalculateBonuses(employeeController, detections, status, progress);
             loading = 0;
-            status = reportController.StartBonusesReport(kpiController.Bonuses, group, date,progress);
+            status = reportController.StartBonusesReport(kpiController, group, date,progress);
 
             // Assert
             Assert.AreEqual(Status.Success, status);

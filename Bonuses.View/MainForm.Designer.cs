@@ -216,7 +216,6 @@ namespace Bonuses.View
             this.btnTest.Text = "Тест";
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Visible = false;
-            this.btnTest.Click += new System.EventHandler(this.BtnTest_Click);
             // 
             // btnDetections
             // 
@@ -604,9 +603,9 @@ namespace Bonuses.View
             // btnOpenDirectoryReport
             // 
             this.btnOpenDirectoryReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnOpenDirectoryReport.Location = new System.Drawing.Point(790, 244);
+            this.btnOpenDirectoryReport.Location = new System.Drawing.Point(780, 244);
             this.btnOpenDirectoryReport.Name = "btnOpenDirectoryReport";
-            this.btnOpenDirectoryReport.Size = new System.Drawing.Size(80, 26);
+            this.btnOpenDirectoryReport.Size = new System.Drawing.Size(90, 26);
             this.btnOpenDirectoryReport.TabIndex = 12;
             this.btnOpenDirectoryReport.Text = "Открыть";
             this.btnOpenDirectoryReport.UseVisualStyleBackColor = true;
@@ -615,9 +614,9 @@ namespace Bonuses.View
             // btnOpenDirectoryKpi
             // 
             this.btnOpenDirectoryKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnOpenDirectoryKpi.Location = new System.Drawing.Point(790, 122);
+            this.btnOpenDirectoryKpi.Location = new System.Drawing.Point(780, 122);
             this.btnOpenDirectoryKpi.Name = "btnOpenDirectoryKpi";
-            this.btnOpenDirectoryKpi.Size = new System.Drawing.Size(80, 26);
+            this.btnOpenDirectoryKpi.Size = new System.Drawing.Size(90, 26);
             this.btnOpenDirectoryKpi.TabIndex = 11;
             this.btnOpenDirectoryKpi.Text = "Открыть";
             this.btnOpenDirectoryKpi.UseVisualStyleBackColor = true;
@@ -628,7 +627,7 @@ namespace Bonuses.View
             this.btnChooseDirectoryReport.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnChooseDirectoryReport.Location = new System.Drawing.Point(734, 244);
             this.btnChooseDirectoryReport.Name = "btnChooseDirectoryReport";
-            this.btnChooseDirectoryReport.Size = new System.Drawing.Size(50, 26);
+            this.btnChooseDirectoryReport.Size = new System.Drawing.Size(40, 26);
             this.btnChooseDirectoryReport.TabIndex = 10;
             this.btnChooseDirectoryReport.Text = "...";
             this.btnChooseDirectoryReport.UseVisualStyleBackColor = true;
@@ -639,7 +638,7 @@ namespace Bonuses.View
             this.btnChooseDirectoryKpi.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnChooseDirectoryKpi.Location = new System.Drawing.Point(734, 122);
             this.btnChooseDirectoryKpi.Name = "btnChooseDirectoryKpi";
-            this.btnChooseDirectoryKpi.Size = new System.Drawing.Size(50, 26);
+            this.btnChooseDirectoryKpi.Size = new System.Drawing.Size(40, 26);
             this.btnChooseDirectoryKpi.TabIndex = 9;
             this.btnChooseDirectoryKpi.Text = "...";
             this.btnChooseDirectoryKpi.UseVisualStyleBackColor = true;
