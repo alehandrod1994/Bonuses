@@ -292,7 +292,6 @@ namespace Bonuses.BL.Controller
 		/// <summary>
 		/// Форматирует таблицу.
 		/// </summary>
-		/// <param name="headers"> Заголовки. </param>
 		private void FormatTable()
 		{
 			Word.Table table = _doc.Tables[1];
